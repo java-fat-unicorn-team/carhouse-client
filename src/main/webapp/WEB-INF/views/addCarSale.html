@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>New advertisement</title>
+</head>
+<body>
+<header>
+    <div class="navigation bg-primary">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car
+                                house</strong></a>
+                        </li>
+                        <li class="nav-item ml-auto bg-success">
+                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add
+                                advertisement</a>
+                        </li>
+                        <li class="nav-item mr-0 bg-secondary">
+                            <a class="nav-link text-white btn" href="#">Sing in/Sing up</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col">
+                <h2>New advertisement</h2>
+            </div>
+        </div>
+        <div class="add-carSale-form mt-3">
+            <form action="#" th:action="@{/carSale/add}" th:object="${carSale}" th:method="post">
+                <div class="row">
+                    <div class="col-sm-8 col-lg-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="carMake">Car make *</label>
+                            <select class="form-control col-sm-8" id="carMake" onchange="addCarModels(this)"
+                                    th:field="*{car.carModel.carMake.carMakeId}">
+                                <option value="-1" selected>Choose</option>
+                                <option th:each="carMake : ${listCarMakes}"
+                                        th:value="${carMake.carMakeId}"
+                                        th:text="${carMake.carMake}">BMW</option>
+                                <option th:remove="tag">Mercedes</option>
+                                <option th:remove="tag">Audi</option>
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="listCarModels">Car model *</label>
+                            <select class="form-control col-sm-8" id="listCarModels" th:field="*{car.carModel.carModelId}">
+                                <option value="-1" selected>Choose</option>
+                                <option th:remove="tag">M2</option>
+                                <option th:remove="tag">M4</option>
+                                <option th:remove="tag">M5</option>
+                                <option th:remove="tag">X5M</option>
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="year">Year *</label>
+                            <select class="form-control col-sm-8" id="year" type="date" th:field="*{car.year}">
+                                <option value="2009-01-01" selected>Choose</option>
+                                <option th:each="date : ${listDates}" th:value="${{date}}"
+                                        th:text="${#calendars.year(date)}">2010</option>
+                                <option th:remove="tag">2011</option>
+                                <option th:remove="tag">2012</option>
+                            </select>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="fuelType">Fuel type *</label>
+                            <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons" id="fuelType">
+                                <label class="btn btn-light border border-secondary" th:each="fuelType : ${listFuelTypes}">
+                                    <input type="radio" th:value="${fuelType.fuelTypeId}" text="Petrol"
+                                           th:text="${fuelType.fuelType}" th:field="*{car.fuelType.fuelTypeId}"
+                                           autocomplete="off">
+                                </label>
+                                <label class="btn btn-light border border-secondary" th:remove="all">
+                                    <input type="radio" autocomplete="off"> Diesel
+                                </label>
+                                <label class="btn btn-light border border-secondary" th:remove="all">
+                                    <input type="radio" autocomplete="off"> Electric
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="mileage">Mileage *</label>
+                            <input class="form-control col-sm-8" type="number" id="mileage" th:field="*{car.mileage}">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="transmission">Transmission *</label>
+                            <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons" id="transmission">
+                                <label class="btn btn-light border border-secondary">
+                                    <input type="radio" value="0" autocomplete="off"> Manual
+                                </label>
+                                <label class="btn btn-light border border-secondary">
+                                    <input type="radio" value="1" autocomplete="off"> Automatic
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-sm-4 col-form-label" for="price">Price *</label>
+                            <input class="form-control col-sm-8" type="number" id="price" th:field="*{price}">
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    function addCarModels(carMake) {
+        var carMakeId = carMake.value;
+        $.ajax({
+            type: 'GET',
+            url: "/carMake/" + carMakeId + "/carModels",
+            success: function(data){
+                var listCarModels=$('#listCarModels'), option="<option value='-1'>Car model</option>";
+                listCarModels.empty();
+
+                for(var i=0; i<data.length; i++){
+                    option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                }
+                listCarModels.append(option);
+            },
+            error:function(){
+                alert("error");
+            }
+        });
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>HomePage</title>
+</head>
+<body>
+<header>
+    <div class="navigation bg-primary">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-uppercase btn" href="#"><strong>Car house</strong></a>
+                        </li>
+                        <li class="nav-item ml-auto bg-success">
+                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add advertisement</a>
+                        </li>
+                        <li class="nav-item mr-0 bg-secondary">
+                            <a class="nav-link text-white btn" href="#">Sing in/Sing up</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section id="home">
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col-3">
+                <p>68640 car advertisement</p>
+            </div>
+            <div class="col">
+                <a href="#" class="btn"><i class="fas fa-search"></i> Advanced Search</a>
+            </div>
+        </div>
+        <div class="row bg-warning">
+            <div class="col">
+                <div class="search-filter">
+                    <form action="#" th:object="${searchFilter}"
+                        th:action="@{/carSale}"
+                          th:method="@{post}">
+                        <div class="form-row pt-3">
+                            <div class="form-group col-6 col-lg">
+                                <select class="form-control" onchange="addCarModels(this)" th:field="*{carMakeId}">
+                                    <option value="-1" selected>Car make</option>
+                                    <option th:each="carMake : ${listCarMakes}"
+                                            th:value="${carMake.carMakeId}"
+                                            th:text="${carMake.carMake}">BMW</option>
+                                    <option th:remove="tag">Mercedes</option>
+                                    <option th:remove="tag">Audi</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-6 col-lg">
+                                <select class="form-control" id="listCarModels" th:field="*{carModelId}">
+                                    <option value="-1" selected>Car model</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-6 col-lg">
+                                <select class="form-control" type="date" th:field="*{yearFrom}">
+                                    <option value="2009-01-01" selected>Year from</option>
+                                    <option th:each="date : ${listDates}" th:value="${{date}}"
+                                            th:text="${#calendars.year(date)}">2010</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-6 col-lg">
+                                <select class="form-control" type="date" th:field="*{yearTo}">
+                                    <option value="2009-01-01"selected>Year to</option>
+                                    <option th:each="date : ${listDates}" th:value="${{date}}"
+                                            th:text="${#calendars.year(date)}">2010</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-6 col-lg">
+                                <div class="form-group">
+                                    <input class="form-control" type="number"
+                                           placeholder="Price from" th:field="*{priceFrom}">
+                                </div>
+                            </div>
+                            <div class="form-group col-6 col-lg">
+                                <div class="form-group">
+                                    <input class="form-control" type="number"
+                                           placeholder="Price to" th:field="*{priceTo}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col">
+                <p>popular car makes:</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="carMakes">
+                    <ul class="listCarMakes list-unstyled">
+                        <li th:each="carMake : ${listCarMakes}">
+                            <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}}">
+                                <span th:text="${carMake.carMake}">Acura</span>
+                                <small th:text="${carMake.carMakeCount}">110</small>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function addCarModels(carMake) {
+        var carMakeId = carMake.value;
+        $.ajax({
+            type: 'GET',
+            url: "/carMake/" + carMakeId + "/carModels",
+            success: function(data){
+                var listCarModels=$('#listCarModels'), option="<option value='-1'>Car model</option>";
+                listCarModels.empty();
+
+                for(var i=0; i<data.length; i++){
+                    option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                }
+                listCarModels.append(option);
+            },
+            error:function(){
+                alert("error");
+            }
+        });
+    }
+</script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>
