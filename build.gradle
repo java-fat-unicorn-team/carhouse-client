@@ -8,15 +8,14 @@ buildscript {
     }
 }
 
+plugins {
+    id 'checkstyle'
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.tomcat'
-
-war {
-    baseName = "CarHouseClient"
-    version '1.0-SNAPSHOT'
-}
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -26,22 +25,41 @@ repositories {
 }
 
 dependencies {
+    def junit5Version = '5.3.1'
     def springVersion = '5.1.8.RELEASE'
     def thymeleafVersion = '3.0.11.RELEASE'
     def tomcatVersion = '9.0.1'
+    def tomcatEmbedLogging = '9.0.0.M6'
+    def servletApiVersion = '4.0.1'
+    def servletJstlVersion = '1.1.2'
+    def jacksonDatabindVersion = '2.10.0.pr1'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
-            "org.apache.tomcat.embed:tomcat-embed-logging-juli:9.0.0.M6",
+            "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatEmbedLogging}",
             "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-    providedCompile 'javax.servlet:javax.servlet-api:4.0.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
+    providedCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    runtime "javax.servlet:jstl:${servletJstlVersion}"
     compile "org.springframework:spring-webmvc:${springVersion}"
     compile "org.springframework:spring-core:${springVersion}"
     compile "org.springframework:spring-web:${springVersion}"
     compile "org.springframework:spring-context:${springVersion}"
     compile "org.thymeleaf:thymeleaf:${thymeleafVersion}"
     compile "org.thymeleaf:thymeleaf-spring5:${thymeleafVersion}"
-    compile "com.fasterxml.jackson.core:jackson-databind:2.10.0.pr1"
-    runtime 'javax.servlet:jstl:1.1.2'
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+}
+
+war {
+    baseName = "CarHouseClient"
+    version '1.0-SNAPSHOT'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+checkstyleMain {
+    configFile = file("${rootDir}/checkstyle.xml")
 }
 
 tomcat {

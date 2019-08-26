@@ -6,6 +6,13 @@ import com.carhouse.model.Transmission;
 
 import java.sql.Date;
 
+/**
+ * The car characteristics model.
+ * This model includes year of car manufacture, car mileage, fuel type of car, transmission type and car model.
+ * This model don't have list car features because it is redundant for list of car sale with basic information
+ *
+ * @author Katuranau Maksimilyan
+ */
 public class CarStub {
     private int carId;
     private Date year;
