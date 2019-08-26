@@ -3,6 +3,14 @@ package com.carhouse.model.stub;
 import java.math.BigDecimal;
 import java.util.Date;
 
+/**
+ * The car sale model describes the announcement of the car sale.
+ * The model includes car price, date when the announcement was added and car characteristics.
+ * This model don't have information about user and also contains carStub model without car features
+ * because it is redundant for list of car sale with basic information
+ *
+ * @author Katuranau Maksimilyan
+ */
 public class CarSaleStub {
     private int carSaleId;
     private BigDecimal price;

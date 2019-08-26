@@ -2,6 +2,11 @@ package com.carhouse.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+/**
+ * Initialize dispatcher servlet.
+ *
+ * @author Katuranau Maksimilyan
+ */
 public class DispatcherServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override

@@ -36,33 +36,33 @@
     <div class="container mt-4">
         <div class="row">
             <div class="col">
-                <ul class="list-inline list-unstyled" th:if="${returnBack != null}">
+                <ul class="list-inline list-unstyled" th:if="${carMake != null}">
                     <li class="list-inline-item">
                         <a class="text-dark" th:href="@{/carSale}">All car sales</a>
                     </li>
                     <li class="list-inline-item">
                         <span> -- </span>
                     </li>
-                    <li th:if="${returnBack.carModel == null}" class="list-inline-item">
-                        <span th:text="${returnBack.carMake.carMake}">carMake</span>
+                    <li th:if="${carModel == null}" class="list-inline-item">
+                        <span th:text="${carMake.carMake}">carMake</span>
                     </li>
-                    <li th:if="${returnBack.carModel != null}" class="list-inline-item">
-                        <a class="text-dark" th:href="@{'/carSale/carMake/' + ${returnBack.carMake.carMakeId}}"
-                           th:text="${returnBack.carMake.carMake}">carMake</a>
+                    <li th:if="${carModel != null}" class="list-inline-item">
+                        <a class="text-dark" th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}}"
+                           th:text="${carMake.carMake}">carMake</a>
                     </li>
-                    <li class="list-inline-item" th:if="${returnBack.carModel != null}">
+                    <li class="list-inline-item" th:if="${carModel != null}">
                         <span> -- </span>
                     </li>
-                    <li class="list-inline-item" th:if="${returnBack.carModel != null}">
-                        <span th:text="${returnBack.carModel.carModel}">carModel</span>
+                    <li class="list-inline-item" th:if="${carModel != null}">
+                        <span th:text="${carModel.carModel}">carModel</span>
                     </li>
                 </ul>
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <span class="h2" th:text="'Selling cars ' + ${#objects.nullSafe(returnBack?.carMake?.carMake, '')}
-                + ' ' + ${#objects.nullSafe(returnBack?.carModel?.carModel, '')} + ' '">Selling Cars</span>
+                <span class="h2" th:text="'Selling cars ' + ${#objects.nullSafe(carMake?.carMake, '')}
+                + ' ' + ${#objects.nullSafe(carModel?.carModel, '')} + ' '">Selling Cars</span>
                 <span th:text="' ' + ${listCarSaleSize} + ' advertisements'"></span>
             </div>
         </div>
@@ -70,7 +70,7 @@
             <div class="col">
                 <ul class="listCarModels list-unstyled">
                     <li th:each="carModel : ${listCarModels}">
-                        <a th:href="@{'/carSale/carMake/' + ${returnBack.carMake.carMakeId}
+                        <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}
                          + '/carModel/' + ${carModel.carModelId}}">
                             <span th:text="${carModel.carModel}">Acura</span>
                             <small th:text="${carModel.carModelCount}">110</small>

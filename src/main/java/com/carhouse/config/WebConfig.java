@@ -11,11 +11,22 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+/**
+ * Spring MVC configuration with thymeleaf.
+ *
+ * @author Katuranau Maksimilyan
+ */
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.carhouse")
 public class WebConfig implements WebMvcConfigurer {
 
+    /**
+     * Create instance of a new template engine class that performs all configuration steps automatically.
+     * Set cacheable to false to see changes in real time.
+     *
+     * @return templateResolver
+     */
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
@@ -26,6 +37,10 @@ public class WebConfig implements WebMvcConfigurer {
         return templateResolver;
     }
 
+    /**
+     * Create template engine and sets template resolver and message source.
+     * @return templateEngine
+     */
     @Bean
     public SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
@@ -34,14 +49,21 @@ public class WebConfig implements WebMvcConfigurer {
         return templateEngine;
     }
 
+    /**
+     * Create view resolver use template engine for all configuration.
+     * @return viewResolver
+     */
     @Bean
     public ThymeleafViewResolver viewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setTemplateEngine(templateEngine());
-        viewResolver.setOrder(1);
         return viewResolver;
     }
 
+    /**
+     * Create message source to resolve messages from resources.
+     * @return messageSource
+     */
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
@@ -49,7 +71,10 @@ public class WebConfig implements WebMvcConfigurer {
         return messageSource;
     }
 
-    @Override
+    /**
+     * Add handler for static resource.
+     * @param registry is object to register resource handlers
+     */
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/WEB-INF/static/");
     }
