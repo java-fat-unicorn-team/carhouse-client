@@ -1,6 +1,6 @@
 # carhouse-client
 ## Main topic of project
-It is a web application where you can place an advertisement for the sale of a car or find a car for yourself.
+It is a web application which provide opportunity to place an advertisement for the sale of a car or find an existent one with selected parameters.
 
 ## Technologies
 Project is created with:

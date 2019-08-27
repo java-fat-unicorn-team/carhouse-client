@@ -1,4 +1,4 @@
-package com.carhouse.model.stub;
+package com.carhouse.model.dto;
 
 import com.carhouse.model.CarModel;
 import com.carhouse.model.FuelType;
@@ -13,7 +13,7 @@ import java.sql.Date;
  *
  * @author Katuranau Maksimilyan
  */
-public class CarStub {
+public class CarDto {
     private int carId;
     private Date year;
     private int mileage;
@@ -24,16 +24,7 @@ public class CarStub {
     /**
      * Instantiates a new Car.
      */
-    public CarStub() {
-    }
-
-    /**
-     * Instantiates a new Car characteristics.
-     *
-     * @param carId the car id
-     */
-    public CarStub(final int carId) {
-        this.carId = carId;
+    public CarDto() {
     }
 
     /**
@@ -46,8 +37,8 @@ public class CarStub {
      * @param transmission the transmission
      * @param carModel     the car model
      */
-    public CarStub(final int carId, final Date year, final int mileage, final FuelType fuelType,
-                   final Transmission transmission, final CarModel carModel) {
+    public CarDto(final int carId, final Date year, final int mileage, final FuelType fuelType,
+                  final Transmission transmission, final CarModel carModel) {
         this.carId = carId;
         this.year = year;
         this.mileage = mileage;
@@ -71,7 +62,7 @@ public class CarStub {
      * @param carId the car id
      * @return car object
      */
-    public CarStub setCarId(final int carId) {
+    public CarDto setCarId(final int carId) {
         this.carId = carId;
         return this;
     }
@@ -91,7 +82,7 @@ public class CarStub {
      * @param year the year
      * @return car object
      */
-    public CarStub setYear(final Date year) {
+    public CarDto setYear(final Date year) {
         this.year = year;
         return this;
     }
@@ -111,7 +102,7 @@ public class CarStub {
      * @param mileage the mileage
      * @return car object
      */
-    public CarStub setMileage(final int mileage) {
+    public CarDto setMileage(final int mileage) {
         this.mileage = mileage;
         return this;
     }
@@ -131,7 +122,7 @@ public class CarStub {
      * @param fuelType the fuel type
      * @return car object
      */
-    public CarStub setFuelType(final FuelType fuelType) {
+    public CarDto setFuelType(final FuelType fuelType) {
         this.fuelType = fuelType;
         return this;
     }
@@ -151,7 +142,7 @@ public class CarStub {
      * @param transmission the transmission
      * @return car object
      */
-    public CarStub setTransmission(final Transmission transmission) {
+    public CarDto setTransmission(final Transmission transmission) {
         this.transmission = transmission;
         return this;
     }
@@ -171,7 +162,7 @@ public class CarStub {
      * @param carModel the car model
      * @return car object
      */
-    public CarStub setCarModel(final CarModel carModel) {
+    public CarDto setCarModel(final CarModel carModel) {
         this.carModel = carModel;
         return this;
     }

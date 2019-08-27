@@ -1,9 +1,9 @@
 package com.carhouse.controller;
 
-import com.carhouse.consumers.CarMakeConsumer;
-import com.carhouse.consumers.CarModelConsumer;
-import com.carhouse.consumers.CarSaleConsumer;
-import com.carhouse.model.stub.CarSaleStub;
+import com.carhouse.provider.CarMakeProvider;
+import com.carhouse.provider.CarModelProvider;
+import com.carhouse.model.dto.CarSaleDto;
+import com.carhouse.provider.CarSaleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,29 +19,23 @@ import java.util.List;
 @Controller
 public class CarSaleController {
 
-    private CarSaleConsumer carSaleConsumer;
-    private CarMakeConsumer carMakeConsumer;
-    private CarModelConsumer carModelConsumer;
-
-    /**
-     * Instantiates a new Car sale controller.
-     */
-    public CarSaleController() {
-    }
+    private CarSaleProvider carSaleProvider;
+    private CarMakeProvider carMakeProvider;
+    private CarModelProvider carModelProvider;
 
     /**
      * Instantiates a new Car sale controller.
      *
-     * @param carSaleConsumer  the car sale data provider
-     * @param carMakeConsumer  the car make data provide
-     * @param carModelConsumer the car model data provide
+     * @param carSaleProvider  the car sale data provider
+     * @param carMakeProvider  the car make data provide
+     * @param carModelProvider the car model data provide
      */
     @Autowired
-    public CarSaleController(final CarSaleConsumer carSaleConsumer, final CarMakeConsumer carMakeConsumer,
-                             final CarModelConsumer carModelConsumer) {
-        this.carSaleConsumer = carSaleConsumer;
-        this.carMakeConsumer = carMakeConsumer;
-        this.carModelConsumer = carModelConsumer;
+    public CarSaleController(final CarSaleProvider carSaleProvider, final CarMakeProvider carMakeProvider,
+                             final CarModelProvider carModelProvider) {
+        this.carSaleProvider = carSaleProvider;
+        this.carMakeProvider = carMakeProvider;
+        this.carModelProvider = carModelProvider;
     }
 
     /**
@@ -52,8 +46,8 @@ public class CarSaleController {
      */
     @GetMapping("/carSale")
     public String carSale(final Model model) {
-        List<CarSaleStub> listCarSale = carSaleConsumer.getListCarSale();
-        model.addAttribute("listCarMakes", carMakeConsumer.getListCarMakeStub());
+        List<CarSaleDto> listCarSale = carSaleProvider.getListCarSale();
+        model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
         model.addAttribute("listCarSales", listCarSale);
         model.addAttribute("listCarSaleSize", listCarSale.size());
         return "carSales";
@@ -68,9 +62,9 @@ public class CarSaleController {
      */
     @GetMapping("/carSale/carMake/{carMakeId}")
     public String carSaleWithCarMake(@PathVariable final Integer carMakeId, final Model model) {
-        List<CarSaleStub> listCarSale = carSaleConsumer.getListCarSale();
-        model.addAttribute("carMake", carMakeConsumer.getCarMakeStub(carMakeId));
-        model.addAttribute("listCarModels", carModelConsumer.getListCarModelStub(carMakeId));
+        List<CarSaleDto> listCarSale = carSaleProvider.getListCarSale();
+        model.addAttribute("carMake", carMakeProvider.getCarMake(carMakeId));
+        model.addAttribute("listCarModels", carModelProvider.getCarModels(carMakeId));
         model.addAttribute("listCarSales", listCarSale);
         model.addAttribute("listCarSaleSize", listCarSale.size());
         return "carSales";
@@ -87,9 +81,9 @@ public class CarSaleController {
     @GetMapping("/carSale/carMake/{carMakeId}/carModel/{carModelId}")
     public String carSaleWithCarModel(@PathVariable final Integer carMakeId,
                                       @PathVariable final Integer carModelId, final Model model) {
-        List<CarSaleStub> listCarSale = carSaleConsumer.getListCarSale();
-        model.addAttribute("carMake", carMakeConsumer.getCarMakeStub(carMakeId));
-        model.addAttribute("carModel", carModelConsumer.getCarModelStub(carModelId));
+        List<CarSaleDto> listCarSale = carSaleProvider.getListCarSale();
+        model.addAttribute("carMake", carMakeProvider.getCarMake(carMakeId));
+        model.addAttribute("carModel", carModelProvider.getCarModel(carModelId));
         model.addAttribute("listCarSales", listCarSale);
         model.addAttribute("listCarSaleSize", listCarSale.size());
         return "carSales";

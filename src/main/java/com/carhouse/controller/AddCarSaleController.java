@@ -1,7 +1,7 @@
 package com.carhouse.controller;
 
-import com.carhouse.consumers.CarMakeConsumer;
-import com.carhouse.consumers.FuelTypeConsumer;
+import com.carhouse.provider.CarMakeProvider;
+import com.carhouse.provider.FuelTypeProvider;
 import com.carhouse.model.CarSale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,25 +16,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class AddCarSaleController {
 
-    private CarMakeConsumer carMakeConsumer;
-    private FuelTypeConsumer fuelTypeConsumer;
-
-    /**
-     * Instantiates a new Add car sale controller.
-     */
-    public AddCarSaleController() {
-    }
+    private CarMakeProvider carMakeProvider;
+    private FuelTypeProvider fuelTypeProvider;
 
     /**
      * Instantiates a new Add car sale controller.
      *
-     * @param carMakeConsumer  the car make data provide
-     * @param fuelTypeConsumer the fuel type data provide
+     * @param carMakeProvider  the car make data provide
+     * @param fuelTypeProvider the fuel type data provide
      */
     @Autowired
-    public AddCarSaleController(final CarMakeConsumer carMakeConsumer, final FuelTypeConsumer fuelTypeConsumer) {
-        this.carMakeConsumer = carMakeConsumer;
-        this.fuelTypeConsumer = fuelTypeConsumer;
+    public AddCarSaleController(final CarMakeProvider carMakeProvider, final FuelTypeProvider fuelTypeProvider) {
+        this.carMakeProvider = carMakeProvider;
+        this.fuelTypeProvider = fuelTypeProvider;
     }
 
     /**
@@ -47,8 +41,8 @@ public class AddCarSaleController {
     public String addCarSale(final Model model) {
         CarSale carSale = new CarSale();
         model.addAttribute("carSale", carSale);
-        model.addAttribute("listCarMakes", carMakeConsumer.getListCarMakeStub());
-        model.addAttribute("listFuelTypes", fuelTypeConsumer.getListFuelTypes());
+        model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
+        model.addAttribute("listFuelTypes", fuelTypeProvider.getFuelTypes());
         return "addCarSale";
     }
 

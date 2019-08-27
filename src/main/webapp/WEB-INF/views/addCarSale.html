@@ -127,7 +127,7 @@
         var carMakeId = carMake.value;
         $.ajax({
             type: 'GET',
-            url: "/carMake/" + carMakeId + "/carModels",
+            url: "/carModels/" + carMakeId,
             success: function(data){
                 var listCarModels=$('#listCarModels'), option="<option value='-1'>Car model</option>";
                 listCarModels.empty();

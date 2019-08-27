@@ -73,7 +73,6 @@
                         <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}
                          + '/carModel/' + ${carModel.carModelId}}">
                             <span th:text="${carModel.carModel}">Acura</span>
-                            <small th:text="${carModel.carModelCount}">110</small>
                         </a>
                     </li>
                 </ul>
@@ -85,7 +84,6 @@
                     <li th:each="carMake : ${listCarMakes}">
                         <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}}">
                             <span th:text="${carMake.carMake}">Acura</span>
-                            <small th:text="${carMake.carMakeCount}">110</small>
                         </a>
                     </li>
                 </ul>

@@ -1,12 +1,12 @@
-package com.carhouse.consumers.impl;
+package com.carhouse.provider.impl;
 
-import com.carhouse.consumers.CarSaleConsumer;
+import com.carhouse.model.dto.CarSaleDto;
+import com.carhouse.provider.CarSaleProvider;
 import com.carhouse.model.CarMake;
 import com.carhouse.model.CarModel;
 import com.carhouse.model.FuelType;
 import com.carhouse.model.Transmission;
-import com.carhouse.model.stub.CarSaleStub;
-import com.carhouse.model.stub.CarStub;
+import com.carhouse.model.dto.CarDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,14 +18,14 @@ import java.util.List;
  * The car sale data provider.
  */
 @Component
-public class CarSaleConsumerImpl implements CarSaleConsumer {
+public class CarSaleProviderImpl implements CarSaleProvider {
 
     /**
      * Gets list car sale.
      *
      * @return the list car sale
      */
-    public List<CarSaleStub> getListCarSale() {
+    public List<CarSaleDto> getListCarSale() {
         return new ArrayList<>() {{
             add(createCarSaleStub(0, "BMW", "M5"));
             add(createCarSaleStub(1, "Mercedes", "C63AMG"));
@@ -41,16 +41,16 @@ public class CarSaleConsumerImpl implements CarSaleConsumer {
     }
 
     /**
-     * this is a temporary object to facilitate the creation of CarSaleStub.
+     * this is a temporary object to facilitate the creation of CarSaleDto.
      *
      * @param carSaleId car sale id
      * @param carMake   car make
      * @param carModel  car model
      * @return car sale stub object
      */
-    private CarSaleStub createCarSaleStub(final Integer carSaleId, final String carMake, final String carModel) {
-        return new CarSaleStub(carSaleId, new BigDecimal(30200), Date.valueOf("2019-03-02"),
-                new CarStub(0, Date.valueOf("2017-01-01"), 140000,
+    private CarSaleDto createCarSaleStub(final Integer carSaleId, final String carMake, final String carModel) {
+        return new CarSaleDto(carSaleId, new BigDecimal(30200), Date.valueOf("2019-03-02"),
+                new CarDto(0, Date.valueOf("2017-01-01"), 140000,
                         new FuelType(1, "Bensin"),
                         new Transmission(0, "Manual"), new CarModel(0,
                         new CarMake(0, carMake), carModel)));

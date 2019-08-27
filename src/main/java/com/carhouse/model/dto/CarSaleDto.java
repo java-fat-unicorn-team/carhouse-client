@@ -1,4 +1,4 @@
-package com.carhouse.model.stub;
+package com.carhouse.model.dto;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,26 +11,17 @@ import java.util.Date;
  *
  * @author Katuranau Maksimilyan
  */
-public class CarSaleStub {
+public class CarSaleDto {
     private int carSaleId;
     private BigDecimal price;
     private Date date;
-    private CarStub car;
+    private CarDto car;
 
     /**
      * Instantiates a new Car sale.
      */
-    public CarSaleStub() {
-        car = new CarStub();
-    }
-
-    /**
-     * Instantiates a new Car sale.
-     *
-     * @param carSaleId the car sale id
-     */
-    public CarSaleStub(final int carSaleId) {
-        this.carSaleId = carSaleId;
+    public CarSaleDto() {
+        car = new CarDto();
     }
 
     /**
@@ -41,7 +32,7 @@ public class CarSaleStub {
      * @param date      the date
      * @param car       the car
      */
-    public CarSaleStub(final int carSaleId, final BigDecimal price, final Date date, final CarStub car) {
+    public CarSaleDto(final int carSaleId, final BigDecimal price, final Date date, final CarDto car) {
         this.carSaleId = carSaleId;
         this.price = price;
         this.date = date;
@@ -107,7 +98,7 @@ public class CarSaleStub {
      *
      * @return the car
      */
-    public CarStub getCar() {
+    public CarDto getCar() {
         return car;
     }
 
@@ -116,7 +107,7 @@ public class CarSaleStub {
      *
      * @param car the car
      */
-    public void setCar(final CarStub car) {
+    public void setCar(final CarDto car) {
         this.car = car;
     }
 }

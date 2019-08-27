@@ -39,24 +39,30 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * Create template engine and sets template resolver and message source.
-     * @return templateEngine
+     *
+     * @param templateResolver the template resolver
+     * @param messageSource    the message source
+     * @return templateEngine spring template engine
      */
     @Bean
-    public SpringTemplateEngine templateEngine() {
+    public SpringTemplateEngine templateEngine(final SpringResourceTemplateResolver templateResolver,
+                                               final ResourceBundleMessageSource messageSource) {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.setTemplateEngineMessageSource(messageSource());
+        templateEngine.setTemplateResolver(templateResolver);
+        templateEngine.setTemplateEngineMessageSource(messageSource);
         return templateEngine;
     }
 
     /**
      * Create view resolver use template engine for all configuration.
-     * @return viewResolver
+     *
+     * @param templateEngine the template engine
+     * @return viewResolver thymeleaf view resolver
      */
     @Bean
-    public ThymeleafViewResolver viewResolver() {
+    public ThymeleafViewResolver viewResolver(final SpringTemplateEngine templateEngine) {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
-        viewResolver.setTemplateEngine(templateEngine());
+        viewResolver.setTemplateEngine(templateEngine);
         return viewResolver;
     }
 
