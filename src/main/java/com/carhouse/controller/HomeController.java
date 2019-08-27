@@ -57,7 +57,7 @@ public class HomeController {
         model.addAttribute("searchFilter", new SearchFilter());
         model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
         model.addAttribute("listDates", webProvider.getDates());
-        return "homePage";
+        return "homepage";
     }
 
     /**
