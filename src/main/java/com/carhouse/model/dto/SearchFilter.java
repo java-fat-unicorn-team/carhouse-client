@@ -1,4 +1,4 @@
-package com.carhouse.model.stub;
+package com.carhouse.model.dto;
 
 import java.sql.Date;
 

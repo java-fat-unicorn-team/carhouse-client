@@ -1,6 +1,6 @@
-package com.carhouse.consumers.impl;
+package com.carhouse.provider.impl;
 
-import com.carhouse.consumers.FuelTypeConsumer;
+import com.carhouse.provider.FuelTypeProvider;
 import com.carhouse.model.FuelType;
 import org.springframework.stereotype.Component;
 
@@ -11,14 +11,14 @@ import java.util.List;
  * The fuel type data provider.
  */
 @Component
-public class FuelTypeConsumerImpl implements FuelTypeConsumer {
+public class FuelTypeProviderImpl implements FuelTypeProvider {
 
     /**
      * Gets list fuel types.
      *
      * @return the list fuel types
      */
-    public List<FuelType> getListFuelTypes() {
+    public List<FuelType> getFuelTypes() {
         return new ArrayList<>() {{
             add(new FuelType(0, "Petrol"));
             add(new FuelType(1, "Diesel"));

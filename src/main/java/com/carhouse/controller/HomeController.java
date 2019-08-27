@@ -1,11 +1,11 @@
 package com.carhouse.controller;
 
-import com.carhouse.consumers.CarMakeConsumer;
-import com.carhouse.consumers.CarModelConsumer;
-import com.carhouse.consumers.CarSaleConsumer;
-import com.carhouse.consumers.WebConsumer;
-import com.carhouse.model.stub.CarSaleStub;
-import com.carhouse.model.stub.SearchFilter;
+import com.carhouse.provider.CarMakeProvider;
+import com.carhouse.provider.CarModelProvider;
+import com.carhouse.provider.CarSaleProvider;
+import com.carhouse.provider.WebProvider;
+import com.carhouse.model.dto.CarSaleDto;
+import com.carhouse.model.dto.SearchFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,32 +21,26 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private WebConsumer webConsumer;
-    private CarSaleConsumer carSaleConsumer;
-    private CarMakeConsumer carMakeConsumer;
-    private CarModelConsumer carModelConsumer;
-
-    /**
-     * Instantiates a new Home controller.
-     */
-    public HomeController() {
-    }
+    private WebProvider webProvider;
+    private CarSaleProvider carSaleProvider;
+    private CarMakeProvider carMakeProvider;
+    private CarModelProvider carModelProvider;
 
     /**
      * Instantiates a new Home controller.
      *
-     * @param webConsumer      the web consumer
-     * @param carSaleConsumer  the car sale data provide
-     * @param carMakeConsumer  the car make data provide
-     * @param carModelConsumer the car model data provide
+     * @param webProvider      the web consumer
+     * @param carSaleProvider  the car sale data provide
+     * @param carMakeProvider  the car make data provide
+     * @param carModelProvider the car model data provide
      */
     @Autowired
-    public HomeController(final WebConsumer webConsumer, final CarSaleConsumer carSaleConsumer,
-                          final CarMakeConsumer carMakeConsumer, final CarModelConsumer carModelConsumer) {
-        this.webConsumer = webConsumer;
-        this.carSaleConsumer = carSaleConsumer;
-        this.carMakeConsumer = carMakeConsumer;
-        this.carModelConsumer = carModelConsumer;
+    public HomeController(final WebProvider webProvider, final CarSaleProvider carSaleProvider,
+                          final CarMakeProvider carMakeProvider, final CarModelProvider carModelProvider) {
+        this.webProvider = webProvider;
+        this.carSaleProvider = carSaleProvider;
+        this.carMakeProvider = carMakeProvider;
+        this.carModelProvider = carModelProvider;
     }
 
     /**
@@ -61,8 +55,8 @@ public class HomeController {
     @GetMapping("/homePage")
     public String firstPage(final Model model) {
         model.addAttribute("searchFilter", new SearchFilter());
-        model.addAttribute("listCarMakes", carMakeConsumer.getListCarMakeStub());
-        model.addAttribute("listDates", webConsumer.getDates());
+        model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
+        model.addAttribute("listDates", webProvider.getDates());
         return "homePage";
     }
 
@@ -77,13 +71,13 @@ public class HomeController {
     @PostMapping("/homePage")
     public String carSaleFilter(@ModelAttribute final SearchFilter searchFilter, final Model model) {
         if (searchFilter.getCarMakeId() >= 0) {
-            model.addAttribute("carMake", carMakeConsumer.getCarMakeStub(searchFilter.getCarMakeId()));
+            model.addAttribute("carMake", carMakeProvider.getCarMake(searchFilter.getCarMakeId()));
             if (searchFilter.getCarModelId() >= 0) {
                 model.addAttribute("carModel",
-                        carModelConsumer.getCarModelStub(searchFilter.getCarModelId()));
+                        carModelProvider.getCarModel(searchFilter.getCarModelId()));
             }
         }
-        List<CarSaleStub> listCarSale = carSaleConsumer.getListCarSale();
+        List<CarSaleDto> listCarSale = carSaleProvider.getListCarSale();
         model.addAttribute("listCarSales", listCarSale);
         model.addAttribute("listCarSaleSize", listCarSale.size());
         return "carSales";

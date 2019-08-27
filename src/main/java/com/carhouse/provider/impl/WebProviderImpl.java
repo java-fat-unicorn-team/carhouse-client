@@ -1,6 +1,6 @@
-package com.carhouse.consumers.impl;
+package com.carhouse.provider.impl;
 
-import com.carhouse.consumers.WebConsumer;
+import com.carhouse.provider.WebProvider;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -9,12 +9,14 @@ import java.util.List;
 
 /**
  * Data provider.
+ * Provide all edition data what are not on the server
  */
 @Component
-public class WebConsumerImpl implements WebConsumer {
+public class WebProviderImpl implements WebProvider {
 
     /**
      * Gets dates.
+     * It is used to create list of dates to set period from-to
      *
      * @return the dates
      */

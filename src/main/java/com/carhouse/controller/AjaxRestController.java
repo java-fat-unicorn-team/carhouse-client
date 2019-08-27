@@ -1,13 +1,12 @@
 package com.carhouse.controller;
 
-import com.carhouse.consumers.CarModelConsumer;
-import com.carhouse.model.stub.CarModelStub;
+import com.carhouse.model.CarModel;
+import com.carhouse.provider.CarModelProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ import java.util.List;
 public class AjaxRestController {
 
     @Autowired
-    private CarModelConsumer carModelConsumer;
+    private CarModelProvider carModelProvider;
 
     /**
      * Gets car make id and returns list car models of this car make.
@@ -27,14 +26,8 @@ public class AjaxRestController {
      * @param carMakeId id of selected car make
      * @return list car models
      */
-    @GetMapping("/carMake/{carMakeId}/carModels")
-    public List<CarModelStub> getCarModels(@PathVariable final Integer carMakeId) {
-        List<CarModelStub> listCarModel;
-        if (carMakeId >= 0) {
-            listCarModel = carModelConsumer.getListCarModelStub(carMakeId);
-        } else {
-            listCarModel = new ArrayList<>();
-        }
-        return listCarModel;
+    @GetMapping("/carModels/{carMakeId}")
+    public List<CarModel> getCarModels(@PathVariable final Integer carMakeId) {
+        return carModelProvider.getCarModels(carMakeId);
     }
 }
