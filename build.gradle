@@ -9,13 +9,13 @@ buildscript {
 }
 
 plugins {
+    id 'java'
+    id 'idea'
+    id 'war'
+    id 'jacoco'
     id 'checkstyle'
+    id 'com.bmuschko.tomcat' version '2.5'
 }
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'war'
-apply plugin: 'com.bmuschko.tomcat'
 
 sourceCompatibility = 11
 targetCompatibility = 11
@@ -58,7 +58,17 @@ test {
     useJUnitPlatform()
 }
 
-checkstyleMain {
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+        csv.enabled false
+    }
+}
+
+checkstyle {
+    toolVersion '8.23'
+    checkstyleTest.enabled = false
     configFile = file("${rootDir}/checkstyle.xml")
 }
 

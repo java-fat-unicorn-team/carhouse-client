@@ -1,4 +1,4 @@
-# carhouse-client
+# carhouse-client [![Build Status](https://travis-ci.com/java-fat-unicorn-team/carhouse-client.svg?branch=master)](https://travis-ci.com/java-fat-unicorn-team/carhouse-client) [![codecov](https://codecov.io/gh/java-fat-unicorn-team/carhouse-client/branch/master/graph/badge.svg)](https://codecov.io/gh/java-fat-unicorn-team/carhouse-client)
 ## Main topic of project
 It is a web application which provide opportunity to place an advertisement for the sale of a car or find an existent one with selected parameters.
 
@@ -10,12 +10,12 @@ Project is created with:
 * Git 2+
 * Gradle 5.5+
 
-##Build
+## Build
 ```
 gradle clean build
 ```
 
-##Deploy
+## Deploy
 ```
 gradle tomcatRun
 ```
