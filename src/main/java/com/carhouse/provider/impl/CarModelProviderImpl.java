@@ -20,8 +20,12 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @return the car model
      */
     public CarModel getCarModel(final String carModelId) {
-        if (carModelId != null && Integer.parseInt(carModelId) >= 0) {
-            return new CarModel().setCarModelId(Integer.parseInt(carModelId)).setCarModel("M2");
+        if (carModelId != null && !carModelId.isEmpty()) {
+            try {
+                return new CarModel().setCarModelId(Integer.parseInt(carModelId)).setCarModel("M2");
+            } catch (NumberFormatException ex) {
+                return null;
+            }
         } else {
             return null;
         }
@@ -34,13 +38,17 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @return the list car model
      */
     public List<CarModel> getCarModels(final String carMakeId) {
-        if (carMakeId != null && Integer.parseInt(carMakeId) >= 0) {
+        if (carMakeId != null && !carMakeId.isEmpty()) {
+            try {
             return new ArrayList<>() {{
                 add(new CarModel().setCarModelId(0).setCarModel("M2"));
                 add(new CarModel().setCarModelId(1).setCarModel("M4"));
                 add(new CarModel().setCarModelId(2).setCarModel("M5"));
                 add(new CarModel().setCarModelId(3).setCarModel("M6"));
             }};
+            } catch (NumberFormatException ex) {
+                return null;
+            }
         } else {
             return new ArrayList<>();
         }

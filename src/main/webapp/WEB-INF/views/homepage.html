@@ -9,7 +9,7 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>HomePage</title>
 </head>
-<body>
+<body class="bg-light">
 <header>
     <div class="navigation bg-primary">
         <div class="container">
@@ -23,7 +23,7 @@
                             <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add advertisement</a>
                         </li>
                         <li class="nav-item mr-0 bg-secondary">
-                            <a class="nav-link text-white btn" href="#">Sing in/Sing up</a>
+                            <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
                         </li>
                     </ul>
                 </div>
@@ -32,9 +32,9 @@
     </div>
 </header>
 
-<section id="home">
-    <div class="container">
-        <div class="row mt-5">
+<section>
+    <div class="container bg-white mt-5 pt-3">
+        <div class="row ml-2">
             <div class="col-3">
                 <p>68640 car advertisement</p>
             </div>
@@ -42,7 +42,7 @@
                 <a href="#" class="btn"><i class="fas fa-search"></i> Advanced Search</a>
             </div>
         </div>
-        <div class="row bg-warning">
+        <div class="row bg-warning ml-2 mr-2">
             <div class="col">
                 <div class="search-filter">
                     <form action="#"
@@ -50,8 +50,8 @@
                           th:method="@{get}">
                         <div class="form-row pt-3" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <div class="form-group col-6 col-lg">
-                                <select class="form-control" onchange="addCarModels(this)" name="carMake">
-                                    <option value="-1" selected>Car make</option>
+                                <select class="form-control" onchange="addCarModels(this)" name="carMakeId">
+                                    <option value selected>Car make</option>
                                     <option th:each="carMake : ${listCarMakes}"
                                             th:value="${carMake.carMakeId}"
                                             th:text="${carMake.carMake}">BMW</option>
@@ -60,8 +60,8 @@
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
-                                <select class="form-control" id="listCarModels" name="carModel">
-                                    <option value="-1" selected>Car model</option>
+                                <select class="form-control" id="listCarModels" name="carModelId">
+                                    <option value selected>Car model</option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
@@ -101,12 +101,12 @@
             </div>
         </div>
 
-        <div class="row mt-3">
+        <div class="row mt-3  ml-2 mr-2">
             <div class="col">
                 <p>popular car makes:</p>
             </div>
         </div>
-        <div class="row">
+        <div class="row ml-2 mr-2">
             <div class="col-lg-10">
                 <div class="carMakes">
                     <ul class="listCarMakes list-unstyled row">
@@ -129,7 +129,7 @@
             type: 'GET',
             url: "/carModels/" + carMakeId,
             success: function(data){
-                var listCarModels=$('#listCarModels'), option="<option value='-1'>Car model</option>";
+                var listCarModels=$('#listCarModels'), option="<option value>Car model</option>";
                 listCarModels.empty();
 
                 for(var i=0; i<data.length; i++){

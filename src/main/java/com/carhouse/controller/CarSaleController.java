@@ -39,7 +39,7 @@ public class CarSaleController {
 
     /**
      * Return page with car sale advertisement.
-     * Get request parameters to filter car sale advertisements
+     * Get request parameters to filter car sale advertisements.
      * If selected all advertisements then it returns list of car makes in the top of page or
      * if selected car make then it returns list of car models in the top of page
      *
@@ -52,9 +52,9 @@ public class CarSaleController {
                           final Model model) {
         String carMakeId = requestParams.get("carMakeId");
         String carModelId = requestParams.get("carModelId");
-        if (carMakeId == null) {
+        if (carMakeId == null || carMakeId.isEmpty()) {
             model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
-        } else if (carModelId == null) {
+        } else if (carModelId == null || carModelId.isEmpty()) {
             model.addAttribute("listCarModels", carModelProvider.getCarModels(carMakeId));
         }
         model.addAttribute("carMake", carMakeProvider.getCarMake(carMakeId));

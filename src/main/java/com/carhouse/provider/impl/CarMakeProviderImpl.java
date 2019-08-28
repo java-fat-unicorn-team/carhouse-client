@@ -34,8 +34,12 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      * @return the car make
      */
     public CarMake getCarMake(final String carMakeId) {
-        if (carMakeId != null && Integer.parseInt(carMakeId) >= 0) {
+        if (carMakeId != null && !carMakeId.isEmpty()) {
+            try {
             return new CarMake(Integer.parseInt(carMakeId), "BMW");
+            } catch (NumberFormatException ex) {
+                return null;
+            }
         } else {
             return null;
         }

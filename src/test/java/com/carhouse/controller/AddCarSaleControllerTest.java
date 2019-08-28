@@ -31,6 +31,8 @@ class AddCarSaleControllerTest {
     private CarMakeProvider carMakeProvider;
     @Mock
     private FuelTypeProvider fuelTypeProvider;
+    @Mock
+    private CarFeatureProvider carFeatureProvider;
     @InjectMocks
     private AddCarSaleController addCarSaleController;
 

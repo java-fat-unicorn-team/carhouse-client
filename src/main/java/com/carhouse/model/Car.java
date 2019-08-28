@@ -1,6 +1,7 @@
 package com.carhouse.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,6 +24,7 @@ public class Car {
      * Instantiates a new Car.
      */
     public Car() {
+        this.carFeatureList = new ArrayList<>();
     }
 
     /**
@@ -31,6 +33,7 @@ public class Car {
      * @param carId the car id
      */
     public Car(final int carId) {
+        this.carFeatureList = new ArrayList<>();
         this.carId = carId;
     }
 
