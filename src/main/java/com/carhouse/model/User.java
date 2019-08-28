@@ -4,6 +4,7 @@ package com.carhouse.model;
  * The User model.
  * The model includes user name, login etc.
  * Each user can have more then one car sale announcements.
+ *
  * @author Katuranau Maksimilyan
  */
 public class User {
@@ -29,24 +30,6 @@ public class User {
     }
 
     /**
-     * Instantiates a new User.
-     *
-     * @param userId      the user id
-     * @param userName    the user name
-     * @param phoneNumber the phone number
-     * @param login       the login
-     * @param password    the password
-     */
-    public User(final int userId, final String userName, final String phoneNumber, final String login,
-                final String password) {
-        this.userId = userId;
-        this.userName = userName;
-        this.phoneNumber = phoneNumber;
-        this.login = login;
-        this.password = password;
-    }
-
-    /**
      * Gets user id.
      *
      * @return the user id
@@ -59,9 +42,11 @@ public class User {
      * Sets user id.
      *
      * @param userId the user id
+     * @return the user object
      */
-    public void setUserId(final int userId) {
+    public User setUserId(final int userId) {
         this.userId = userId;
+        return this;
     }
 
     /**
@@ -77,9 +62,11 @@ public class User {
      * Sets user name.
      *
      * @param userName the user name
+     * @return the user object
      */
-    public void setUserName(final String userName) {
+    public User setUserName(final String userName) {
         this.userName = userName;
+        return this;
     }
 
     /**
@@ -95,9 +82,11 @@ public class User {
      * Sets phone number.
      *
      * @param phoneNumber the phone number
+     * @return the user object
      */
-    public void setPhoneNumber(final String phoneNumber) {
+    public User setPhoneNumber(final String phoneNumber) {
         this.phoneNumber = phoneNumber;
+        return this;
     }
 
     /**
@@ -113,9 +102,11 @@ public class User {
      * Sets login.
      *
      * @param login the login
+     * @return the user object
      */
-    public void setLogin(final String login) {
+    public User setLogin(final String login) {
         this.login = login;
+        return this;
     }
 
     /**
@@ -131,9 +122,11 @@ public class User {
      * Sets password.
      *
      * @param password the password
+     * @return the user object
      */
-    public void setPassword(final String password) {
+    public User setPassword(final String password) {
         this.password = password;
+        return this;
     }
 
     @Override

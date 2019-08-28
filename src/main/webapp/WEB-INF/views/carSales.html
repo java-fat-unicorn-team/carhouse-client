@@ -9,7 +9,7 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <title>CarSale</title>
 </head>
-<body>
+<body class="bg-light">
 <header>
     <div class="navigation bg-primary">
         <div class="container">
@@ -23,7 +23,7 @@
                             <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add advertisement</a>
                         </li>
                         <li class="nav-item mr-0 bg-secondary">
-                            <a class="nav-link text-white btn" href="#">Sing in/Sing up</a>
+                            <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
                         </li>
                     </ul>
                 </div>
@@ -33,8 +33,8 @@
 </header>
 
 <section>
-    <div class="container mt-4">
-        <div class="row">
+    <div class="container bg-white mt-4">
+        <div class="row pt-3">
             <div class="col">
                 <ul class="list-inline list-unstyled" th:if="${carMake != null}">
                     <li class="list-inline-item">
@@ -88,16 +88,22 @@
                 </ul>
             </div>
         </div>
-        <div class="row border bg-light" th:each="carSale : ${listCarSales}">
-            <div class="col-2 p">
-                <img th:src="@{/static/bmw.jpg}" height="134" width="180">
-            </div>
-            <div class="col-2">
-                <span th:text="${carSale.car.year}"></span><br>
-                <strong th:text="${carSale.price} + ' $'"></strong>
+        <div class="row border bg-light p-2" th:each="carSale : ${listCarSales}">
+            <div class="col-sm-7 col-md-5 col-lg-4">
+                <div class="d-inline-block">
+                    <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                        <img th:src="@{/static/bmw.jpg}" height="134" width="180"></a>
+                </div>
+                <div class="d-inline-block pl-3 align-top">
+                    <span th:text="${#dates.year(carSale.car.year)}"></span>
+                    <br>
+                    <strong th:text="${carSale.price} + ' $'"></strong>
+                </div>
             </div>
             <div class="col">
-                <h4 th:text="${carSale.car.carModel.carMake.carMake} + ', ' + ${carSale.car.carModel.carModel}"></h4>
+                <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                    <h4 th:text="${carSale.car.carModel.carMake.carMake} + ', ' + ${carSale.car.carModel.carModel}"></h4>
+                </a>
                 <span th:text="${carSale.car.transmission.transmission} + ', ' + ${carSale.car.fuelType.fuelType}
 + ', ' + ${carSale.car.mileage} + ' m.'"></span>
             </div>

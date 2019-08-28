@@ -1,9 +1,9 @@
 package com.carhouse.provider.impl;
 
 import com.carhouse.model.*;
+import com.carhouse.model.dto.CarDto;
 import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.provider.CarSaleProvider;
-import com.carhouse.model.dto.CarDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -38,12 +38,50 @@ public class CarSaleProviderImpl implements CarSaleProvider {
     }
 
     /**
-     * Add new car sale advertisement.
+     * Gets car sale.
+     * Return car sale advertisement with selected id
      *
-     * @param carSale     object from form
+     * @param carSaleId the car sale id
+     * @return the car sale
      */
     @Override
-    public void addCarSale(final CarSale carSale) {
+    public CarSale getCarSale(final Integer carSaleId) {
+        return new CarSale()
+                .setCarSaleId(carSaleId)
+                .setPrice(new BigDecimal(30200))
+                .setDate(Date.valueOf("2019-03-02"))
+                .setUser(new User()
+                        .setUserId(1)
+                        .setUserName("Danya Kotov")
+                        .setPhoneNumber("+375334756868")
+                        .setLogin("dan29")
+                        .setPassword("1234"))
+                .setCar(new Car()
+                        .setYear(Date.valueOf("2017-01-01"))
+                        .setMileage(140000)
+                        .setFuelType(new FuelType(1, "Bensin"))
+                        .setTransmission(new Transmission(0, "Manual"))
+                        .setCarModel(new CarModel()
+                                .setCarModelId(2)
+                                .setCarModel("M8")
+                                .setCarMake(new CarMake(1, "BMW"))
+                        )
+                        .setCarFeatureList(List.of(new CarFeature(0, "Winter tire"),
+                                new CarFeature(1, "Air condition"),
+                                new CarFeature(2, "Multimedia screen"),
+                                new CarFeature(3, "Rear View Camera")))
+                );
+    }
+
+    /**
+     * Add new car sale advertisement.
+     * Take car features id and set them to the car sale object
+     *
+     * @param carSale     object from form
+     * @param carFeatures list of selected car feature's id
+     */
+    @Override
+    public void addCarSale(final CarSale carSale, final int[] carFeatures) {
 
     }
 
@@ -66,8 +104,8 @@ public class CarSaleProviderImpl implements CarSaleProvider {
                         .setFuelType(new FuelType(1, "Bensin"))
                         .setTransmission(new Transmission(0, "Manual"))
                         .setCarModel(new CarModel()
-                                        .setCarModel(carModel)
-                                        .setCarMake(new CarMake(0, carMake))
+                                .setCarModel(carModel)
+                                .setCarMake(new CarMake(0, carMake))
                         )
                 );
     }

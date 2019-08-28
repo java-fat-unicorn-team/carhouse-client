@@ -18,8 +18,20 @@ public interface CarSaleProvider {
     List<CarSaleDto> getListCarSale();
 
     /**
-     * Add new car sale advertisement.
-     * @param carSale object from form
+     * Gets car sale.
+     * Return car sale advertisement with selected id
+     *
+     * @param carSaleId the car sale id
+     * @return the car sale
      */
-    void addCarSale(CarSale carSale);
+    CarSale getCarSale(Integer carSaleId);
+
+    /**
+     * Add new car sale advertisement.
+     * Take car features id and set them to the car sale object
+     *
+     * @param carSale     object from form
+     * @param carFeatures list of selected car feature's id
+     */
+    void addCarSale(CarSale carSale, int[] carFeatures);
 }

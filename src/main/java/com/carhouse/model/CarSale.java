@@ -19,8 +19,6 @@ public class CarSale {
      * Instantiates a new Car sale.
      */
     public CarSale() {
-        user = new User();
-        car = new Car();
     }
 
     /**

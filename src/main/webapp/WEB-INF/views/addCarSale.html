@@ -27,7 +27,7 @@
                                 advertisement</a>
                         </li>
                         <li class="nav-item mr-0 bg-secondary">
-                            <a class="nav-link text-white btn" href="#">Sing in/Sing up</a>
+                            <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
                         </li>
                     </ul>
                 </div>
@@ -46,10 +46,10 @@
         <div class="add-carSale-form mt-3">
             <form action="#" th:action="@{/carSale/add}" th:object="${carSale}" th:method="post">
                 <div class="row">
-                    <div class="col-sm-8 col-lg-6">
+                    <div class="col-sm-12 col-md-10 col-lg-8">
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="carMake">Car make *</label>
-                            <select class="form-control col-sm-8" id="carMake" onchange="addCarModels(this)"
+                            <select class="form-control col" id="carMake" onchange="addCarModels(this)"
                                     th:field="*{car.carModel.carMake.carMakeId}"/>
                             <option value="-1" th:selected="selected">Choose</option>
                             <option th:each="carMake : ${listCarMakes}"
@@ -62,7 +62,7 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="listCarModels">Car model *</label>
-                            <select class="form-control col-sm-8" id="listCarModels"
+                            <select class="form-control col" id="listCarModels"
                                     th:field="*{car.carModel.carModelId}">
                                 <option value="-1" selected>Choose</option>
                                 <option th:remove="tag">M2</option>
@@ -73,7 +73,7 @@
                         </div>
                         <div class="form-group row" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <label class="col-sm-4 col-form-label" for="year">Year *</label>
-                            <select class="form-control col-sm-8" id="year" type="date" th:field="*{car.year}">
+                            <select class="form-control col" id="year" type="date" th:field="*{car.year}">
                                 <option value="2009-01-01" selected>Choose</option>
                                 <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
                                         th:value="|${date}-01-01|"
@@ -82,7 +82,7 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="fuelType">Fuel type *</label>
-                            <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons" id="fuelType">
+                            <div class="btn-group btn-group-toggle col p-0" data-toggle="buttons" id="fuelType">
                                 <label class="btn btn-light border border-secondary"
                                        th:each="fuelType : ${listFuelTypes}">
                                     <input type="radio" th:value="${fuelType.fuelTypeId}" text="Petrol"
@@ -99,11 +99,11 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="mileage">Mileage *</label>
-                            <input class="form-control col-sm-8" type="number" id="mileage" th:field="*{car.mileage}">
+                            <input class="form-control col" type="number" id="mileage" th:field="*{car.mileage}">
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="transmission">Transmission *</label>
-                            <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons"
+                            <div class="btn-group btn-group-toggle col p-0" data-toggle="buttons"
                                  id="transmission">
                                 <label class="btn btn-light border border-secondary">
                                     <input type="radio" value="0" autocomplete="off"> Manual
@@ -115,11 +115,29 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="price">Price *</label>
-                            <input class="form-control col-sm-8" type="number" id="price" th:field="*{price}">
+                            <input class="form-control col" type="number" id="price" th:field="*{price}">
                         </div>
                     </div>
                 </div>
                 <hr>
+                <div class="car-feature">
+                    <div class="row">
+                        <div class="col">
+                            <h2>Car Features</h2>
+                        </div>
+                    </div>
+                        <div class="listCarFeature">
+                            <ul class="list-unstyled row">
+                                <li class="list-item col-sm-6 col-md-4" th:each="carFeature : ${listCarFeatures}">
+                                    <label>
+                                        <input type="checkbox" th:value="${carFeature.carFeatureId}"
+                                               name="carFeatureList">
+                                        <span th:text="${carFeature.carFeature}"></span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 <button type="submit" class="btn btn-primary">Create</button>
             </form>
         </div>
@@ -144,6 +162,12 @@
             error: function () {
                 alert("error");
             }
+        });
+    }
+
+    function autoColumn() {
+        $('#selector').autocolumnlist({
+            columns: 5
         });
     }
 </script>
