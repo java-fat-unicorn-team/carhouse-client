@@ -17,19 +17,6 @@ public class Comment {
     }
 
     /**
-     * Instantiates a new Comment.
-     *
-     * @param commentId the comment id
-     * @param userName  the user name
-     * @param comment   the comment
-     */
-    public Comment(final int commentId, final String userName, final String comment) {
-        this.commentId = commentId;
-        this.userName = userName;
-        this.comment = comment;
-    }
-
-    /**
      * Gets comment id.
      *
      * @return the comment id
@@ -42,9 +29,11 @@ public class Comment {
      * Sets comment id.
      *
      * @param commentId the comment id
+     * @return comment object
      */
-    public void setCommentId(final int commentId) {
+    public Comment setCommentId(final int commentId) {
         this.commentId = commentId;
+        return this;
     }
 
     /**
@@ -60,9 +49,11 @@ public class Comment {
      * Sets user name.
      *
      * @param userName the user name
+     * @return comment object
      */
-    public void setUserName(final String userName) {
+    public Comment setUserName(final String userName) {
         this.userName = userName;
+        return this;
     }
 
     /**
@@ -78,9 +69,11 @@ public class Comment {
      * Sets comment.
      *
      * @param comment the comment
+     * @return comment object
      */
-    public void setComment(final String comment) {
+    public Comment setComment(final String comment) {
         this.comment = comment;
+        return this;
     }
 
     @Override

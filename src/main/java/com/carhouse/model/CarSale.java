@@ -5,8 +5,7 @@ import java.util.Date;
 
 /**
  * The car sale model describes the announcement of the car sale.
- * The model includes car price, date when the announcement was added, user who added this announcement and
- * car characteristics.
+ * The model includes car price, date when the announcement was added, user who added this announcement etc.
  * @author Katuranau Maksimilyan
  */
 public class CarSale {
@@ -20,7 +19,7 @@ public class CarSale {
      * Instantiates a new Car sale.
      */
     public CarSale() {
-        user = new User(1);
+        user = new User();
         car = new Car();
     }
 
@@ -31,24 +30,6 @@ public class CarSale {
      */
     public CarSale(final int carSaleId) {
         this.carSaleId = carSaleId;
-    }
-
-    /**
-     * Instantiates a new Car sale.
-     *
-     * @param carSaleId          the car sale id
-     * @param price              the price
-     * @param date               the date
-     * @param user               the user
-     * @param car the car
-     */
-    public CarSale(final int carSaleId, final BigDecimal price, final Date date, final User user,
-                   final Car car) {
-        this.carSaleId = carSaleId;
-        this.price = price;
-        this.date = date;
-        this.user = user;
-        this.car = car;
     }
 
     /**
@@ -64,9 +45,11 @@ public class CarSale {
      * Sets car sale id.
      *
      * @param carSaleId the car sale id
+     * @return car sale object
      */
-    public void setCarSaleId(final int carSaleId) {
+    public CarSale setCarSaleId(final int carSaleId) {
         this.carSaleId = carSaleId;
+        return this;
     }
 
     /**
@@ -82,9 +65,11 @@ public class CarSale {
      * Sets price.
      *
      * @param price the price
+     * @return car sale object
      */
-    public void setPrice(final BigDecimal price) {
+    public CarSale setPrice(final BigDecimal price) {
         this.price = price;
+        return this;
     }
 
     /**
@@ -99,10 +84,12 @@ public class CarSale {
     /**
      * Sets date.
      *
+     * @return car sale object
      * @param date the date
      */
-    public void setDate(final Date date) {
+    public CarSale setDate(final Date date) {
         this.date = date;
+        return this;
     }
 
     /**
@@ -118,9 +105,11 @@ public class CarSale {
      * Sets user.
      *
      * @param user the user
+     * @return car sale object
      */
-    public void setUser(final User user) {
+    public CarSale setUser(final User user) {
         this.user = user;
+        return this;
     }
 
     /**
@@ -136,9 +125,11 @@ public class CarSale {
      * Sets car.
      *
      * @param car the car
+     * @return car sale object
      */
-    public void setCar(final Car car) {
+    public CarSale setCar(final Car car) {
         this.car = car;
+        return this;
     }
 
     @Override

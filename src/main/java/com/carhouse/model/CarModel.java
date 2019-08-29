@@ -21,24 +21,9 @@ public class CarModel {
      * Instantiates a new Car model.
      *
      * @param carModelId the car model id
-     * @param carMake    the car make
      */
-    public CarModel(final int carModelId, final CarMake carMake) {
+    public CarModel(final int carModelId) {
         this.carModelId = carModelId;
-        this.carMake = carMake;
-    }
-
-    /**
-     * Instantiates a new Car model.
-     *
-     * @param carModelId the car model id
-     * @param carMake    the car make
-     * @param carModel   the car model
-     */
-    public CarModel(final int carModelId, final CarMake carMake, final String carModel) {
-        this.carModelId = carModelId;
-        this.carMake = carMake;
-        this.carModel = carModel;
     }
 
     /**
@@ -54,9 +39,11 @@ public class CarModel {
      * Sets car model id.
      *
      * @param carModelId the car model id
+     * @return car model object
      */
-    public void setCarModelId(final int carModelId) {
+    public CarModel setCarModelId(final int carModelId) {
         this.carModelId = carModelId;
+        return this;
     }
 
     /**
@@ -72,9 +59,11 @@ public class CarModel {
      * Sets car make.
      *
      * @param carMake the car make
+     * @return car model object
      */
-    public void setCarMake(final CarMake carMake) {
+    public CarModel setCarMake(final CarMake carMake) {
         this.carMake = carMake;
+        return this;
     }
 
     /**
@@ -90,9 +79,11 @@ public class CarModel {
      * Sets car model.
      *
      * @param carModel the car model
+     * @return car model object
      */
-    public void setCarModel(final String carModel) {
+    public CarModel setCarModel(final String carModel) {
         this.carModel = carModel;
+        return this;
     }
 
     @Override

@@ -48,7 +48,7 @@
                     <form action="#" th:object="${searchFilter}"
                         th:action="@{/homePage}"
                           th:method="@{post}">
-                        <div class="form-row pt-3">
+                        <div class="form-row pt-3" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <div class="form-group col-6 col-lg">
                                 <select class="form-control" onchange="addCarModels(this)" th:field="*{carMakeId}">
                                     <option value="-1" selected>Car make</option>
@@ -67,15 +67,17 @@
                             <div class="form-group col-6 col-lg">
                                 <select class="form-control" type="date" th:field="*{yearFrom}">
                                     <option value="2009-01-01" selected>Year from</option>
-                                    <option th:each="date : ${listDates}" th:value="${{date}}"
-                                            th:text="${#calendars.year(date)}">2010</option>
+                                    <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
+                                            th:value="|${date}-01-01|"
+                                            th:text="${date}">2010</option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
                                 <select class="form-control" type="date" th:field="*{yearTo}">
                                     <option value="2009-01-01"selected>Year to</option>
-                                    <option th:each="date : ${listDates}" th:value="${{date}}"
-                                            th:text="${#calendars.year(date)}">2010</option>
+                                    <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
+                                            th:value="|${date}-01-01|"
+                                            th:text="${date}">2010</option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">

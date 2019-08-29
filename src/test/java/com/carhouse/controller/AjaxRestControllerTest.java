@@ -1,6 +1,5 @@
 package com.carhouse.controller;
 
-import com.carhouse.model.CarMake;
 import com.carhouse.model.CarModel;
 import com.carhouse.provider.CarModelProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,8 +40,8 @@ class AjaxRestControllerTest {
     @Test
     void getCarModels() throws Exception {
         List<CarModel> listCarModels = new ArrayList<>() {{
-            add(new CarModel(0, new CarMake(), "M2"));
-            add(new CarModel(1, new CarMake(), "M4"));
+            add(new CarModel().setCarModelId(0).setCarModel("M2"));
+            add(new CarModel().setCarModelId(1).setCarModel("M4"));
         }};
         when(carModelProvider.getCarModels(2)).thenReturn(listCarModels);
         mockMvc.perform(get("/carModels/{carMakeId}", 2))

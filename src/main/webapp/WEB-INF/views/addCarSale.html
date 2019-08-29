@@ -68,14 +68,13 @@
                                 <option th:remove="tag">X5M</option>
                             </select>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <label class="col-sm-4 col-form-label" for="year">Year *</label>
                             <select class="form-control col-sm-8" id="year" type="date" th:field="*{car.year}">
                                 <option value="2009-01-01" selected>Choose</option>
-                                <option th:each="date : ${listDates}" th:value="${{date}}"
-                                        th:text="${#calendars.year(date)}">2010</option>
-                                <option th:remove="tag">2011</option>
-                                <option th:remove="tag">2012</option>
+                                <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
+                                        th:value="|${date}-01-01|"
+                                        th:text="${date}">2010</option>
                             </select>
                         </div>
                         <div class="form-group row">
