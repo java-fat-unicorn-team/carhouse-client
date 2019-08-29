@@ -63,13 +63,12 @@ class CarSaleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("carSales"))
                 .andExpect(model().attribute("listCarMakes", listCarMakes))
-                .andExpect(model().attribute("listCarSales", listCarSales))
-                .andExpect(model().attribute("listCarSaleSize", listCarSales.size()));
+                .andExpect(model().attribute("listCarSales", listCarSales));
     }
 
     @Test
     void carSaleWithCarMake() throws Exception {
-        int carMakeId = 2;
+        String carMakeId = "2";
         List<CarSaleDto> listCarSales = new ArrayList<>() {{
             add(createCarSaleDto(0, "BMW", "M5"));
             add(createCarSaleDto(1, "Mercedes", "C63AMG"));
@@ -78,39 +77,38 @@ class CarSaleControllerTest {
             add(new CarModel().setCarModelId(0).setCarModel("M2"));
             add(new CarModel().setCarModelId(1).setCarModel("M4"));
         }};
-        CarMake carMake = new CarMake(carMakeId, "Bentley");
+        CarMake carMake = new CarMake(Integer.parseInt(carMakeId), "Bentley");
         when(carSaleProvider.getListCarSale()).thenReturn(listCarSales);
         when(carModelProvider.getCarModels(carMakeId)).thenReturn(listCarModels);
         when(carMakeProvider.getCarMake(carMakeId)).thenReturn(carMake);
-        mockMvc.perform(get("/carSale/carMake/{carMakeId}", carMakeId))
+        mockMvc.perform(get("/carSale/?carMakeId={carMakeId}", carMakeId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("carSales"))
                 .andExpect(model().attribute("carMake", carMake))
                 .andExpect(model().attribute("listCarModels", listCarModels))
-                .andExpect(model().attribute("listCarSales", listCarSales))
-                .andExpect(model().attribute("listCarSaleSize", listCarSales.size()));
+                .andExpect(model().attribute("listCarSales", listCarSales));
     }
 
     @Test
     void carSaleWithCarModel() throws Exception {
-        int carMakeId = 2;
-        int carModelId = 4;
+        String carMakeId = "2";
+        String carModelId = "4";
         List<CarSaleDto> listCarSales = new ArrayList<>() {{
             add(createCarSaleDto(0, "BMW", "M5"));
             add(createCarSaleDto(1, "Mercedes", "C63AMG"));
         }};
-        CarMake carMake = new CarMake(carMakeId, "Bentley");
-        CarModel carModel = new CarModel().setCarModelId(carModelId).setCarModel("Continental GT");
+        CarMake carMake = new CarMake(Integer.parseInt(carMakeId), "Bentley");
+        CarModel carModel = new CarModel().setCarModelId(Integer.parseInt(carModelId)).setCarModel("Continental GT");
         when(carSaleProvider.getListCarSale()).thenReturn(listCarSales);
         when(carMakeProvider.getCarMake(carMakeId)).thenReturn(carMake);
         when(carModelProvider.getCarModel(carModelId)).thenReturn(carModel);
-        mockMvc.perform(get("/carSale/carMake/{carMakeId}/carModel/{carModelId}", carMakeId, carModelId))
+        mockMvc.perform(get("/carSale/?carMakeId={carMakeId}&carModelId={carModelId}",
+                carMakeId, carModelId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("carSales"))
                 .andExpect(model().attribute("carMake", carMake))
                 .andExpect(model().attribute("carModel", carModel))
-                .andExpect(model().attribute("listCarSales", listCarSales))
-                .andExpect(model().attribute("listCarSaleSize", listCarSales.size()));
+                .andExpect(model().attribute("listCarSales", listCarSales));
     }
 
     private CarSaleDto createCarSaleDto(final Integer carSaleId, final String carMake, final String carModel) {

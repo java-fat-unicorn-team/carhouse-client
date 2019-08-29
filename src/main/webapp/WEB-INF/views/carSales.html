@@ -47,7 +47,7 @@
                         <span th:text="${carMake.carMake}">carMake</span>
                     </li>
                     <li th:if="${carModel != null}" class="list-inline-item">
-                        <a class="text-dark" th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}}"
+                        <a class="text-dark" th:href="@{/carSale/(carMakeId=${carMake.carMakeId})}"
                            th:text="${carMake.carMake}">carMake</a>
                     </li>
                     <li class="list-inline-item" th:if="${carModel != null}">
@@ -63,15 +63,14 @@
             <div class="col">
                 <span class="h2" th:text="'Selling cars ' + ${#objects.nullSafe(carMake?.carMake, '')}
                 + ' ' + ${#objects.nullSafe(carModel?.carModel, '')} + ' '">Selling Cars</span>
-                <span th:text="' ' + ${listCarSaleSize} + ' advertisements'"></span>
+                <span th:text="' ' + ${#lists.size(listCarSales)} + ' advertisements'"></span>
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <ul class="listCarModels list-unstyled">
-                    <li th:each="carModel : ${listCarModels}">
-                        <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}
-                         + '/carModel/' + ${carModel.carModelId}}">
+            <div class="col-lg-10">
+                <ul class="listCarModels list-unstyled row">
+                    <li class="col-4 col-md-3" th:each="carModel : ${listCarModels}">
+                        <a th:href="@{/carSale/(carMakeId=${carMake.carMakeId},carModelId=${carModel.carModelId})}">
                             <span th:text="${carModel.carModel}">Acura</span>
                         </a>
                     </li>
@@ -79,10 +78,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
-                <ul class="listCarMakes list-unstyled">
-                    <li th:each="carMake : ${listCarMakes}">
-                        <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}}">
+            <div class="col-lg-10">
+                <ul class="listCarMakes list-unstyled row">
+                    <li class="col-4 col-md-3" th:each="carMake : ${listCarMakes}">
+                        <a th:href="@{/carSale/(carMakeId=${carMake.carMakeId})}">
                             <span th:text="${carMake.carMake}">Acura</span>
                         </a>
                     </li>

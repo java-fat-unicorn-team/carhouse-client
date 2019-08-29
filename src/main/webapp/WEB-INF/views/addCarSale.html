@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"><head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
@@ -49,18 +50,20 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="carMake">Car make *</label>
                             <select class="form-control col-sm-8" id="carMake" onchange="addCarModels(this)"
-                                    th:field="*{car.carModel.carMake.carMakeId}">
-                                <option value="-1" selected>Choose</option>
-                                <option th:each="carMake : ${listCarMakes}"
-                                        th:value="${carMake.carMakeId}"
-                                        th:text="${carMake.carMake}">BMW</option>
-                                <option th:remove="tag">Mercedes</option>
-                                <option th:remove="tag">Audi</option>
+                                    th:field="*{car.carModel.carMake.carMakeId}"/>
+                            <option value="-1" th:selected="selected">Choose</option>
+                            <option th:each="carMake : ${listCarMakes}"
+                                    th:value="${carMake.carMakeId}"
+                                    th:text="${carMake.carMake}">BMW
+                            </option>
+                            <option th:remove="tag">Mercedes</option>
+                            <option th:remove="tag">Audi</option>
                             </select>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="listCarModels">Car model *</label>
-                            <select class="form-control col-sm-8" id="listCarModels" th:field="*{car.carModel.carModelId}">
+                            <select class="form-control col-sm-8" id="listCarModels"
+                                    th:field="*{car.carModel.carModelId}">
                                 <option value="-1" selected>Choose</option>
                                 <option th:remove="tag">M2</option>
                                 <option th:remove="tag">M4</option>
@@ -80,7 +83,8 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="fuelType">Fuel type *</label>
                             <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons" id="fuelType">
-                                <label class="btn btn-light border border-secondary" th:each="fuelType : ${listFuelTypes}">
+                                <label class="btn btn-light border border-secondary"
+                                       th:each="fuelType : ${listFuelTypes}">
                                     <input type="radio" th:value="${fuelType.fuelTypeId}" text="Petrol"
                                            th:text="${fuelType.fuelType}" th:field="*{car.fuelType.fuelTypeId}"
                                            autocomplete="off">
@@ -99,7 +103,8 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="transmission">Transmission *</label>
-                            <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons" id="transmission">
+                            <div class="btn-group btn-group-toggle col-sm-8 p-0" data-toggle="buttons"
+                                 id="transmission">
                                 <label class="btn btn-light border border-secondary">
                                     <input type="radio" value="0" autocomplete="off"> Manual
                                 </label>
@@ -127,16 +132,16 @@
         $.ajax({
             type: 'GET',
             url: "/carModels/" + carMakeId,
-            success: function(data){
-                var listCarModels=$('#listCarModels'), option="<option value='-1'>Car model</option>";
+            success: function (data) {
+                var listCarModels = $('#listCarModels'), option = "<option value='-1'>Choose</option>";
                 listCarModels.empty();
 
-                for(var i=0; i<data.length; i++){
-                    option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                for (var i = 0; i < data.length; i++) {
+                    option = option + "<option value='" + data[i].carModelId + "'>" + data[i].carModel + "</option>";
                 }
                 listCarModels.append(option);
             },
-            error:function(){
+            error: function () {
                 alert("error");
             }
         });
@@ -150,6 +155,7 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>

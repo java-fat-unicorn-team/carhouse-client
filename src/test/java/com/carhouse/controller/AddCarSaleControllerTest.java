@@ -1,9 +1,9 @@
 package com.carhouse.controller;
 
 import com.carhouse.model.CarMake;
+import com.carhouse.model.CarSale;
 import com.carhouse.model.FuelType;
-import com.carhouse.provider.CarMakeProvider;
-import com.carhouse.provider.FuelTypeProvider;
+import com.carhouse.provider.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +25,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class AddCarSaleControllerTest {
 
+    @Mock
+    private CarSaleProvider carSaleProvider;
     @Mock
     private CarMakeProvider carMakeProvider;
     @Mock

@@ -22,5 +22,5 @@ public interface CarMakeProvider {
      * @param carMakeId the car make id
      * @return the car make
      */
-    CarMake getCarMake(Integer carMakeId);
+    CarMake getCarMake(String carMakeId);
 }

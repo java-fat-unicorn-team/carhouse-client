@@ -19,8 +19,12 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @param carModelId the car model id
      * @return the car model
      */
-    public CarModel getCarModel(final Integer carModelId) {
-        return new CarModel().setCarModelId(carModelId).setCarModel("M2");
+    public CarModel getCarModel(final String carModelId) {
+        if (carModelId != null && Integer.parseInt(carModelId) >= 0) {
+            return new CarModel().setCarModelId(Integer.parseInt(carModelId)).setCarModel("M2");
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -29,8 +33,8 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @param carMakeId the car make id
      * @return the list car model
      */
-    public List<CarModel> getCarModels(final Integer carMakeId) {
-        if (carMakeId >= 0) {
+    public List<CarModel> getCarModels(final String carMakeId) {
+        if (carMakeId != null && Integer.parseInt(carMakeId) >= 0) {
             return new ArrayList<>() {{
                 add(new CarModel().setCarModelId(0).setCarModel("M2"));
                 add(new CarModel().setCarModelId(1).setCarModel("M4"));

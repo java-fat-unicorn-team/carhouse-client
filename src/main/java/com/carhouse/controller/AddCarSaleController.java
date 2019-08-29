@@ -1,8 +1,7 @@
 package com.carhouse.controller;
 
-import com.carhouse.provider.CarMakeProvider;
-import com.carhouse.provider.FuelTypeProvider;
-import com.carhouse.model.CarSale;
+import com.carhouse.model.*;
+import com.carhouse.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,17 +15,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class AddCarSaleController {
 
+    private CarSaleProvider carSaleProvider;
     private CarMakeProvider carMakeProvider;
     private FuelTypeProvider fuelTypeProvider;
 
     /**
      * Instantiates a new Add car sale controller.
      *
-     * @param carMakeProvider  the car make data provide
-     * @param fuelTypeProvider the fuel type data provide
+     * @param carSaleProvider    the car sale provider
+     * @param carMakeProvider    the car make data provide
+     * @param fuelTypeProvider   the fuel type data provide
      */
     @Autowired
-    public AddCarSaleController(final CarMakeProvider carMakeProvider, final FuelTypeProvider fuelTypeProvider) {
+    public AddCarSaleController(final CarSaleProvider carSaleProvider, final CarMakeProvider carMakeProvider,
+                                final FuelTypeProvider fuelTypeProvider) {
+        this.carSaleProvider = carSaleProvider;
         this.carMakeProvider = carMakeProvider;
         this.fuelTypeProvider = fuelTypeProvider;
     }
@@ -55,6 +58,7 @@ public class AddCarSaleController {
      */
     @PostMapping("/carSale/add")
     public String addCarSaleSubmit(@ModelAttribute final CarSale carSale) {
+        carSaleProvider.addCarSale(carSale);
         return "redirect:/homePage";
     }
 }

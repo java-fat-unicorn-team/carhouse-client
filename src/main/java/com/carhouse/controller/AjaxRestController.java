@@ -27,7 +27,7 @@ public class AjaxRestController {
      * @return list car models
      */
     @GetMapping("/carModels/{carMakeId}")
-    public List<CarModel> getCarModels(@PathVariable final Integer carMakeId) {
+    public List<CarModel> getCarModels(@PathVariable final String carMakeId) {
         return carModelProvider.getCarModels(carMakeId);
     }
 }

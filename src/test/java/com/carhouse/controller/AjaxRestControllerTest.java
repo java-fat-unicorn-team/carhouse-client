@@ -43,7 +43,7 @@ class AjaxRestControllerTest {
             add(new CarModel().setCarModelId(0).setCarModel("M2"));
             add(new CarModel().setCarModelId(1).setCarModel("M4"));
         }};
-        when(carModelProvider.getCarModels(2)).thenReturn(listCarModels);
+        when(carModelProvider.getCarModels("2")).thenReturn(listCarModels);
         mockMvc.perform(get("/carModels/{carMakeId}", 2))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
