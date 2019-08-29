@@ -15,7 +15,7 @@ public interface CarModelProvider {
      * @param carModelId the car model id
      * @return the car model
      */
-    CarModel getCarModel(Integer carModelId);
+    CarModel getCarModel(String carModelId);
 
     /**
      * Gets list car model.
@@ -23,5 +23,5 @@ public interface CarModelProvider {
      * @param carMakeId the car make id
      * @return the list car model
      */
-    List<CarModel> getCarModels(Integer carMakeId);
+    List<CarModel> getCarModels(String carMakeId);
 }

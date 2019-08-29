@@ -45,12 +45,12 @@
         <div class="row bg-warning">
             <div class="col">
                 <div class="search-filter">
-                    <form action="#" th:object="${searchFilter}"
-                        th:action="@{/homePage}"
-                          th:method="@{post}">
+                    <form action="#"
+                        th:action="@{/carSale}"
+                          th:method="@{get}">
                         <div class="form-row pt-3" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <div class="form-group col-6 col-lg">
-                                <select class="form-control" onchange="addCarModels(this)" th:field="*{carMakeId}">
+                                <select class="form-control" onchange="addCarModels(this)" name="carMake">
                                     <option value="-1" selected>Car make</option>
                                     <option th:each="carMake : ${listCarMakes}"
                                             th:value="${carMake.carMakeId}"
@@ -60,21 +60,21 @@
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
-                                <select class="form-control" id="listCarModels" th:field="*{carModelId}">
+                                <select class="form-control" id="listCarModels" name="carModel">
                                     <option value="-1" selected>Car model</option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
-                                <select class="form-control" type="date" th:field="*{yearFrom}">
-                                    <option value="2009-01-01" selected>Year from</option>
+                                <select class="form-control" type="date" name="yearFrom">
+                                    <option th:value="|${startDate-20}-01-01|" selected>Year from</option>
                                     <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
                                             th:value="|${date}-01-01|"
                                             th:text="${date}">2010</option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
-                                <select class="form-control" type="date" th:field="*{yearTo}">
-                                    <option value="2009-01-01"selected>Year to</option>
+                                <select class="form-control" type="date" name="yearTo">
+                                    <option th:value="|${startDate}-01-01|"selected>Year to</option>
                                     <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
                                             th:value="|${date}-01-01|"
                                             th:text="${date}">2010</option>
@@ -83,13 +83,13 @@
                             <div class="form-group col-6 col-lg">
                                 <div class="form-group">
                                     <input class="form-control" type="number"
-                                           placeholder="Price from" th:field="*{priceFrom}">
+                                           placeholder="Price from" name="priceFrom">
                                 </div>
                             </div>
                             <div class="form-group col-6 col-lg">
                                 <div class="form-group">
                                     <input class="form-control" type="number"
-                                           placeholder="Price to" th:field="*{priceTo}">
+                                           placeholder="Price to" name="priceTo">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -107,11 +107,11 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-lg-10">
                 <div class="carMakes">
-                    <ul class="listCarMakes list-unstyled">
-                        <li th:each="carMake : ${listCarMakes}">
-                            <a th:href="@{'/carSale/carMake/' + ${carMake.carMakeId}}">
+                    <ul class="listCarMakes list-unstyled row">
+                        <li class="col-4 col-md-3" th:each="carMake : ${listCarMakes}">
+                            <a th:href="@{/carSale/(carMakeId=${carMake.carMakeId})}">
                                 <span th:text="${carMake.carMake}">Acura</span>
                             </a>
                         </li>

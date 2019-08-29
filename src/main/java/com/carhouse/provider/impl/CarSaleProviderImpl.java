@@ -1,11 +1,8 @@
 package com.carhouse.provider.impl;
 
+import com.carhouse.model.*;
 import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.provider.CarSaleProvider;
-import com.carhouse.model.CarMake;
-import com.carhouse.model.CarModel;
-import com.carhouse.model.FuelType;
-import com.carhouse.model.Transmission;
 import com.carhouse.model.dto.CarDto;
 import org.springframework.stereotype.Component;
 
@@ -38,6 +35,16 @@ public class CarSaleProviderImpl implements CarSaleProvider {
             add(createCarSaleDto(8, "BMW", "8"));
             add(createCarSaleDto(9, "Mercedes", "GLS"));
         }};
+    }
+
+    /**
+     * Add new car sale advertisement.
+     *
+     * @param carSale     object from form
+     */
+    @Override
+    public void addCarSale(final CarSale carSale) {
+
     }
 
     /**
