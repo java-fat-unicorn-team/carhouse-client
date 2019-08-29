@@ -2,7 +2,7 @@ package com.carhouse.model;
 
 /**
  * The User model.
- * The model includes user name, user's phone number, login and password.
+ * The model includes user name, login etc.
  * Each user can have more then one car sale announcements.
  * @author Katuranau Maksimilyan
  */

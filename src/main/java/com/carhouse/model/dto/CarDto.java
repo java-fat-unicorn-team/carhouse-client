@@ -8,8 +8,9 @@ import java.sql.Date;
 
 /**
  * The car characteristics model.
- * This model includes year of car manufacture, car mileage, fuel type of car, transmission type and car model.
- * This model don't have list car features because it is redundant for list of car sale with basic information
+ * This model includes year of car manufacture, car mileage, fuel type of car etc.
+ * Unlike a real car model, this model don't have list car features because it is redundant for list of car sale
+ * with basic information
  *
  * @author Katuranau Maksimilyan
  */
@@ -25,26 +26,6 @@ public class CarDto {
      * Instantiates a new Car.
      */
     public CarDto() {
-    }
-
-    /**
-     * Instantiates a new Car.
-     *
-     * @param carId        the car id
-     * @param year         the year
-     * @param mileage      the mileage
-     * @param fuelType     the fuel type
-     * @param transmission the transmission
-     * @param carModel     the car model
-     */
-    public CarDto(final int carId, final Date year, final int mileage, final FuelType fuelType,
-                  final Transmission transmission, final CarModel carModel) {
-        this.carId = carId;
-        this.year = year;
-        this.mileage = mileage;
-        this.fuelType = fuelType;
-        this.transmission = transmission;
-        this.carModel = carModel;
     }
 
     /**

@@ -75,8 +75,8 @@ class CarSaleControllerTest {
             add(createCarSaleDto(1, "Mercedes", "C63AMG"));
         }};
         List<CarModel> listCarModels = new ArrayList<>() {{
-            add(new CarModel(0, new CarMake(), "M2"));
-            add(new CarModel(1, new CarMake(), "M4"));
+            add(new CarModel().setCarModelId(0).setCarModel("M2"));
+            add(new CarModel().setCarModelId(1).setCarModel("M4"));
         }};
         CarMake carMake = new CarMake(carMakeId, "Bentley");
         when(carSaleProvider.getListCarSale()).thenReturn(listCarSales);
@@ -100,7 +100,7 @@ class CarSaleControllerTest {
             add(createCarSaleDto(1, "Mercedes", "C63AMG"));
         }};
         CarMake carMake = new CarMake(carMakeId, "Bentley");
-        CarModel carModel = new CarModel(carModelId, new CarMake(), "Continental GT");
+        CarModel carModel = new CarModel().setCarModelId(carModelId).setCarModel("Continental GT");
         when(carSaleProvider.getListCarSale()).thenReturn(listCarSales);
         when(carMakeProvider.getCarMake(carMakeId)).thenReturn(carMake);
         when(carModelProvider.getCarModel(carModelId)).thenReturn(carModel);
@@ -114,10 +114,19 @@ class CarSaleControllerTest {
     }
 
     private CarSaleDto createCarSaleDto(final Integer carSaleId, final String carMake, final String carModel) {
-        return new CarSaleDto(carSaleId, new BigDecimal(30200), Date.valueOf("2019-03-02"),
-                new CarDto(0, Date.valueOf("2017-01-01"), 140000,
-                        new FuelType(1, "Bensin"),
-                        new Transmission(0, "Manual"), new CarModel(0,
-                        new CarMake(0, carMake), carModel)));
+        return new CarSaleDto()
+                .setCarSaleId(carSaleId)
+                .setPrice(new BigDecimal(30200))
+                .setDate(Date.valueOf("2019-03-02"))
+                .setCar(new CarDto()
+                        .setYear(Date.valueOf("2017-01-01"))
+                        .setMileage(140000)
+                        .setFuelType(new FuelType(1, "Bensin"))
+                        .setTransmission(new Transmission(0, "Manual"))
+                        .setCarModel(new CarModel()
+                                .setCarModel(carModel)
+                                .setCarMake(new CarMake(0, carMake))
+                        )
+                );
     }
 }

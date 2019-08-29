@@ -49,10 +49,19 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @return car sale stub object
      */
     private CarSaleDto createCarSaleDto(final Integer carSaleId, final String carMake, final String carModel) {
-        return new CarSaleDto(carSaleId, new BigDecimal(30200), Date.valueOf("2019-03-02"),
-                new CarDto(0, Date.valueOf("2017-01-01"), 140000,
-                        new FuelType(1, "Bensin"),
-                        new Transmission(0, "Manual"), new CarModel(0,
-                        new CarMake(0, carMake), carModel)));
+        return new CarSaleDto()
+                .setCarSaleId(carSaleId)
+                .setPrice(new BigDecimal(30200))
+                .setDate(Date.valueOf("2019-03-02"))
+                .setCar(new CarDto()
+                        .setYear(Date.valueOf("2017-01-01"))
+                        .setMileage(140000)
+                        .setFuelType(new FuelType(1, "Bensin"))
+                        .setTransmission(new Transmission(0, "Manual"))
+                        .setCarModel(new CarModel()
+                                        .setCarModel(carModel)
+                                        .setCarMake(new CarMake(0, carMake))
+                        )
+                );
     }
 }

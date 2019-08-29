@@ -10,7 +10,6 @@ import com.carhouse.model.dto.SearchFilter;
 import com.carhouse.provider.CarMakeProvider;
 import com.carhouse.provider.CarModelProvider;
 import com.carhouse.provider.CarSaleProvider;
-import com.carhouse.provider.WebProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class HomeControllerTest {
 
     @Mock
-    private WebProvider webProvider;
-    @Mock
     private CarSaleProvider carSaleProvider;
     @Mock
     private CarMakeProvider carMakeProvider;
@@ -59,18 +56,12 @@ class HomeControllerTest {
             add(new CarMake(0, "Bentley"));
             add(new CarMake(1, "BMW"));
         }};
-        List<Date> listDates = new ArrayList<>() {{
-            add(Date.valueOf("2010-01-01"));
-            add(Date.valueOf("2011-01-01"));
-        }};
         when(carMakeProvider.getCarMakes()).thenReturn(listCarMake);
-        when(webProvider.getDates()).thenReturn(listDates);
         mockMvc.perform(get("/homePage"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("homepage"))
-                .andExpect(model().attribute("listCarMakes", listCarMake))
-                .andExpect(model().attribute("listDates", listDates));
+                .andExpect(model().attribute("listCarMakes", listCarMake));
     }
 
     @Test
@@ -85,7 +76,7 @@ class HomeControllerTest {
         searchFilter.setCarMakeId(carMakeId);
         searchFilter.setCarModelId(carModelId);
         CarMake carMake = new CarMake(carMakeId, "BMW");
-        CarModel carModel = new CarModel(carModelId, new CarMake(), "M4");
+        CarModel carModel = new CarModel().setCarModelId(carModelId).setCarModel("M4");
         when(carSaleProvider.getListCarSale()).thenReturn(listCarSales);
         when(carMakeProvider.getCarMake(carMakeId)).thenReturn(carMake);
         when(carModelProvider.getCarModel(carModelId)).thenReturn(carModel);
@@ -120,10 +111,19 @@ class HomeControllerTest {
     }
 
     private CarSaleDto createCarSaleDto(final Integer carSaleId, final String carMake, final String carModel) {
-        return new CarSaleDto(carSaleId, new BigDecimal(30200), Date.valueOf("2019-03-02"),
-                new CarDto(0, Date.valueOf("2017-01-01"), 140000,
-                        new FuelType(1, "Bensin"),
-                        new Transmission(0, "Manual"), new CarModel(0,
-                        new CarMake(0, carMake), carModel)));
+        return new CarSaleDto()
+                .setCarSaleId(carSaleId)
+                .setPrice(new BigDecimal(30200))
+                .setDate(Date.valueOf("2019-03-02"))
+                .setCar(new CarDto()
+                        .setYear(Date.valueOf("2017-01-01"))
+                        .setMileage(140000)
+                        .setFuelType(new FuelType(1, "Bensin"))
+                        .setTransmission(new Transmission(0, "Manual"))
+                        .setCarModel(new CarModel()
+                                .setCarModel(carModel)
+                                .setCarMake(new CarMake(0, carMake))
+                        )
+                );
     }
 }

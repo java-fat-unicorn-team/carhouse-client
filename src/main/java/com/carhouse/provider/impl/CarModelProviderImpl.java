@@ -1,6 +1,5 @@
 package com.carhouse.provider.impl;
 
-import com.carhouse.model.CarMake;
 import com.carhouse.model.CarModel;
 import com.carhouse.provider.CarModelProvider;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @return the car model
      */
     public CarModel getCarModel(final Integer carModelId) {
-        return new CarModel(carModelId, new CarMake(), "M2");
+        return new CarModel().setCarModelId(carModelId).setCarModel("M2");
     }
 
     /**
@@ -33,10 +32,10 @@ public class CarModelProviderImpl implements CarModelProvider {
     public List<CarModel> getCarModels(final Integer carMakeId) {
         if (carMakeId >= 0) {
             return new ArrayList<>() {{
-                add(new CarModel(0, new CarMake(), "M2"));
-                add(new CarModel(1, new CarMake(), "M4"));
-                add(new CarModel(2, new CarMake(), "M5"));
-                add(new CarModel(3, new CarMake(), "M6"));
+                add(new CarModel().setCarModelId(0).setCarModel("M2"));
+                add(new CarModel().setCarModelId(1).setCarModel("M4"));
+                add(new CarModel().setCarModelId(2).setCarModel("M5"));
+                add(new CarModel().setCarModelId(3).setCarModel("M6"));
             }};
         } else {
             return new ArrayList<>();

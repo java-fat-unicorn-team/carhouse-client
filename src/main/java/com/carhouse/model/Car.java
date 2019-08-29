@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * The car characteristics model.
- * This model includes year of car manufacture, car mileage, fuel type of car, transmission type and car model.
+ * This model includes year of car manufacture, car mileage, fuel type of car, transmission type etc.
  * Each car includes this model.
  *
  * @author Katuranau Maksimilyan
@@ -35,28 +35,6 @@ public class Car {
     }
 
     /**
-     * Instantiates a new Car.
-     *
-     * @param carId          the car id
-     * @param year           the year
-     * @param mileage        the mileage
-     * @param fuelType       the fuel type
-     * @param transmission   the transmission
-     * @param carModel       the car model
-     * @param carFeatureList the car feature list
-     */
-    public Car(final int carId, final Date year, final int mileage, final FuelType fuelType,
-               final Transmission transmission, final CarModel carModel, final List<CarFeature> carFeatureList) {
-        this.carId = carId;
-        this.year = year;
-        this.mileage = mileage;
-        this.fuelType = fuelType;
-        this.transmission = transmission;
-        this.carModel = carModel;
-        this.carFeatureList = carFeatureList;
-    }
-
-    /**
      * Gets car id.
      *
      * @return the car id
@@ -77,7 +55,7 @@ public class Car {
     }
 
     /**
-     * Gets year.
+     * Gets year of car manufacture.
      *
      * @return the year
      */
@@ -86,7 +64,7 @@ public class Car {
     }
 
     /**
-     * Sets year.
+     * Sets year of car manufacture.
      *
      * @param year the year
      * @return car object

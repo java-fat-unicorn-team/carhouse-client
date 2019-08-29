@@ -1,11 +1,10 @@
 package com.carhouse.controller;
 
+import com.carhouse.model.dto.CarSaleDto;
+import com.carhouse.model.dto.SearchFilter;
 import com.carhouse.provider.CarMakeProvider;
 import com.carhouse.provider.CarModelProvider;
 import com.carhouse.provider.CarSaleProvider;
-import com.carhouse.provider.WebProvider;
-import com.carhouse.model.dto.CarSaleDto;
-import com.carhouse.model.dto.SearchFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,7 +20,6 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private WebProvider webProvider;
     private CarSaleProvider carSaleProvider;
     private CarMakeProvider carMakeProvider;
     private CarModelProvider carModelProvider;
@@ -29,15 +27,13 @@ public class HomeController {
     /**
      * Instantiates a new Home controller.
      *
-     * @param webProvider      the web consumer
      * @param carSaleProvider  the car sale data provide
      * @param carMakeProvider  the car make data provide
      * @param carModelProvider the car model data provide
      */
     @Autowired
-    public HomeController(final WebProvider webProvider, final CarSaleProvider carSaleProvider,
-                          final CarMakeProvider carMakeProvider, final CarModelProvider carModelProvider) {
-        this.webProvider = webProvider;
+    public HomeController(final CarSaleProvider carSaleProvider, final CarMakeProvider carMakeProvider,
+                          final CarModelProvider carModelProvider) {
         this.carSaleProvider = carSaleProvider;
         this.carMakeProvider = carMakeProvider;
         this.carModelProvider = carModelProvider;
@@ -56,7 +52,6 @@ public class HomeController {
     public String firstPage(final Model model) {
         model.addAttribute("searchFilter", new SearchFilter());
         model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
-        model.addAttribute("listDates", webProvider.getDates());
         return "homepage";
     }
 

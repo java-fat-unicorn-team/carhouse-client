@@ -2,7 +2,7 @@ package com.carhouse.model;
 
 /**
  * The car feature model is used to describe feature.
- * The model includes feature description and car characteristics model which contains the feature.
+ * The model includes feature description.
  * One car can have more then one feature.
  *
  * @author Katuranau Maksimilyan
