@@ -2,6 +2,7 @@ package com.carhouse.provider.impl;
 
 import com.carhouse.model.CarMake;
 import com.carhouse.provider.CarMakeProvider;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -34,12 +35,8 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      * @return the car make
      */
     public CarMake getCarMake(final String carMakeId) {
-        if (carMakeId != null && !carMakeId.isEmpty()) {
-            try {
+        if (StringUtils.isNumeric(carMakeId)) {
             return new CarMake(Integer.parseInt(carMakeId), "BMW");
-            } catch (NumberFormatException ex) {
-                return null;
-            }
         } else {
             return null;
         }
