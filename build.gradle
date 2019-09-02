@@ -36,6 +36,7 @@ dependencies {
     def jacksonDatabindVersion = '2.10.0.pr1'
     def hamcrestLibraryVersion = '2.1'
     def jsonAssertVersion = '1.5.0'
+    def commonsLang3Version = '3.9'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatEmbedLogging}",
             "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
@@ -55,6 +56,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
     compile "org.hamcrest:hamcrest-library:${hamcrestLibraryVersion}"
     compile "org.skyscreamer:jsonassert:${jsonAssertVersion}"
+    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
 }
 
 war {
