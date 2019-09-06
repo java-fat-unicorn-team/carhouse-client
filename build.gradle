@@ -37,26 +37,33 @@ dependencies {
     def hamcrestLibraryVersion = '2.1'
     def jsonAssertVersion = '1.5.0'
     def commonsLang3Version = '3.9'
+    def commonsValidatorVersion = '1.6'
+    def wireMockVersion = '2.24.1'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatEmbedLogging}",
             "org.apache.tomcat.embed:tomcat-embed-jasper:${tomcatVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
     testImplementation "org.mockito:mockito-junit-jupiter:${mockitoJunitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
     testImplementation "org.mockito:mockito-core:${mockitoJunitVersion}"
-    providedCompile "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    testImplementation "com.github.tomakehurst:wiremock:${wireMockVersion}"
+    testImplementation "com.github.tomakehurst:wiremock-standalone:${wireMockVersion}"
+    implementation "javax.servlet:javax.servlet-api:${servletApiVersion}"
+    implementation "org.springframework:spring-webmvc:${springVersion}"
+    implementation "org.springframework:spring-core:${springVersion}"
+    implementation "org.springframework:spring-web:${springVersion}"
+    implementation "org.springframework:spring-context:${springVersion}"
+    implementation "org.springframework:spring-test:${springVersion}"
+    implementation "org.thymeleaf:thymeleaf:${thymeleafVersion}"
+    implementation "org.thymeleaf:thymeleaf-spring5:${thymeleafVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonDatabindVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+    implementation "org.hamcrest:hamcrest-library:${hamcrestLibraryVersion}"
+    implementation "org.skyscreamer:jsonassert:${jsonAssertVersion}"
+    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    implementation "commons-validator:commons-validator:${commonsValidatorVersion}"
     runtime "javax.servlet:jstl:${servletJstlVersion}"
-    compile "org.springframework:spring-webmvc:${springVersion}"
-    compile "org.springframework:spring-core:${springVersion}"
-    compile "org.springframework:spring-web:${springVersion}"
-    compile "org.springframework:spring-context:${springVersion}"
-    compile "org.springframework:spring-test:${springVersion}"
-    compile "org.thymeleaf:thymeleaf:${thymeleafVersion}"
-    compile "org.thymeleaf:thymeleaf-spring5:${thymeleafVersion}"
-    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
-    compile "org.hamcrest:hamcrest-library:${hamcrestLibraryVersion}"
-    compile "org.skyscreamer:jsonassert:${jsonAssertVersion}"
-    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
+
 }
 
 war {
@@ -85,6 +92,6 @@ checkstyle {
 tomcat {
     httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
     ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
-    httpPort = 8080
+    httpPort = 8099
     contextPath = '/'
 }

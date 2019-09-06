@@ -3,9 +3,15 @@ package com.carhouse.provider.impl;
 import com.carhouse.model.CarMake;
 import com.carhouse.provider.CarMakeProvider;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,18 +20,28 @@ import java.util.List;
 @Component
 public class CarMakeProviderImpl implements CarMakeProvider {
 
+    @Value("${protocol.host.port}")
+    private String URL;
+
+    @Value("${car.make.list.get}")
+    private String CAR_MAKE_LIST_GET;
+
+    @Value("${car.make.get}")
+    private String CAR_MAKE_GET;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     /**
      * Gets list car make.
      *
      * @return the list car make
      */
     public List<CarMake> getCarMakes() {
-        return new ArrayList<>() {{
-            add(new CarMake(0, "Bentley"));
-            add(new CarMake(1, "BMW"));
-            add(new CarMake(2, "Mercedes"));
-            add(new CarMake(3, "Audi"));
-        }};
+        ResponseEntity<List<CarMake>> response = restTemplate.exchange(URL + CAR_MAKE_LIST_GET,
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<CarMake>>() {
+                });
+        return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
     }
 
     /**
@@ -36,7 +52,9 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      */
     public CarMake getCarMake(final String carMakeId) {
         if (StringUtils.isNumeric(carMakeId)) {
-            return new CarMake(Integer.parseInt(carMakeId), "BMW");
+            ResponseEntity<CarMake> response = restTemplate.getForEntity(URL + CAR_MAKE_GET,
+                    CarMake.class, carMakeId);
+            return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
         } else {
             return null;
         }

@@ -1,15 +1,23 @@
 package com.carhouse.provider.impl;
 
-import com.carhouse.model.*;
-import com.carhouse.model.dto.CarDto;
+import com.carhouse.model.CarSale;
 import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.provider.CarSaleProvider;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.GenericValidator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.math.BigDecimal;
-import java.sql.Date;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The car sale data provider.
@@ -17,24 +25,37 @@ import java.util.List;
 @Component
 public class CarSaleProviderImpl implements CarSaleProvider {
 
+    @Value("${protocol.host.port}")
+    private String URL;
+
+    @Value("${car.sale.list.get}")
+    private String CAR_SALE_LIST_GET;
+
+    @Value("${car.sale.get}")
+    private String CAR_SALE_GET;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     /**
      * Gets list car sale.
      *
+     * @param requestParams the request params
      * @return the list car sale
      */
-    public List<CarSaleDto> getListCarSale() {
-        return new ArrayList<>() {{
-            add(createCarSaleDto(0, "BMW", "M5"));
-            add(createCarSaleDto(1, "Mercedes", "C63AMG"));
-            add(createCarSaleDto(2, "Audi", "RS6"));
-            add(createCarSaleDto(3, "Mercedes", "E220"));
-            add(createCarSaleDto(4, "Mercedes", "C63"));
-            add(createCarSaleDto(5, "Audi", "RS5"));
-            add(createCarSaleDto(6, "Audi", "A8"));
-            add(createCarSaleDto(7, "BMW", "M4"));
-            add(createCarSaleDto(8, "BMW", "8"));
-            add(createCarSaleDto(9, "Mercedes", "GLS"));
-        }};
+    public List<CarSaleDto> getListCarSale(final Map<String, String> requestParams) {
+        HashMap<String, String> map = new HashMap<>(requestParams);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL + CAR_SALE_LIST_GET);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (StringUtils.isNumeric(entry.getValue())
+                    || GenericValidator.isDate(entry.getValue(), "yyyy-MM-dd", true)) {
+                builder.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        ResponseEntity<List<CarSaleDto>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
+                null, new ParameterizedTypeReference<List<CarSaleDto>>() {
+                });
+        return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
     }
 
     /**
@@ -46,31 +67,8 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      */
     @Override
     public CarSale getCarSale(final Integer carSaleId) {
-        return new CarSale()
-                .setCarSaleId(carSaleId)
-                .setPrice(new BigDecimal(30200))
-                .setDate(Date.valueOf("2019-03-02"))
-                .setUser(new User()
-                        .setUserId(1)
-                        .setUserName("Danya Kotov")
-                        .setPhoneNumber("+375334756868")
-                        .setLogin("dan29")
-                        .setPassword("1234"))
-                .setCar(new Car()
-                        .setYear(Date.valueOf("2017-01-01"))
-                        .setMileage(140000)
-                        .setFuelType(new FuelType(1, "Bensin"))
-                        .setTransmission(new Transmission(0, "Manual"))
-                        .setCarModel(new CarModel()
-                                .setCarModelId(2)
-                                .setCarModel("M8")
-                                .setCarMake(new CarMake(1, "BMW"))
-                        )
-                        .setCarFeatureList(List.of(new CarFeature(0, "Winter tire"),
-                                new CarFeature(1, "Air condition"),
-                                new CarFeature(2, "Multimedia screen"),
-                                new CarFeature(3, "Rear View Camera")))
-                );
+        ResponseEntity<CarSale> response = restTemplate.getForEntity(URL + CAR_SALE_GET, CarSale.class, carSaleId);
+        return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
     }
 
     /**
@@ -83,30 +81,5 @@ public class CarSaleProviderImpl implements CarSaleProvider {
     @Override
     public void addCarSale(final CarSale carSale, final int[] carFeatures) {
 
-    }
-
-    /**
-     * this is a temporary object to facilitate the creation of CarSaleDto.
-     *
-     * @param carSaleId car sale id
-     * @param carMake   car make
-     * @param carModel  car model
-     * @return car sale stub object
-     */
-    private CarSaleDto createCarSaleDto(final Integer carSaleId, final String carMake, final String carModel) {
-        return new CarSaleDto()
-                .setCarSaleId(carSaleId)
-                .setPrice(new BigDecimal(30200))
-                .setDate(Date.valueOf("2019-03-02"))
-                .setCar(new CarDto()
-                        .setYear(Date.valueOf("2017-01-01"))
-                        .setMileage(140000)
-                        .setFuelType(new FuelType(1, "Bensin"))
-                        .setTransmission(new Transmission(0, "Manual"))
-                        .setCarModel(new CarModel()
-                                .setCarModel(carModel)
-                                .setCarMake(new CarMake(0, carMake))
-                        )
-                );
     }
 }

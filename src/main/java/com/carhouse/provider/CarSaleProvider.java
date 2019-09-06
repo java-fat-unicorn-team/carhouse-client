@@ -4,6 +4,7 @@ import com.carhouse.model.CarSale;
 import com.carhouse.model.dto.CarSaleDto;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The interface for car sale data provider.
@@ -13,9 +14,10 @@ public interface CarSaleProvider {
     /**
      * Gets list car sale.
      *
+     * @param requestParams the request params
      * @return the list car sale
      */
-    List<CarSaleDto> getListCarSale();
+    List<CarSaleDto> getListCarSale(Map<String, String> requestParams);
 
     /**
      * Gets car sale.
