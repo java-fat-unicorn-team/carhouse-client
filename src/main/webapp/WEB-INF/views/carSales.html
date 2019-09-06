@@ -95,17 +95,17 @@
                         <img th:src="@{/static/bmw.jpg}" height="134" width="180"></a>
                 </div>
                 <div class="d-inline-block pl-3 align-top">
-                    <span th:text="${#dates.year(carSale.car.year)}"></span>
+                    <span th:text="${#dates.year(carSale.year)}"></span>
                     <br>
                     <strong th:text="${carSale.price} + ' $'"></strong>
                 </div>
             </div>
             <div class="col">
                 <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
-                    <h4 th:text="${carSale.car.carModel.carMake.carMake} + ', ' + ${carSale.car.carModel.carModel}"></h4>
+                    <h4 th:text="${carSale.carMake} + ', ' + ${carSale.carModel}"></h4>
                 </a>
-                <span th:text="${carSale.car.transmission.transmission} + ', ' + ${carSale.car.fuelType.fuelType}
-+ ', ' + ${carSale.car.mileage} + ' m.'"></span>
+                <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
++ ', ' + ${carSale.mileage} + ' m.'"></span>
             </div>
         </div>
     </div>

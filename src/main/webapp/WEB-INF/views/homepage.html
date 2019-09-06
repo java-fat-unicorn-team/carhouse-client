@@ -75,9 +75,10 @@
                             <div class="form-group col-6 col-lg">
                                 <select class="form-control" type="date" name="yearTo">
                                     <option th:value="|${startDate}-01-01|"selected>Year to</option>
-                                    <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
-                                            th:value="|${date}-01-01|"
+                                    <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate-1}__,1)}"
+                                            th:value="|${date}-12-31|"
                                             th:text="${date}">2010</option>
+                                    <option th:value="${#dates.createNow()}" th:text="${startDate}">Year to</option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
@@ -125,22 +126,28 @@
 <script>
     function addCarModels(carMake) {
         var carMakeId = carMake.value;
-        $.ajax({
-            type: 'GET',
-            url: "/carModels/" + carMakeId,
-            success: function(data){
-                var listCarModels=$('#listCarModels'), option="<option value>Car model</option>";
-                listCarModels.empty();
+        if (carMakeId === "") {
+            var listCarModels=$('#listCarModels');
+            listCarModels.empty();
+            listCarModels.append("<option value>Car model</option>");
+        } else {
+            $.ajax({
+                type: 'GET',
+                url: "/carModels/" + carMakeId,
+                success: function(data){
+                    var listCarModels=$('#listCarModels'), option="<option value>Car model</option>";
+                    listCarModels.empty();
 
-                for(var i=0; i<data.length; i++){
-                    option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                    for(var i=0; i<data.length; i++){
+                        option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                    }
+                    listCarModels.append(option);
+                },
+                error:function(){
+                    alert("error");
                 }
-                listCarModels.append(option);
-            },
-            error:function(){
-                alert("error");
-            }
-        });
+            });
+        }
     }
 </script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

@@ -1,29 +1,21 @@
 package com.carhouse.model.dto;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 
 /**
- * The car sale model describes the announcement of the car sale.
- * The model includes car price, date when the announcement was added and car characteristics.
- * Unlike a real car sale model, this model don't have information about user
- * and also contains carStub model without car features
- * because it is redundant for list of car sale with basic information
- *
- * @author Katuranau Maksimilyan
+ * The Car sale dto is used to show list of car sales without redundant information.
  */
 public class CarSaleDto {
     private int carSaleId;
     private BigDecimal price;
     private Date date;
-    private CarDto car;
-
-    /**
-     * Instantiates a new Car sale.
-     */
-    public CarSaleDto() {
-        car = new CarDto();
-    }
+    private Date year;
+    private int mileage;
+    private String fuelType;
+    private String transmission;
+    private String carMake;
+    private String carModel;
 
     /**
      * Gets car sale id.
@@ -38,7 +30,7 @@ public class CarSaleDto {
      * Sets car sale id.
      *
      * @param carSaleId the car sale id
-     * @return car sale object
+     * @return CarSaleDto object
      */
     public CarSaleDto setCarSaleId(final int carSaleId) {
         this.carSaleId = carSaleId;
@@ -58,7 +50,7 @@ public class CarSaleDto {
      * Sets price.
      *
      * @param price the price
-     * @return car sale object
+     * @return      * @return CarSaleDto object price
      */
     public CarSaleDto setPrice(final BigDecimal price) {
         this.price = price;
@@ -66,7 +58,7 @@ public class CarSaleDto {
     }
 
     /**
-     * Get car sale advertisement creation date.
+     * Gets advertisement creation date.
      *
      * @return the date
      */
@@ -75,10 +67,10 @@ public class CarSaleDto {
     }
 
     /**
-     * Sets car sale advertisement creation date.
+     * Sets advertisement creation date.
      *
      * @param date the date
-     * @return car sale object
+     * @return CarSaleDto object
      */
     public CarSaleDto setDate(final Date date) {
         this.date = date;
@@ -86,22 +78,122 @@ public class CarSaleDto {
     }
 
     /**
-     * Gets car.
+     * Sets year of car manufacture.
      *
-     * @return the car
+     * @return the year
      */
-    public CarDto getCar() {
-        return car;
+    public Date getYear() {
+        return year;
     }
 
     /**
-     * Sets car.
+     * Sets year of car manufacture.
      *
-     * @param car the car
-     * @return car sale object
+     * @param year the year
+     * @return CarSaleDto object
      */
-    public CarSaleDto setCar(final CarDto car) {
-        this.car = car;
+    public CarSaleDto setYear(final Date year) {
+        this.year = year;
+        return this;
+    }
+
+    /**
+     * Gets mileage.
+     *
+     * @return the mileage
+     */
+    public int getMileage() {
+        return mileage;
+    }
+
+    /**
+     * Sets mileage.
+     *
+     * @param mileage the mileage
+     * @return CarSaleDto object
+     */
+    public CarSaleDto setMileage(final int mileage) {
+        this.mileage = mileage;
+        return this;
+    }
+
+    /**
+     * Gets fuel type.
+     *
+     * @return the fuel type
+     */
+    public String getFuelType() {
+        return fuelType;
+    }
+
+    /**
+     * Sets fuel type.
+     *
+     * @param fuelType the fuel type
+     * @return CarSaleDto object
+     */
+    public CarSaleDto setFuelType(final String fuelType) {
+        this.fuelType = fuelType;
+        return this;
+    }
+
+    /**
+     * Gets transmission.
+     *
+     * @return the transmission
+     */
+    public String getTransmission() {
+        return transmission;
+    }
+
+    /**
+     * Sets transmission.
+     *
+     * @param transmission the transmission
+     * @return CarSaleDto object
+     */
+    public CarSaleDto setTransmission(final String transmission) {
+        this.transmission = transmission;
+        return this;
+    }
+
+    /**
+     * Gets car make.
+     *
+     * @return the car make
+     */
+    public String getCarMake() {
+        return carMake;
+    }
+
+    /**
+     * Sets car make.
+     *
+     * @param carMake the car make
+     * @return CarSaleDto object
+     */
+    public CarSaleDto setCarMake(final String carMake) {
+        this.carMake = carMake;
+        return this;
+    }
+
+    /**
+     * Gets car model.
+     *
+     * @return the car model
+     */
+    public String getCarModel() {
+        return carModel;
+    }
+
+    /**
+     * Sets car model.
+     *
+     * @param carModel the car model
+     * @return CarSaleDto object
+     */
+    public CarSaleDto setCarModel(final String carModel) {
+        this.carModel = carModel;
         return this;
     }
 }
