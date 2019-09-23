@@ -5,7 +5,9 @@ import com.carhouse.model.CarMake;
 import com.carhouse.model.CarModel;
 import com.carhouse.model.FuelType;
 import com.carhouse.model.dto.CarSaleDto;
+import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -117,18 +119,17 @@ class CarSaleControllerTest {
     @Test
     void carSaleWithWrongCarMake() throws Exception {
         String carMakeId = "123";
-        String errorStatus = "404";
-        String errorMassage = "there is not car make with id = " + carMakeId;
-        String exceptionResponse = "\"date\":\"Thu Sep 26 11:13:01 MSK 2019\", \"status\":\"" + errorStatus + "\", "
-                + "\"message\":\"" + errorMassage + "\", \"path\":\"/carSale/123\"";
+        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
+        exceptionJSONResponse.setStatus(404);
+        exceptionJSONResponse.setMessage("there is not car make with id = " + carMakeId);
         HttpClientErrorException exception = HttpClientErrorException.create(HttpStatus.NOT_FOUND, "404",
-                null, exceptionResponse.getBytes(), null);
+                null, new ObjectMapper().writeValueAsBytes(exceptionJSONResponse), null);
         when(carModelProvider.getCarModels(carMakeId)).thenThrow(exception);
         mockMvc.perform(get("/carSale/?carMakeId={carMakeId}", carMakeId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("errorPage"))
-                .andExpect(model().attribute("errorCode", errorStatus))
-                .andExpect(model().attribute("errorMsg", errorMassage));
+                .andExpect(model().attribute("errorCode", exceptionJSONResponse.getStatus()))
+                .andExpect(model().attribute("errorMsg", exceptionJSONResponse.getMessage()));
     }
 
     @Test

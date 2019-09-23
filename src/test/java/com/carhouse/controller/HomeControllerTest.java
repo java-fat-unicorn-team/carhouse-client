@@ -2,15 +2,19 @@ package com.carhouse.controller;
 
 import com.carhouse.handler.RestTemplateResponseErrorHandler;
 import com.carhouse.model.CarMake;
+import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.CarMakeProvider;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
