@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
@@ -17,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -48,17 +46,21 @@ class CarModelProviderImplTest {
     }
 
     @Test
-    void getNotExistCarModel() {
+    void getNotExistCarModel() throws JsonProcessingException {
         int carModelId = 123;
+        int errorStatus = 404;
+        String errorMassage = "there is not car model with id = " + carModelId;
+        String errorResponse = "\"date\":\"Thu Sep 26 11:13:01 MSK 2019\", \"status\":\"" + errorStatus + "\", "
+                + "\"message\":\"" + errorMassage + "\", \"path\":\"/carSale/123\"";
         givenThat(get(urlPathEqualTo(CAR_MODEL_GET + carModelId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withBody("there is not car model with id = " + carModelId))
+                        .withBody(errorResponse))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carModelProvider.getCarModel(String.valueOf(carModelId)));
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals(exception.getResponseBodyAsString(),"there is not car model with id = " + carModelId);
+        assertEquals(errorStatus, exception.getStatusCode().value());
+        assertTrue(exception.getResponseBodyAsString().contains(errorMassage));
     }
 
     @Test

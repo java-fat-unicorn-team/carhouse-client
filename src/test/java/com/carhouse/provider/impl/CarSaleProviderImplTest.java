@@ -5,8 +5,6 @@ import com.carhouse.model.CarSale;
 import com.carhouse.provider.CarSaleProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +18,9 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -76,14 +74,19 @@ class CarSaleProviderImplTest {
     @Test
     void getNotExistCarSale() {
         int carSaleId = 123;
+        int errorStatus = 404;
+        String errorMassage = "there is not car sale with id = " + carSaleId;
+        String errorResponse = "\"date\":\"Thu Sep 26 11:13:01 MSK 2019\", \"status\":\"" + errorStatus + "\", "
+                + "\"message\":\"" + errorMassage + "\", \"path\":\"/carSale/123\"";
         stubFor(get(urlPathEqualTo(CAR_SALE_GET + carSaleId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withBody("there is not car sale with id = " + carSaleId))
+                        .withBody(errorResponse))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carSaleProvider.getCarSale(carSaleId));
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals(exception.getResponseBodyAsString(),"there is not car sale with id = " + carSaleId);
+
+        assertEquals(errorStatus, exception.getStatusCode().value());
+        assertTrue(exception.getResponseBodyAsString().contains(errorMassage));
     }
 }
