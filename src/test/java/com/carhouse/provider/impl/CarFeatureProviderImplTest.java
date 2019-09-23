@@ -26,8 +26,6 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = TestConfig.class)
 class CarFeatureProviderImplTest {
 
-    @Value("${protocol.host.port}")
-    private String URL;
     @Value("${car.feature.list.get}")
     private String CAR_FEATURE_LIST_GET;
 

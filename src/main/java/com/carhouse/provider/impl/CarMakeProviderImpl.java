@@ -5,13 +5,10 @@ import com.carhouse.provider.CarMakeProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,7 +17,7 @@ import java.util.List;
 @Component
 public class CarMakeProviderImpl implements CarMakeProvider {
 
-    @Value("${protocol.host.port}")
+    @Value("${carSale.url}")
     private String URL;
 
     @Value("${car.make.list.get}")
@@ -38,10 +35,8 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      * @return the list car make
      */
     public List<CarMake> getCarMakes() {
-        ResponseEntity<List<CarMake>> response = restTemplate.exchange(URL + CAR_MAKE_LIST_GET,
-                HttpMethod.GET, null, new ParameterizedTypeReference<List<CarMake>>() {
-                });
-        return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
+        CarMake[] listCarMakes = restTemplate.getForObject(URL + CAR_MAKE_LIST_GET, CarMake[].class);
+        return listCarMakes != null ? Arrays.asList(listCarMakes) : null;
     }
 
     /**
@@ -52,9 +47,7 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      */
     public CarMake getCarMake(final String carMakeId) {
         if (StringUtils.isNumeric(carMakeId)) {
-            ResponseEntity<CarMake> response = restTemplate.getForEntity(URL + CAR_MAKE_GET,
-                    CarMake.class, carMakeId);
-            return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
+            return restTemplate.getForObject(URL + CAR_MAKE_GET, CarMake.class, carMakeId);
         } else {
             return null;
         }

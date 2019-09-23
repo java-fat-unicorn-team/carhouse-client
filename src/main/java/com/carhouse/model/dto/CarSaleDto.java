@@ -49,8 +49,8 @@ public class CarSaleDto {
     /**
      * Sets price.
      *
-     * @param price the price
-     * @return      * @return CarSaleDto object price
+     * @param price the price of car sale advertisement
+     * @return CarSaleDto object
      */
     public CarSaleDto setPrice(final BigDecimal price) {
         this.price = price;

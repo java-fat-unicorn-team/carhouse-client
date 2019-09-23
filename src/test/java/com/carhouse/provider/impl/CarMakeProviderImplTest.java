@@ -25,8 +25,6 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = TestConfig.class)
 class CarMakeProviderImplTest {
 
-    @Value("${protocol.host.port}")
-    private String URL;
     @Value("${car.make.list.get}")
     private String CAR_MAKE_LIST_GET;
     private String CAR_MAKE_GET = "/carSale/car/carModel/carMake/";
