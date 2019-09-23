@@ -27,8 +27,8 @@ public class TestConfig {
     @Bean
     public void initializeWireMockServer() {
         WireMockServer wireMockServer = new WireMockServer(options()
-                .bindAddress("localhost").port(8090));
+                .bindAddress("localhost").port(65199));
         wireMockServer.start();
-        configureFor("localhost", 8090);
+        configureFor("localhost", 65199);
     }
 }

@@ -7,14 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.GenericValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +22,7 @@ import java.util.Map;
 @Component
 public class CarSaleProviderImpl implements CarSaleProvider {
 
-    @Value("${protocol.host.port}")
+    @Value("${carSale.url}")
     private String URL;
 
     @Value("${car.sale.list.get}")
@@ -44,18 +41,9 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @return the list car sale
      */
     public List<CarSaleDto> getListCarSale(final Map<String, String> requestParams) {
-        HashMap<String, String> map = new HashMap<>(requestParams);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL + CAR_SALE_LIST_GET);
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            if (StringUtils.isNumeric(entry.getValue())
-                    || GenericValidator.isDate(entry.getValue(), "yyyy-MM-dd", true)) {
-                builder.queryParam(entry.getKey(), entry.getValue());
-            }
-        }
-        ResponseEntity<List<CarSaleDto>> response = restTemplate.exchange(builder.toUriString(), HttpMethod.GET,
-                null, new ParameterizedTypeReference<List<CarSaleDto>>() {
-                });
-        return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
+        CarSaleDto[] listCarSales = restTemplate.getForObject(buildUrl(URL + CAR_SALE_LIST_GET, requestParams),
+                CarSaleDto[].class);
+        return listCarSales != null ? Arrays.asList(listCarSales) : null;
     }
 
     /**
@@ -67,8 +55,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      */
     @Override
     public CarSale getCarSale(final Integer carSaleId) {
-        ResponseEntity<CarSale> response = restTemplate.getForEntity(URL + CAR_SALE_GET, CarSale.class, carSaleId);
-        return response.getStatusCode() == HttpStatus.OK ? response.getBody() : null;
+        return restTemplate.getForObject(URL + CAR_SALE_GET, CarSale.class, carSaleId);
     }
 
     /**
@@ -81,5 +68,25 @@ public class CarSaleProviderImpl implements CarSaleProvider {
     @Override
     public void addCarSale(final CarSale carSale, final int[] carFeatures) {
 
+    }
+
+    /**
+     * Build url with query parameters.
+     * Validates incoming parameters and adds only valid
+     *
+     * @param baseUrl is url without query parameters
+     * @param requestParams request parameters
+     * @return url with query parameters
+     */
+    private String buildUrl(final String baseUrl, final Map<String, String> requestParams) {
+        HashMap<String, String> map = new HashMap<>(requestParams);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl);
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            if (StringUtils.isNumeric(entry.getValue())
+                    || GenericValidator.isDate(entry.getValue(), "yyyy-MM-dd", true)) {
+                builder.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        return builder.toUriString();
     }
 }
