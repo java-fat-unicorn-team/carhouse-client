@@ -2,6 +2,7 @@ package com.carhouse.provider.impl;
 
 import com.carhouse.config.TestConfig;
 import com.carhouse.model.CarSale;
+import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.CarSaleProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +21,6 @@ import java.util.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -72,21 +72,22 @@ class CarSaleProviderImplTest {
     }
 
     @Test
-    void getNotExistCarSale() {
+    void getNotExistCarSale() throws JsonProcessingException {
         int carSaleId = 123;
-        int errorStatus = 404;
-        String errorMassage = "there is not car sale with id = " + carSaleId;
-        String errorResponse = "\"date\":\"Thu Sep 26 11:13:01 MSK 2019\", \"status\":\"" + errorStatus + "\", "
-                + "\"message\":\"" + errorMassage + "\", \"path\":\"/carSale/123\"";
+        String errorMsg = "there is not car sale with id = " + carSaleId;
+        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
+        exceptionJSONResponse.setStatus(404);
+        exceptionJSONResponse.setMessage(errorMsg);
         stubFor(get(urlPathEqualTo(CAR_SALE_GET + carSaleId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withBody(errorResponse))
+                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse)))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carSaleProvider.getCarSale(carSaleId));
-
-        assertEquals(errorStatus, exception.getStatusCode().value());
-        assertTrue(exception.getResponseBodyAsString().contains(errorMassage));
+        ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
+                ExceptionJSONResponse.class);
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        assertEquals(errorMsg, response.getMessage());
     }
 }
