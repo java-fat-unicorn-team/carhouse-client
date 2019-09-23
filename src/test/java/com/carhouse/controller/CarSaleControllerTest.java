@@ -1,10 +1,13 @@
 package com.carhouse.controller;
 
+import com.carhouse.handler.RestTemplateResponseErrorHandler;
 import com.carhouse.model.CarMake;
 import com.carhouse.model.CarModel;
 import com.carhouse.model.FuelType;
 import com.carhouse.model.dto.CarSaleDto;
+import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,8 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +59,9 @@ class CarSaleControllerTest {
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(carSaleController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(carSaleController)
+                .setControllerAdvice(RestTemplateResponseErrorHandler.class)
+                .build();
     }
 
     @Test
@@ -107,6 +114,22 @@ class CarSaleControllerTest {
                 .andExpect(model().attribute("carMake", carMake))
                 .andExpect(model().attribute("carModel", carModel))
                 .andExpect(model().attribute("listCarSales", listCarSales));
+    }
+
+    @Test
+    void carSaleWithWrongCarMake() throws Exception {
+        String carMakeId = "123";
+        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
+        exceptionJSONResponse.setStatus(404);
+        exceptionJSONResponse.setMessage("there is not car make with id = " + carMakeId);
+        HttpClientErrorException exception = HttpClientErrorException.create(HttpStatus.NOT_FOUND, "404",
+                null, new ObjectMapper().writeValueAsBytes(exceptionJSONResponse), null);
+        when(carModelProvider.getCarModels(carMakeId)).thenThrow(exception);
+        mockMvc.perform(get("/carSale/?carMakeId={carMakeId}", carMakeId))
+                .andExpect(status().isOk())
+                .andExpect(view().name("errorPage"))
+                .andExpect(model().attribute("errorCode", exceptionJSONResponse.getStatus()))
+                .andExpect(model().attribute("errorMsg", exceptionJSONResponse.getMessage()));
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.carhouse.provider.impl;
 
 import com.carhouse.config.TestConfig;
 import com.carhouse.model.CarMake;
+import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.CarMakeProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -69,17 +70,22 @@ class CarMakeProviderImplTest {
     }
 
     @Test
-    void getNotExistCarMake() {
+    void getNotExistCarMake() throws JsonProcessingException {
         int carMakeId = 123;
+        String errorMsg = "there is not car make with id = " + carMakeId;
+        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
+        exceptionJSONResponse.setStatus(404);
+        exceptionJSONResponse.setMessage(errorMsg);
         givenThat(get(urlPathEqualTo(CAR_MAKE_GET + carMakeId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withBody("there is not car make with id = " + carMakeId))
+                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse)))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carMakeProvider.getCarMake(String.valueOf(carMakeId)));
-        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        Assertions.assertEquals(exception.getResponseBodyAsString(),
-                "there is not car make with id = " + carMakeId);
+        ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
+                ExceptionJSONResponse.class);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
+        Assertions.assertEquals(errorMsg, response.getMessage());
     }
 }
