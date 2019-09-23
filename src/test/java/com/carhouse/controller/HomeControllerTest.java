@@ -1,5 +1,6 @@
 package com.carhouse.controller;
 
+import com.carhouse.handler.RestTemplateResponseErrorHandler;
 import com.carhouse.model.CarMake;
 import com.carhouse.provider.CarMakeProvider;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +33,9 @@ class HomeControllerTest {
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(homeController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(homeController)
+                .setControllerAdvice(RestTemplateResponseErrorHandler.class)
+                .build();
     }
 
     @Test
@@ -45,5 +49,15 @@ class HomeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("homepage"))
                 .andExpect(model().attribute("listCarMakes", listCarMake));
+    }
+
+    @Test
+    void firstPageServerIsNotAvailable() throws Exception {
+        when(carMakeProvider.getCarMakes()).thenThrow(ResourceAccessException.class);
+        mockMvc.perform(get("/homePage"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("errorPage"))
+                .andExpect(model().attribute("errorCode", 503))
+                .andExpect(model().attribute("errorMsg", "Sorry, the server is not available"));
     }
 }
