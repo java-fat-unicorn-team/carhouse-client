@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = TestConfig.class)
 class FuelTypeProviderImplTest {
 
-    @Value("${fuel.type.list.get}")
+    @Value("${carSale.fuel.type.all}")
     private String FUEL_TYPE_LIST_GET;
 
     @Autowired

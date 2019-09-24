@@ -18,14 +18,11 @@ import java.util.List;
 @Component
 public class CarFeatureProviderImpl implements CarFeatureProvider {
 
-    @Value("${carSale.url.host}")
-    private String URL_HOST;
+    @Value("${carSale.url.host}:${carSale.url.port}")
+    private String URL;
 
-    @Value("${carSale.url.port}")
-    private String URL_PORT;
-
-    @Value("${car.feature.list.get}")
-    private String CAR_FEATURE_LIST_GET;
+    @Value("${carSale.car.feature.all}")
+    private String CAR_FEATURE_ALL;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -36,9 +33,8 @@ public class CarFeatureProviderImpl implements CarFeatureProvider {
      * @return list car features
      */
     public List<CarFeature> getCarFeatures() {
-        ResponseEntity<List<CarFeature>> response = restTemplate.exchange(URL_HOST + URL_PORT
-                        + CAR_FEATURE_LIST_GET, HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<CarFeature>>() {
+        ResponseEntity<List<CarFeature>> response = restTemplate.exchange(URL + CAR_FEATURE_ALL, HttpMethod.GET,
+                null, new ParameterizedTypeReference<List<CarFeature>>() {
                 });
         return response.getBody();
     }

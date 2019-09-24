@@ -20,17 +20,14 @@ import java.util.List;
 @Component
 public class CarModelProviderImpl implements CarModelProvider {
 
-    @Value("${carSale.url.host}")
-    private String URL_HOST;
+    @Value("${carSale.url.host}:${carSale.url.port}")
+    private String URL;
 
-    @Value("${carSale.url.port}")
-    private String URL_PORT;
+    @Value("${carSale.car.make.model.all}")
+    private String CAR_MAKE_MODEL_ALL;
 
-    @Value("${car.model.list.get}")
-    private String CAR_MODEL_LIST_GET;
-
-    @Value("${car.model.get}")
-    private String CAR_MODEL_GET;
+    @Value("${carSale.car.make.model.byId}")
+    private String CAR_MODEL_BY_ID;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -43,7 +40,7 @@ public class CarModelProviderImpl implements CarModelProvider {
      */
     public CarModel getCarModel(final String carModelId) {
         if (StringUtils.isNumeric(carModelId)) {
-            return restTemplate.getForObject(URL_HOST + URL_PORT + CAR_MODEL_GET, CarModel.class, carModelId);
+            return restTemplate.getForObject(URL + CAR_MODEL_BY_ID, CarModel.class, carModelId);
         } else {
             return null;
         }
@@ -57,9 +54,8 @@ public class CarModelProviderImpl implements CarModelProvider {
      */
     public List<CarModel> getCarModels(final String carMakeId) {
         if (StringUtils.isNumeric(carMakeId)) {
-            ResponseEntity<List<CarModel>> response = restTemplate.exchange(URL_HOST + URL_PORT
-                            + CAR_MODEL_LIST_GET, HttpMethod.GET, null,
-                    new ParameterizedTypeReference<List<CarModel>>() {
+            ResponseEntity<List<CarModel>> response = restTemplate.exchange(URL + CAR_MAKE_MODEL_ALL,
+                    HttpMethod.GET, null, new ParameterizedTypeReference<List<CarModel>>() {
                     }, carMakeId);
             return response.getBody();
         } else {

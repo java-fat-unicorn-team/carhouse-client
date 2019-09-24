@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 @ContextConfiguration(classes = TestConfig.class)
 class CarFeatureProviderImplTest {
 
-    @Value("${car.feature.list.get}")
+    @Value("${carSale.car.feature.all}")
     private String CAR_FEATURE_LIST_GET;
 
     @Autowired
