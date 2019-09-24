@@ -5,21 +5,22 @@ import com.carhouse.model.CarMake;
 import com.carhouse.provider.CarMakeProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -54,16 +55,32 @@ class CarMakeProviderImplTest {
 
     @Test
     void getCarMake() throws JsonProcessingException {
-        CarMake carMake = new CarMake(2, "BMW");
-        givenThat(get(urlPathEqualTo(CAR_MAKE_GET + 2))
+        int carMakeId = 2;
+        CarMake carMake = new CarMake(carMakeId, "BMW");
+        givenThat(get(urlPathEqualTo(CAR_MAKE_GET + carMakeId))
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(objectMapper.writeValueAsString(carMake)))
         );
-        CarMake result = carMakeProvider.getCarMake("2");
+        CarMake result = carMakeProvider.getCarMake(String.valueOf(carMakeId));
         assertEquals(carMake.getCarMakeId(), result.getCarMakeId());
         assertEquals(carMake.getCarMake(), result.getCarMake());
     }
 
+    @Test
+    void getNotExistCarMake() {
+        int carMakeId = 123;
+        givenThat(get(urlPathEqualTo(CAR_MAKE_GET + carMakeId))
+                .willReturn(aResponse()
+                        .withStatus(404)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("there is not car make with id = " + carMakeId))
+        );
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
+                () -> carMakeProvider.getCarMake(String.valueOf(carMakeId)));
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        Assertions.assertEquals(exception.getResponseBodyAsString(),
+                "there is not car make with id = " + carMakeId);
+    }
 }
