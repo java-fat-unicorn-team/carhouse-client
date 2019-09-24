@@ -5,11 +5,13 @@ import com.carhouse.provider.CarModelProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,8 +20,11 @@ import java.util.List;
 @Component
 public class CarModelProviderImpl implements CarModelProvider {
 
-    @Value("${carSale.url}")
-    private String URL;
+    @Value("${carSale.url.host}")
+    private String URL_HOST;
+
+    @Value("${carSale.url.port}")
+    private String URL_PORT;
 
     @Value("${car.model.list.get}")
     private String CAR_MODEL_LIST_GET;
@@ -38,7 +43,7 @@ public class CarModelProviderImpl implements CarModelProvider {
      */
     public CarModel getCarModel(final String carModelId) {
         if (StringUtils.isNumeric(carModelId)) {
-            return restTemplate.getForObject(URL + CAR_MODEL_GET, CarModel.class, carModelId);
+            return restTemplate.getForObject(URL_HOST + URL_PORT + CAR_MODEL_GET, CarModel.class, carModelId);
         } else {
             return null;
         }
@@ -52,9 +57,11 @@ public class CarModelProviderImpl implements CarModelProvider {
      */
     public List<CarModel> getCarModels(final String carMakeId) {
         if (StringUtils.isNumeric(carMakeId)) {
-            CarModel[] listCarModels = restTemplate.getForObject(URL + CAR_MODEL_LIST_GET,
-                    CarModel[].class, carMakeId);
-            return listCarModels != null ? Arrays.asList(listCarModels) : null;
+            ResponseEntity<List<CarModel>> response = restTemplate.exchange(URL_HOST + URL_PORT
+                            + CAR_MODEL_LIST_GET, HttpMethod.GET, null,
+                    new ParameterizedTypeReference<List<CarModel>>() {
+                    }, carMakeId);
+            return response.getBody();
         } else {
             return new ArrayList<>();
         }

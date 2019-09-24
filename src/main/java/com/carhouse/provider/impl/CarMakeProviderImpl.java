@@ -5,10 +5,12 @@ import com.carhouse.provider.CarMakeProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,8 +19,11 @@ import java.util.List;
 @Component
 public class CarMakeProviderImpl implements CarMakeProvider {
 
-    @Value("${carSale.url}")
-    private String URL;
+    @Value("${carSale.url.host}")
+    private String URL_HOST;
+
+    @Value("${carSale.url.port}")
+    private String URL_PORT;
 
     @Value("${car.make.list.get}")
     private String CAR_MAKE_LIST_GET;
@@ -35,8 +40,10 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      * @return the list car make
      */
     public List<CarMake> getCarMakes() {
-        CarMake[] listCarMakes = restTemplate.getForObject(URL + CAR_MAKE_LIST_GET, CarMake[].class);
-        return listCarMakes != null ? Arrays.asList(listCarMakes) : null;
+        ResponseEntity<List<CarMake>> response = restTemplate.exchange(URL_HOST + URL_PORT + CAR_MAKE_LIST_GET,
+                HttpMethod.GET, null, new ParameterizedTypeReference<List<CarMake>>() {
+                });
+        return response.getBody();
     }
 
     /**
@@ -47,7 +54,7 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      */
     public CarMake getCarMake(final String carMakeId) {
         if (StringUtils.isNumeric(carMakeId)) {
-            return restTemplate.getForObject(URL + CAR_MAKE_GET, CarMake.class, carMakeId);
+            return restTemplate.getForObject(URL_HOST + URL_PORT + CAR_MAKE_GET, CarMake.class, carMakeId);
         } else {
             return null;
         }
