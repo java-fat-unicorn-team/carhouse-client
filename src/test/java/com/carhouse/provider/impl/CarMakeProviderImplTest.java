@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ContextConfiguration(classes = TestConfig.class)
 class CarMakeProviderImplTest {
 
-    @Value("${car.make.list.get}")
+    @Value("${carSale.car.make.all}")
     private String CAR_MAKE_LIST_GET;
     private String CAR_MAKE_GET = "/carSale/car/carModel/carMake/";
 
@@ -74,7 +74,6 @@ class CarMakeProviderImplTest {
         givenThat(get(urlPathEqualTo(CAR_MAKE_GET + carMakeId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withHeader("Content-Type", "application/json")
                         .withBody("there is not car make with id = " + carMakeId))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,

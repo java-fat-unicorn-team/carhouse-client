@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ContextConfiguration(classes = TestConfig.class)
 class CarSaleProviderImplTest {
 
-    @Value("${car.sale.list.get}")
+    @Value("${carSale.car.sale.all}")
     private String CAR_SALE_LIST_GET;
     private String CAR_SALE_GET = "/carSale/";
 
@@ -79,7 +79,6 @@ class CarSaleProviderImplTest {
         stubFor(get(urlPathEqualTo(CAR_SALE_GET + carSaleId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withHeader("Content-Type", "application/json")
                         .withBody("there is not car sale with id = " + carSaleId))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,

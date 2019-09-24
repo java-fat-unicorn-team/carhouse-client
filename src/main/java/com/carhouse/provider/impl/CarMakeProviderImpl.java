@@ -19,17 +19,14 @@ import java.util.List;
 @Component
 public class CarMakeProviderImpl implements CarMakeProvider {
 
-    @Value("${carSale.url.host}")
-    private String URL_HOST;
+    @Value("${carSale.url.host}:${carSale.url.port}")
+    private String URL;
 
-    @Value("${carSale.url.port}")
-    private String URL_PORT;
+    @Value("${carSale.car.make.all}")
+    private String CAR_MAKE_ALL;
 
-    @Value("${car.make.list.get}")
-    private String CAR_MAKE_LIST_GET;
-
-    @Value("${car.make.get}")
-    private String CAR_MAKE_GET;
+    @Value("${carSale.car.make.byId}")
+    private String CAR_MAKE_BY_ID;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -40,7 +37,7 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      * @return the list car make
      */
     public List<CarMake> getCarMakes() {
-        ResponseEntity<List<CarMake>> response = restTemplate.exchange(URL_HOST + URL_PORT + CAR_MAKE_LIST_GET,
+        ResponseEntity<List<CarMake>> response = restTemplate.exchange(URL + CAR_MAKE_ALL,
                 HttpMethod.GET, null, new ParameterizedTypeReference<List<CarMake>>() {
                 });
         return response.getBody();
@@ -54,7 +51,7 @@ public class CarMakeProviderImpl implements CarMakeProvider {
      */
     public CarMake getCarMake(final String carMakeId) {
         if (StringUtils.isNumeric(carMakeId)) {
-            return restTemplate.getForObject(URL_HOST + URL_PORT + CAR_MAKE_GET, CarMake.class, carMakeId);
+            return restTemplate.getForObject(URL + CAR_MAKE_BY_ID, CarMake.class, carMakeId);
         } else {
             return null;
         }

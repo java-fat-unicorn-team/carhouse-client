@@ -53,7 +53,6 @@ class CarModelProviderImplTest {
         givenThat(get(urlPathEqualTo(CAR_MODEL_GET + carModelId))
                 .willReturn(aResponse()
                         .withStatus(404)
-                        .withHeader("Content-Type", "application/json")
                         .withBody("there is not car model with id = " + carModelId))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,

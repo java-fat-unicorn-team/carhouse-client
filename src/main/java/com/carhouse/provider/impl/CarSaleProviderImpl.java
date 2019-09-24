@@ -24,17 +24,14 @@ import java.util.Map;
 @Component
 public class CarSaleProviderImpl implements CarSaleProvider {
 
-    @Value("${carSale.url.host}")
-    private String URL_HOST;
+    @Value("${carSale.url.host}:${carSale.url.port}")
+    private String URL;
 
-    @Value("${carSale.url.port}")
-    private String URL_PORT;
+    @Value("${carSale.car.sale.all}")
+    private String CAR_SALE_ALL;
 
-    @Value("${car.sale.list.get}")
-    private String CAR_SALE_LIST_GET;
-
-    @Value("${car.sale.get}")
-    private String CAR_SALE_GET;
+    @Value("${carSale.car.sale.byId}")
+    private String CAR_SALE_BY_ID;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -46,10 +43,9 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @return the list car sale
      */
     public List<CarSaleDto> getListCarSale(final Map<String, String> requestParams) {
-        ResponseEntity<List<CarSaleDto>> response = restTemplate.exchange(buildUrl(URL_HOST + URL_PORT
-                        + CAR_SALE_LIST_GET, requestParams), HttpMethod.GET, null,
-                new ParameterizedTypeReference<List<CarSaleDto>>() {
-                });
+        ResponseEntity<List<CarSaleDto>> response = restTemplate.exchange(buildUrl(URL + CAR_SALE_ALL,
+                requestParams), HttpMethod.GET, null, new ParameterizedTypeReference<List<CarSaleDto>>() {
+        });
         return response.getBody();
     }
 
@@ -62,7 +58,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      */
     @Override
     public CarSale getCarSale(final Integer carSaleId) {
-        return restTemplate.getForObject(URL_HOST + URL_PORT + CAR_SALE_GET, CarSale.class, carSaleId);
+        return restTemplate.getForObject(URL + CAR_SALE_BY_ID, CarSale.class, carSaleId);
     }
 
     /**

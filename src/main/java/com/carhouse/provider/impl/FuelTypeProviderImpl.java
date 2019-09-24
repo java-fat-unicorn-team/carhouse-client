@@ -18,14 +18,11 @@ import java.util.List;
 @Component
 public class FuelTypeProviderImpl implements FuelTypeProvider {
 
-    @Value("${carSale.url.host}")
-    private String URL_HOST;
+    @Value("${carSale.url.host}:${carSale.url.port}")
+    private String URL;
 
-    @Value("${carSale.url.port}")
-    private String URL_PORT;
-
-    @Value("${fuel.type.list.get}")
-    private String FUEL_TYPE_LIST_GET;
+    @Value("${carSale.fuel.type.all}")
+    private String FUEL_TYPE_ALL;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -36,8 +33,8 @@ public class FuelTypeProviderImpl implements FuelTypeProvider {
      * @return the list fuel types
      */
     public List<FuelType> getFuelTypes() {
-        ResponseEntity<List<FuelType>> response = restTemplate.exchange(URL_HOST + URL_PORT + FUEL_TYPE_LIST_GET,
-                HttpMethod.GET, null, new ParameterizedTypeReference<List<FuelType>>() {
+        ResponseEntity<List<FuelType>> response = restTemplate.exchange(URL + FUEL_TYPE_ALL, HttpMethod.GET,
+                null, new ParameterizedTypeReference<List<FuelType>>() {
                 });
         return response.getBody();
     }
