@@ -5,10 +5,7 @@ import com.carhouse.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -98,8 +95,25 @@ public class CarSaleController {
      */
     @PostMapping("/carSale/add")
     public String addCarSaleSubmit(@ModelAttribute final CarSale carSale,
-                                   @RequestParam(value = "carFeatureList") final int[] featureList) {
+                                   @RequestParam(required = false, value = "carFeatureList") final int[] featureList) {
         carSaleProvider.addCarSale(carSale, featureList);
-        return "redirect:/homePage";
+        return "redirect:/carSale";
+    }
+
+    /**
+     * Delete car sale string.
+     * Gets the request url to return to the same page
+     *
+     * @param carSaleId  the car sale id
+     * @param requestUrl the request url
+     * @return the string
+     */
+    @GetMapping("/carSale/{carSaleId}/delete")
+    public String deleteCarSale(@PathVariable final Integer carSaleId,
+                                @RequestParam("requestUrl") final String requestUrl) {
+        String redirectUrl = requestUrl.replaceAll("\\*\\*\\*", "&")
+                .replaceFirst("http://localhost:[0-9]*", "redirect:");
+        carSaleProvider.deleteCarSale(carSaleId);
+        return redirectUrl;
     }
 }
