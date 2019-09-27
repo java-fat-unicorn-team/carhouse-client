@@ -1,5 +1,6 @@
 package com.carhouse.provider.impl;
 
+import com.carhouse.model.CarFeature;
 import com.carhouse.model.CarSale;
 import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.provider.CarSaleProvider;
@@ -14,9 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The car sale data provider.
@@ -32,6 +31,12 @@ public class CarSaleProviderImpl implements CarSaleProvider {
 
     @Value("${carSale.car.sale.byId}")
     private String CAR_SALE_BY_ID;
+
+    @Value("${carSale.car.sale.add}")
+    private String CAR_SALE_ADD;
+
+    @Value("${carSale.car.sale.delete}")
+    private String CAR_SALE_DELETE;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -69,8 +74,25 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @param carFeatures list of selected car feature's id
      */
     @Override
-    public void addCarSale(final CarSale carSale, final int[] carFeatures) {
+    public Integer addCarSale(final CarSale carSale, final int[] carFeatures) {
+        List<CarFeature> carFeatureList = new ArrayList<>();
+        if (Objects.nonNull(carFeatures)) {
+            for (int carFeatureId : carFeatures) {
+                carFeatureList.add(new CarFeature(carFeatureId, ""));
+            }
+        }
+        carSale.getCar().setCarFeatureList(carFeatureList);
+        return restTemplate.postForObject(URL + CAR_SALE_ADD, carSale, Integer.class);
+    }
 
+    /**
+     * Delete car sale by id.
+     *
+     * @param carSaleId the car sale id
+     */
+    @Override
+    public void deleteCarSale(final int carSaleId) {
+        restTemplate.delete(URL + CAR_SALE_DELETE, carSaleId);
     }
 
     /**

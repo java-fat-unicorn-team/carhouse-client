@@ -34,6 +34,14 @@ public interface CarSaleProvider {
      *
      * @param carSale     object from form
      * @param carFeatures list of selected car feature's id
+     * @return the generated car sale id
      */
-    void addCarSale(CarSale carSale, int[] carFeatures);
+    Integer addCarSale(CarSale carSale, int[] carFeatures);
+
+    /**
+     * Delete car sale.
+     *
+     * @param carSaleId the car sale id
+     */
+    void deleteCarSale(int carSaleId);
 }

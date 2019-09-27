@@ -17,13 +17,12 @@
                 <div class="col">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car house</strong></a>
+                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car
+                                house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add advertisement</a>
-                        </li>
-                        <li class="nav-item mr-0 bg-secondary">
-                            <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
+                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add
+                                advertisement</a>
                         </li>
                     </ul>
                 </div>
@@ -101,23 +100,68 @@
                 </div>
             </div>
             <div class="col">
-                <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
-                    <h4 th:text="${carSale.carMake} + ', ' + ${carSale.carModel}"></h4>
-                </a>
-                <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
-+ ', ' + ${carSale.mileage} + ' m.'"></span>
+                <div class="row">
+                    <div class="col">
+                        <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                            <h4 th:text="${carSale.carMake} + ', ' + ${carSale.carModel}"></h4>
+                        </a>
+                        <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
+                                                    + ', ' + ${carSale.mileage} + ' m.'"></span>
+                    </div>
+                    <div class="col-4 col-md-3 col-lg-2 pt-3">
+                        <a class="btn btn-warning btn-sm btn-block" href="#" role="button">Edit</a><br>
+                        <span data-toggle="modal"
+                              data-target="#deleteDialog"
+                              th:attr="data-id=${carSale.carSaleId},data-carmake=${carSale.carMake},
+                              data-carmodel=${carSale.carModel},data-year=${#dates.year(carSale.year)}">
+                            <a href="#" class="btn btn-danger btn-sm btn-block"
+                               data-toggle="tooltip"
+                               data-placement="top">Delete</a>
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
 </section>
 
+<!-- Confirm delete Modal -->
+<div class="modal fade" id="deleteDialog" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-danger">
+                <h5 class="modal-title" id="exampleModalLabel">Delete car sale advertisement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Please confirm delete
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a id="deleteUrl" href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
+crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+crossorigin="anonymous"></script>
+<script>
+    $('#deleteDialog').on('show.bs.modal', function (event) {
+        var target = $(event.relatedTarget)
+        $(this).find('.modal-body').text('Please confirm delete advertisement: "' + target.data('carmake') + ' '
+            + target.data('carmodel') + ' ' + target.data('year') + '"')
+        document.getElementById('deleteUrl').href = '/carSale/' + target.data('id') + '/delete?requestUrl='
+        + document.URL.replace("&","***");
+    })
+</script>
 </body>
 </html>

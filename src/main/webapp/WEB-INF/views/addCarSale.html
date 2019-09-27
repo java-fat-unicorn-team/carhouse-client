@@ -50,8 +50,8 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="carMake">Car make *</label>
                             <select class="form-control col" id="carMake" onchange="addCarModels(this)"
-                                    th:field="*{car.carModel.carMake.carMakeId}"/>
-                            <option value selected>Choose</option>
+                                    th:field="*{car.carModel.carMake.carMakeId}" required/>
+                            <option th:remove="tag">Mercedes</option>
                             <option th:each="carMake : ${listCarMakes}"
                                     th:value="${carMake.carMakeId}"
                                     th:text="${carMake.carMake}">BMW
@@ -63,8 +63,7 @@
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="listCarModels">Car model *</label>
                             <select class="form-control col" id="listCarModels"
-                                    th:field="*{car.carModel.carModelId}"/>
-                                <option value selected>Choose</option>
+                                    th:field="*{car.carModel.carModelId}" required/>
                                 <option th:remove="tag">M2</option>
                                 <option th:remove="tag">M4</option>
                                 <option th:remove="tag">M5</option>
@@ -74,7 +73,7 @@
                         <div class="form-group row" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <label class="col-sm-4 col-form-label" for="year">Year *</label>
                             <select class="form-control col" id="year" type="date" th:field="*{car.year}">
-                                <option th:value="|${startDate}-01-01|" selected>Choose</option>
+                                <option th:value="|${startDate}-01-01|" th:text="${startDate}" selected>Choose</option>
                                 <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
                                         th:value="|${date}-01-01|"
                                         th:text="${date}">2010</option>
@@ -85,7 +84,8 @@
                             <div class="btn-group btn-group-toggle col p-0" data-toggle="buttons" id="fuelType">
                                 <label class="btn btn-light border border-secondary"
                                        th:each="fuelType : ${listFuelTypes}">
-                                    <input type="radio" th:value="${fuelType.fuelTypeId}" text="Petrol"
+                                    <input type="radio" th:id="${fuelType.fuelType}"
+                                           th:value="${fuelType.fuelTypeId}" text="Petrol"
                                            th:text="${fuelType.fuelType}" th:field="*{car.fuelType.fuelTypeId}"
                                            autocomplete="off">
                                 </label>
@@ -106,17 +106,20 @@
                             <div class="btn-group btn-group-toggle col p-0" data-toggle="buttons"
                                  id="transmission">
                                 <label class="btn btn-light border border-secondary">
-                                    <input type="radio" value="0" autocomplete="off"> Manual
+                                    <input type="radio" id="Manual" value="1" autocomplete="off"
+                                           th:field="*{car.transmission.transmissionId}"> Manual
                                 </label>
                                 <label class="btn btn-light border border-secondary">
-                                    <input type="radio" value="1" autocomplete="off"> Automatic
+                                    <input type="radio" id="Automatic" value="2" autocomplete="off"
+                                           th:field="*{car.transmission.transmissionId}"> Automatic
                                 </label>
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="price">Price *</label>
-                            <input class="form-control col" type="number" id="price" th:field="*{price}">
+                            <input class="form-control col" type="number" id="price" th:field="*{price}" required>
                         </div>
+                        <input type="hidden" id="userId" th:field="*{user.userId}">
                     </div>
                 </div>
                 <hr>
@@ -126,24 +129,34 @@
                             <h2>Car Features</h2>
                         </div>
                     </div>
-                        <div class="listCarFeature">
-                            <ul class="list-unstyled row">
-                                <li class="list-item col-sm-6 col-md-4" th:each="carFeature : ${listCarFeatures}">
-                                    <label>
-                                        <input type="checkbox" th:value="${carFeature.carFeatureId}"
-                                               name="carFeatureList">
-                                        <span th:text="${carFeature.carFeature}"></span>
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="listCarFeature">
+                        <ul class="list-unstyled row">
+                            <li class="list-item col-sm-6 col-md-4" th:each="carFeature : ${listCarFeatures}">
+                                <label>
+                                    <input type="checkbox" th:value="${carFeature.carFeatureId}"
+                                           name="carFeatureList">
+                                    <span th:text="${carFeature.carFeature}"></span>
+                                </label>
+                            </li>
+                        </ul>
                     </div>
+                </div>
                 <button type="submit" class="btn btn-primary">Create</button>
             </form>
         </div>
     </div>
 </section>
 
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 <script>
     function addCarModels(carMake) {
         var carMakeId = carMake.value;
@@ -156,7 +169,7 @@
                 type: 'GET',
                 url: "/carModels/" + carMakeId,
                 success: function(data){
-                    var listCarModels=$('#listCarModels'), option="<option value>Choose</option>";
+                    var listCarModels=$('#listCarModels'), option="";
                     listCarModels.empty();
 
                     for(var i=0; i<data.length; i++){
@@ -176,16 +189,14 @@
             columns: 5
         });
     }
+
+    $( document ).ready(function() {
+            $("#Bensin").prop("checked", true);
+            $("#Automatic").prop("checked", true)
+            $("#userId").val("1");
+
+        }
+    )
 </script>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
 </body>
 </html>
