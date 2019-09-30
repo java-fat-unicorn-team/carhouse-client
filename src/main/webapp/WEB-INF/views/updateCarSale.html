@@ -23,7 +23,7 @@
                                 house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
                         </li>
                         <li class="nav-item mr-0 bg-secondary">
@@ -44,7 +44,8 @@
             </div>
         </div>
         <div class="add-carSale-form mt-3">
-            <form action="#" th:action="@{/carSale/update}" th:object="${carSale}" th:method="post">
+            <form action="#" th:action="@{/carSale/{carSaleId}/update(carSaleId=${carSale.carSaleId})}"
+                  th:object="${carSale}" th:method="post">
                 <div class="row">
                     <div class="col-sm-12 col-md-10 col-lg-8">
                         <div class="form-group row">
@@ -71,7 +72,6 @@
                             </select>
                         </div>
                         <div class="d-none">
-                            <input type="number" th:field="*{carSaleId}">
                             <input type="number" th:field="*{car.carId}">
                             <input id="yearWithMonth" th:value="*{car.year}">
                         </div>
@@ -148,7 +148,7 @@
                 <div class="request-url">
                     <input id="requestUrl" type="hidden" th:value="${requestUrl}" name="requestUrl">
                 </div>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">Update</button>
             </form>
         </div>
     </div>
