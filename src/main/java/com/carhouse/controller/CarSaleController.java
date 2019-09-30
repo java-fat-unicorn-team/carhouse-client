@@ -77,8 +77,8 @@ public class CarSaleController {
      * @param model model
      * @return view
      */
-    @GetMapping("/carSale/add")
-    public String addCarSale(final Model model) {
+    @GetMapping("/carSale/addForm")
+    public String getAddCarSaleForm(final Model model) {
         CarSale carSale = new CarSale();
         model.addAttribute("carSale", carSale);
         model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
@@ -113,8 +113,8 @@ public class CarSaleController {
      * @param model      model
      * @return view string
      */
-    @GetMapping("/carSale/{carSaleId}/update")
-    public String updateCarSale(@PathVariable final int carSaleId,
+    @GetMapping("/carSale/{carSaleId}/updateForm")
+    public String getUpdateCarSaleForm(@PathVariable final int carSaleId,
                                 @RequestParam("requestUrl") final String requestUrl, final Model model) {
         CarSale carSale = carSaleProvider.getCarSale(carSaleId);
         model.addAttribute("carSale", carSale);
@@ -133,15 +133,18 @@ public class CarSaleController {
      * Return page with list car sales
      *
      * @param carSale     the car sale
+     * @param carSaleId   the car sale id
      * @param requestUrl  the request url
      * @param featureList the feature list
      * @return the string
      */
-    @PostMapping("/carSale/update")
+    @PostMapping("/carSale/{carSaleId}/update")
     public String updateCarSaleSubmit(
             @ModelAttribute final CarSale carSale,
+            @PathVariable final int carSaleId,
             @RequestParam("requestUrl") final String requestUrl,
             @RequestParam(required = false, value = "carFeatureList") final int[] featureList) {
+        carSale.setCarSaleId(carSaleId);
         carSaleProvider.updateCarSale(carSale, featureList);
         return "redirect:" + requestUrl;
     }

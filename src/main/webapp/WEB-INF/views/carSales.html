@@ -21,7 +21,7 @@
                                 house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
                         </li>
                     </ul>
@@ -116,7 +116,7 @@
                     </div>
                     <div class="col-4 col-md-3 col-lg-2 p-0">
                         <a class="btn btn-warning btn-sm btn-block mt-auto"
-                           th:href="@{/carSale/{carSaleId}/update(carSaleId=${carSale.carSaleId},
+                           th:href="@{/carSale/{carSaleId}/updateForm(carSaleId=${carSale.carSaleId},
                            requestUrl=${#httpServletRequest.requestURI + '?'
                            + #strings.defaultString(#httpServletRequest.queryString, '')})}"
                            role="button">Update</a><br>
