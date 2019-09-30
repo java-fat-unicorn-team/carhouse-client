@@ -3,6 +3,7 @@ package com.carhouse.handler;
 import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,6 +16,18 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class RestTemplateResponseErrorHandler {
 
+    private ObjectMapper objectMapper;
+
+    /**
+     * Instantiates a new Rest template response error handler.
+     *
+     * @param objectMapper the object mapper
+     */
+    @Autowired
+    public RestTemplateResponseErrorHandler(final ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     /**
      * Handle client error and return error page.
      *
@@ -24,13 +37,9 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(HttpClientErrorException.class)
     public ModelAndView handleClientError(final HttpClientErrorException ex) throws JsonProcessingException {
-        ExceptionJSONResponse response = new ObjectMapper().readValue(ex.getResponseBodyAsString(),
+        ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
-        ModelAndView model = new ModelAndView();
-        model.addObject("errorCode", response.getStatus());
-        model.addObject("errorMsg", response.getMessage());
-        model.setViewName("errorPage");
-        return model;
+        return createModelAndView(response.getStatus(), response.getMessage());
     }
 
     /**
@@ -40,9 +49,22 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(ResourceAccessException.class)
     public ModelAndView handleServerNotAvailableError() {
+        return createModelAndView(503, "Sorry, the server is not available");
+    }
+
+    /**
+     * Create model and view.
+     * Set error code and message as model attribute
+     * Set view name to 'errorPage'
+     *
+     * @param errorCode    the error code
+     * @param errorMessage the error message
+     * @return the model and view
+     */
+    private ModelAndView createModelAndView(final int errorCode, final String errorMessage) {
         ModelAndView model = new ModelAndView();
-        model.addObject("errorCode", 503);
-        model.addObject("errorMsg", "Sorry, the server is not available");
+        model.addObject("errorCode", errorCode);
+        model.addObject("errorMsg", errorMessage);
         model.setViewName("errorPage");
         return model;
     }

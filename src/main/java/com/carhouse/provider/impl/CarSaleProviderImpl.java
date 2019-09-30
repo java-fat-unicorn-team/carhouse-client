@@ -35,6 +35,9 @@ public class CarSaleProviderImpl implements CarSaleProvider {
     @Value("${carSale.car.sale.add}")
     private String CAR_SALE_ADD;
 
+    @Value("${carSale.car.sale.update}")
+    private String CAR_SALE_UPDATE;
+
     @Value("${carSale.car.sale.delete}")
     private String CAR_SALE_DELETE;
 
@@ -75,14 +78,21 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      */
     @Override
     public Integer addCarSale(final CarSale carSale, final int[] carFeatures) {
-        List<CarFeature> carFeatureList = new ArrayList<>();
-        if (Objects.nonNull(carFeatures)) {
-            for (int carFeatureId : carFeatures) {
-                carFeatureList.add(new CarFeature(carFeatureId, ""));
-            }
-        }
-        carSale.getCar().setCarFeatureList(carFeatureList);
+        carSale.getCar().setCarFeatureList(createCarFeatureList(carFeatures));
         return restTemplate.postForObject(URL + CAR_SALE_ADD, carSale, Integer.class);
+    }
+
+    /**
+     * Update car sale.
+     * Take car features id and set them to the car sale object
+     *
+     * @param carSale     the car sale
+     * @param carFeatures the car features
+     */
+    @Override
+    public void updateCarSale(final CarSale carSale, final int[] carFeatures) {
+        carSale.getCar().setCarFeatureList(createCarFeatureList(carFeatures));
+        restTemplate.put(URL + CAR_SALE_UPDATE, carSale);
     }
 
     /**
@@ -112,5 +122,21 @@ public class CarSaleProviderImpl implements CarSaleProvider {
             }
         }
         return builder.toUriString();
+    }
+
+    /**
+     * Create car feature list from car feature ids.
+     *
+     * @param carFeatures the car features
+     * @return the list
+     */
+    private List<CarFeature> createCarFeatureList(final int[] carFeatures) {
+        List<CarFeature> carFeatureList = new ArrayList<>();
+        if (Objects.nonNull(carFeatures)) {
+            for (int carFeatureId : carFeatures) {
+                carFeatureList.add(new CarFeature(carFeatureId, ""));
+            }
+        }
+        return carFeatureList;
     }
 }

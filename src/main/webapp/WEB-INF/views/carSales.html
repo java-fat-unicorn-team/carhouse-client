@@ -88,15 +88,21 @@
             </div>
         </div>
         <div class="row border bg-light p-2" th:each="carSale : ${listCarSales}">
-            <div class="col-sm-7 col-md-5 col-lg-4">
+            <div class="col-sm-7 col-md-5 col-lg-4 p-0">
                 <div class="d-inline-block">
                     <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
                         <img th:src="@{/static/bmw.jpg}" height="134" width="180"></a>
                 </div>
                 <div class="d-inline-block pl-3 align-top">
-                    <span th:text="${#dates.year(carSale.year)}"></span>
-                    <br>
-                    <strong th:text="${carSale.price} + ' $'"></strong>
+                    <div>
+                        <span th:text="${#dates.year(carSale.year)}"></span>
+                        <br>
+                        <strong th:text="${carSale.price} + ' $'"></strong>
+                    </div>
+                    <div class="mt-5">
+                            <small th:text="|${#dates.day(carSale.date)}. ${#dates.month(carSale.date)}.
+                        ${#dates.year(carSale.date)}|"></small>
+                    </div>
                 </div>
             </div>
             <div class="col">
@@ -108,8 +114,12 @@
                         <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
                                                     + ', ' + ${carSale.mileage} + ' m.'"></span>
                     </div>
-                    <div class="col-4 col-md-3 col-lg-2 pt-3">
-                        <a class="btn btn-warning btn-sm btn-block" href="#" role="button">Edit</a><br>
+                    <div class="col-4 col-md-3 col-lg-2 p-0">
+                        <a class="btn btn-warning btn-sm btn-block mt-auto"
+                           th:href="@{/carSale/{carSaleId}/update(carSaleId=${carSale.carSaleId},
+                           requestUrl=${#httpServletRequest.requestURI + '?'
+                           + #strings.defaultString(#httpServletRequest.queryString, '')})}"
+                           role="button">Update</a><br>
                         <span data-toggle="modal"
                               data-target="#deleteDialog"
                               th:attr="data-id=${carSale.carSaleId},data-carmake=${carSale.carMake},

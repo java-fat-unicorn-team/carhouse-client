@@ -38,7 +38,7 @@ class HomeControllerTest {
     @BeforeEach
     void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(homeController)
-                .setControllerAdvice(RestTemplateResponseErrorHandler.class)
+                .setControllerAdvice(new RestTemplateResponseErrorHandler(new ObjectMapper()))
                 .build();
     }
 
