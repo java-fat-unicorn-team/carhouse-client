@@ -8,6 +8,7 @@ import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.CarSaleProvider;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ import java.util.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -34,14 +38,28 @@ class CarSaleProviderImplTest {
     private String CAR_SALE_LIST_GET;
     @Value("${carSale.car.sale.add}")
     private String CAR_SALE_ADD;
+    @Value("${carSale.car.sale.update}")
+    private String CAR_SALE_UPDATE;
     @Value("${carSale.car.sale.delete}")
     private String CAR_SALE_DELETE;
     private String CAR_SALE_GET = "/carSale/";
+
+    private static int[] carFeatures;
+    private static List<CarFeature> carFeatureList;
 
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private CarSaleProvider carSaleProvider;
+
+    @BeforeAll
+    static void setup() {
+        carFeatures = new int[]{1, 2, 3};
+        carFeatureList = new ArrayList<>();
+        for (int carFeatureId : carFeatures) {
+            carFeatureList.add(new CarFeature(carFeatureId, ""));
+        }
+    }
 
     @Test
     void getListCarSale() throws JsonProcessingException {
@@ -103,11 +121,6 @@ class CarSaleProviderImplTest {
     @Test
     void addCarSale() throws JsonProcessingException {
         Integer carSaleId = 7;
-        int[] carFeatures = {1, 2, 3};
-        List<CarFeature> carFeatureList = new ArrayList<>();
-        for (int carFeatureId : carFeatures) {
-            carFeatureList.add(new CarFeature(carFeatureId, ""));
-        }
         CarSale carSaleWithCarFeatures = new CarSale().setCar(new Car());
         carSaleWithCarFeatures.getCar().setCarFeatureList(carFeatureList);
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
@@ -149,6 +162,47 @@ class CarSaleProviderImplTest {
                         .withBody(objectMapper.writeValueAsString(exceptionJSONResponse))));
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carSaleProvider.addCarSale(new CarSale().setCar(new Car()), null));
+        ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
+                ExceptionJSONResponse.class);
+        assertEquals(responseStatus, response.getStatus());
+        assertEquals(errorMsg, response.getMessage());
+    }
+
+    @Test
+    void updateCarSale() throws JsonProcessingException {
+        Integer carSaleId = 7;
+        CarSale carSale = new CarSale(carSaleId).setCar(new Car());
+        carSale.getCar().setCarFeatureList(carFeatureList);
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path(CAR_SALE_UPDATE)
+                .buildAndExpand(carSaleId);
+        stubFor(post(urlPathEqualTo(uriComponents.toString()))
+                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                .willReturn(aResponse()
+                        .withStatus(200)));
+    }
+
+    @Test
+    void updateCarSaleWithWrongReferences() throws JsonProcessingException {
+        CarSale carSale = new CarSale(2);
+        carSale.setCar(new Car());
+        int responseStatus = 424;
+        String errorMsg = "there is wrong references in your car sale";
+        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
+        exceptionJSONResponse.setStatus(responseStatus);
+        exceptionJSONResponse.setMessage(errorMsg);
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path(CAR_SALE_UPDATE)
+                .buildAndExpand(2);
+        stubFor(put(urlPathEqualTo(uriComponents.toString()))
+                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                .willReturn(aResponse()
+                        .withStatus(responseStatus)
+                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse))));
+        HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
+                () -> carSaleProvider.updateCarSale(carSale, null));
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());

@@ -1,5 +1,6 @@
 package com.carhouse.controller;
 
+import com.carhouse.model.CarFeature;
 import com.carhouse.model.CarSale;
 import com.carhouse.provider.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -87,7 +90,7 @@ public class CarSaleController {
     /**
      * Submit add car sale advertisement.
      * Take list of selected car feature's id as request param
-     * Return home page
+     * Return page with list car sales
      *
      * @param carSale     object is used to get entered data.
      * @param featureList the feature list
@@ -98,6 +101,49 @@ public class CarSaleController {
                                    @RequestParam(required = false, value = "carFeatureList") final int[] featureList) {
         carSaleProvider.addCarSale(carSale, featureList);
         return "redirect:/carSale";
+    }
+
+    /**
+     * Return page to update new car sale advertisement.
+     * Create list of selected car feature's id to select car feature
+     * Gets the request url to return to the same page
+     *
+     * @param carSaleId  the car sale id
+     * @param requestUrl the request url
+     * @param model      model
+     * @return view string
+     */
+    @GetMapping("/carSale/{carSaleId}/update")
+    public String updateCarSale(@PathVariable final int carSaleId,
+                                @RequestParam("requestUrl") final String requestUrl, final Model model) {
+        CarSale carSale = carSaleProvider.getCarSale(carSaleId);
+        model.addAttribute("carSale", carSale);
+        model.addAttribute("requestUrl", requestUrl);
+        model.addAttribute("selectedCarFeatures",
+                createSelectedCarFeatureList(carSale.getCar().getCarFeatureList()));
+        model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
+        model.addAttribute("listFuelTypes", fuelTypeProvider.getFuelTypes());
+        model.addAttribute("listCarFeatures", carFeatureProvider.getCarFeatures());
+        return "updateCarSale";
+    }
+
+    /**
+     * Submit update car sale advertisement.
+     * Take list of selected car feature's id as request param
+     * Return page with list car sales
+     *
+     * @param carSale     the car sale
+     * @param requestUrl  the request url
+     * @param featureList the feature list
+     * @return the string
+     */
+    @PostMapping("/carSale/update")
+    public String updateCarSaleSubmit(
+            @ModelAttribute final CarSale carSale,
+            @RequestParam("requestUrl") final String requestUrl,
+            @RequestParam(required = false, value = "carFeatureList") final int[] featureList) {
+        carSaleProvider.updateCarSale(carSale, featureList);
+        return "redirect:" + requestUrl;
     }
 
     /**
@@ -115,5 +161,20 @@ public class CarSaleController {
                 .replaceFirst("http://localhost:[0-9]*", "redirect:");
         carSaleProvider.deleteCarSale(carSaleId);
         return redirectUrl;
+    }
+
+    /**
+     * Create array of selected car features.
+     * It is used to set selected car features when updating car sale advertisement
+     *
+     * @param carFeatureList the car feature list
+     * @return id list
+     */
+    private List<Integer> createSelectedCarFeatureList(final List<CarFeature> carFeatureList) {
+        List<Integer> carFeatures = new ArrayList<>();
+        for (int i = 0; i < carFeatureList.size(); i++) {
+            carFeatures.add(carFeatureList.get(i).getCarFeatureId());
+        }
+        return carFeatures;
     }
 }

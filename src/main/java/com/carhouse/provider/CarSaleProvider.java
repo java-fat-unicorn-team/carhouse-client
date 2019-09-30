@@ -39,6 +39,15 @@ public interface CarSaleProvider {
     Integer addCarSale(CarSale carSale, int[] carFeatures);
 
     /**
+     * Update car sale.
+     * Take car features id and set them to the car sale object
+     *
+     * @param carSale     the car sale
+     * @param carFeatures the car features
+     */
+    void updateCarSale(CarSale carSale, int[] carFeatures);
+
+    /**
      * Delete car sale.
      *
      * @param carSaleId the car sale id
