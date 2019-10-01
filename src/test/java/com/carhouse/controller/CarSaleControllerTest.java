@@ -206,7 +206,7 @@ class CarSaleControllerTest {
     @Test
     void updateCarSaleSubmit() throws Exception {
         String requestUrl = "/carSale/carMakeId=2";
-        mockMvc.perform(post("/carSale/" + 2 + "/update")
+        mockMvc.perform(post("/carSale/" + 2)
                 .param("requestUrl", requestUrl)
                 .param("carFeatureList", "1", "2", "3")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -223,7 +223,7 @@ class CarSaleControllerTest {
         HttpStatus httpStatus = HttpStatus.FAILED_DEPENDENCY;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).updateCarSale(any(CarSale.class),
                 eq(carFeatures));
-        mockMvc.perform(post("/carSale/" + 2 + "/update")
+        mockMvc.perform(post("/carSale/" + 2)
                 .param("requestUrl", "/carSale")
                 .param("carFeatureList", "1", "2", "3")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
