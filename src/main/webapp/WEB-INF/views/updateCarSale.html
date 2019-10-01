@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="add-carSale-form mt-3">
-            <form action="#" th:action="@{/carSale/{carSaleId}/update(carSaleId=${carSale.carSaleId})}"
+            <form action="#" th:action="@{/carSale/{carSaleId}(carSaleId=${carSale.carSaleId})}"
                   th:object="${carSale}" th:method="post">
                 <div class="row">
                     <div class="col-sm-12 col-md-10 col-lg-8">

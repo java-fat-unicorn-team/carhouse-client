@@ -106,9 +106,13 @@
                     </table>
                 </div>
                 <hr>
-                <div class="user">
-                    <h3 th:text="${carSale.user.userName}">User</h3>
-                    <span th:text="${carSale.user.phoneNumber}">Phone number</span>
+                <div class="car_features">
+                    <h5>Car features:</h5>
+                    <ul style="list-style-type: disc">
+                        <li th:each="carFeature : ${carSale.car.carFeatureList}" th:text="${carFeature.carFeature}">
+                            Winter tires
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>

@@ -8,9 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Car Sale controller.
@@ -115,7 +114,7 @@ public class CarSaleController {
      */
     @GetMapping("/carSale/{carSaleId}/updateForm")
     public String getUpdateCarSaleForm(@PathVariable final int carSaleId,
-                                @RequestParam("requestUrl") final String requestUrl, final Model model) {
+                                       @RequestParam("requestUrl") final String requestUrl, final Model model) {
         CarSale carSale = carSaleProvider.getCarSale(carSaleId);
         model.addAttribute("carSale", carSale);
         model.addAttribute("requestUrl", requestUrl);
@@ -138,7 +137,7 @@ public class CarSaleController {
      * @param featureList the feature list
      * @return the string
      */
-    @PostMapping("/carSale/{carSaleId}/update")
+    @PostMapping("/carSale/{carSaleId}")
     public String updateCarSaleSubmit(
             @ModelAttribute final CarSale carSale,
             @PathVariable final int carSaleId,
@@ -161,7 +160,7 @@ public class CarSaleController {
     public String deleteCarSale(@PathVariable final Integer carSaleId,
                                 @RequestParam("requestUrl") final String requestUrl) {
         String redirectUrl = requestUrl.replaceAll("\\*\\*\\*", "&")
-                .replaceFirst("http://localhost:[0-9]*", "redirect:");
+                .replaceFirst("http://[a-zA-Z0-9/.]*:[0-9]*", "redirect:");
         carSaleProvider.deleteCarSale(carSaleId);
         return redirectUrl;
     }
@@ -174,10 +173,11 @@ public class CarSaleController {
      * @return id list
      */
     private List<Integer> createSelectedCarFeatureList(final List<CarFeature> carFeatureList) {
-        List<Integer> carFeatures = new ArrayList<>();
-        for (int i = 0; i < carFeatureList.size(); i++) {
-            carFeatures.add(carFeatureList.get(i).getCarFeatureId());
-        }
-        return carFeatures;
+        return Optional.ofNullable(carFeatureList)
+                .orElseGet(Collections::emptyList)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(CarFeature::getCarFeatureId)
+                .collect(Collectors.toList());
     }
 }
