@@ -51,8 +51,7 @@
                             <label class="col-sm-4 col-form-label" for="carMake">Car make *</label>
                             <select class="form-control col" id="carMake" onchange="addCarModels(this)"
                                     th:field="*{car.carModel.carMake.carMakeId}" required/>
-                            <option th:remove="tag">Mercedes</option>
-                            <option th:each="carMake : ${listCarMakes}"
+                            <option th:each="carMake : ${carCharacteristics.carMakeList}"
                                     th:value="${carMake.carMakeId}"
                                     th:text="${carMake.carMake}">BMW
                             </option>
@@ -83,7 +82,7 @@
                             <label class="col-sm-4 col-form-label" for="fuelType">Fuel type *</label>
                             <div class="btn-group btn-group-toggle col p-0" data-toggle="buttons" id="fuelType">
                                 <label class="btn btn-light border border-secondary"
-                                       th:each="fuelType : ${listFuelTypes}">
+                                       th:each="fuelType : ${carCharacteristics.fuelTypeList}">
                                     <input type="radio" th:id="${fuelType.fuelType}"
                                            th:value="${fuelType.fuelTypeId}" text="Petrol"
                                            th:text="${fuelType.fuelType}" th:field="*{car.fuelType.fuelTypeId}"
@@ -105,13 +104,16 @@
                             <label class="col-sm-4 col-form-label" for="transmission">Transmission *</label>
                             <div class="btn-group btn-group-toggle col p-0" data-toggle="buttons"
                                  id="transmission">
-                                <label class="btn btn-light border border-secondary">
-                                    <input type="radio" id="Manual" value="1" autocomplete="off"
-                                           th:field="*{car.transmission.transmissionId}"> Manual
+                                <label class="btn btn-light border border-secondary"
+                                       th:each="transmission : ${carCharacteristics.transmissionList}">
+                                    <input type="radio" th:id="${transmission.transmission}"
+                                           th:value="${transmission.transmissionId}" text="Manual"
+                                           th:text="${transmission.transmission}"
+                                           th:field="*{car.transmission.transmissionId}"
+                                           autocomplete="off">
                                 </label>
-                                <label class="btn btn-light border border-secondary">
-                                    <input type="radio" id="Automatic" value="2" autocomplete="off"
-                                           th:field="*{car.transmission.transmissionId}"> Automatic
+                                <label class="btn btn-light border border-secondary" th:remove="all">
+                                    <input type="radio" autocomplete="off"> Automatic
                                 </label>
                             </div>
                         </div>
@@ -131,7 +133,8 @@
                     </div>
                     <div class="listCarFeature">
                         <ul class="list-unstyled row">
-                            <li class="list-item col-sm-6 col-md-4" th:each="carFeature : ${listCarFeatures}">
+                            <li class="list-item col-sm-6 col-md-4"
+                                th:each="carFeature : ${carCharacteristics.carFeatureList}">
                                 <label>
                                     <input type="checkbox" th:value="${carFeature.carFeatureId}"
                                            name="carFeatureList">

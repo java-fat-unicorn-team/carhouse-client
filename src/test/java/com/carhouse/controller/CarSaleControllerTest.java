@@ -2,6 +2,7 @@ package com.carhouse.controller;
 
 import com.carhouse.handler.RestTemplateResponseErrorHandler;
 import com.carhouse.model.*;
+import com.carhouse.model.dto.CarCharacteristicsDto;
 import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.*;
@@ -41,16 +42,13 @@ class CarSaleControllerTest {
     @Mock
     private CarModelProvider carModelProvider;
     @Mock
-    private FuelTypeProvider fuelTypeProvider;
-    @Mock
-    private CarFeatureProvider carFeatureProvider;
+    private CarCharacteristicsProvider carCharacteristicsProvider;
     @InjectMocks
     private CarSaleController carSaleController;
 
     private static List<CarSaleDto> listCarSales;
     private static List<CarMake> listCarMakes;
-    private static List<FuelType> listFuelTypes;
-    private static List<CarFeature> listCarFeatures;
+    private static CarCharacteristicsDto carCharacteristicsDto;
     private ObjectMapper objectMapper = new ObjectMapper();
     private MockMvc mockMvc;
 
@@ -64,14 +62,23 @@ class CarSaleControllerTest {
             add(new CarMake(0, "Bentley"));
             add(new CarMake(1, "BMW"));
         }};
-        listFuelTypes = new ArrayList<>() {{
+        List<FuelType> listFuelTypes = new ArrayList<>() {{
             add(new FuelType(0, "Petrol"));
             add(new FuelType(1, "Diesel"));
         }};
-        listCarFeatures = new ArrayList<>() {{
+        List<Transmission> listTransmission = new ArrayList<>() {{
+            add(new Transmission(0, "Manual"));
+            add(new Transmission(1, "Automatic"));
+        }};
+        List<CarFeature> listCarFeatures = new ArrayList<>() {{
             add(new CarFeature(0, "Winter tire"));
             add(new CarFeature(1, "Air condition"));
         }};
+        carCharacteristicsDto = new CarCharacteristicsDto()
+                .setCarMakeList(listCarMakes)
+                .setFuelTypeList(listFuelTypes)
+                .setTransmissionList(listTransmission)
+                .setCarFeatureList(listCarFeatures);
     }
 
     @BeforeEach
@@ -144,14 +151,11 @@ class CarSaleControllerTest {
 
     @Test
     void getAddCarSaleForm() throws Exception {
-        when(carMakeProvider.getCarMakes()).thenReturn(listCarMakes);
-        when(fuelTypeProvider.getFuelTypes()).thenReturn(listFuelTypes);
-        when(carFeatureProvider.getCarFeatures()).thenReturn(listCarFeatures);
+        when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenReturn(carCharacteristicsDto);
         mockMvc.perform(get("/carSale/addForm"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addCarSale"))
-                .andExpect(model().attribute("listCarMakes", listCarMakes))
-                .andExpect(model().attribute("listFuelTypes", listFuelTypes));
+                .andExpect(model().attribute("carCharacteristics", carCharacteristicsDto));
     }
 
     @Test
@@ -188,19 +192,16 @@ class CarSaleControllerTest {
         int carSaleId = 2;
         String requestUrl = "/carSale/carMakeId=2";
         CarSale carSale = new CarSale(carSaleId);
-        carSale.setCar(new Car()).getCar().setCarFeatureList(listCarFeatures);
+        carSale.setCar(new Car()).getCar().setCarFeatureList(carCharacteristicsDto.getCarFeatureList());
         when(carSaleProvider.getCarSale(carSaleId)).thenReturn(carSale);
-        when(carMakeProvider.getCarMakes()).thenReturn(listCarMakes);
-        when(fuelTypeProvider.getFuelTypes()).thenReturn(listFuelTypes);
-        when(carFeatureProvider.getCarFeatures()).thenReturn(listCarFeatures);
+        when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenReturn(carCharacteristicsDto);
         mockMvc.perform(get("/carSale/{carSaleId}/updateForm", carSaleId)
                 .param("requestUrl", requestUrl))
                 .andExpect(status().isOk())
                 .andExpect(view().name("updateCarSale"))
-                .andExpect(model().attribute("listCarMakes", listCarMakes))
-                .andExpect(model().attribute("listFuelTypes", listFuelTypes))
                 .andExpect(model().attribute("requestUrl", requestUrl))
-                .andExpect(model().attribute("selectedCarFeatures", Arrays.asList(0, 1)));
+                .andExpect(model().attribute("selectedCarFeatures", Arrays.asList(0, 1)))
+                .andExpect(model().attribute("carCharacteristics", carCharacteristicsDto));
     }
 
     @Test

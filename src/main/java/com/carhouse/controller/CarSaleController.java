@@ -21,27 +21,24 @@ public class CarSaleController {
     private CarSaleProvider carSaleProvider;
     private CarMakeProvider carMakeProvider;
     private CarModelProvider carModelProvider;
-    private FuelTypeProvider fuelTypeProvider;
-    private CarFeatureProvider carFeatureProvider;
+    private CarCharacteristicsProvider carCharacteristicsProvider;
 
     /**
      * Instantiates a new Car sale controller.
      *
-     * @param carSaleProvider    the car sale data provider
-     * @param carMakeProvider    the car make data provide
-     * @param carModelProvider   the car model data provide
-     * @param fuelTypeProvider   the fuel type provider
-     * @param carFeatureProvider the car feature provider
+     * @param carSaleProvider            the car sale data provider
+     * @param carMakeProvider            the car make data provide
+     * @param carModelProvider           the car model data provide
+     * @param carCharacteristicsProvider the car characteristics provider
      */
     @Autowired
     public CarSaleController(final CarSaleProvider carSaleProvider, final CarMakeProvider carMakeProvider,
-                             final CarModelProvider carModelProvider, final FuelTypeProvider fuelTypeProvider,
-                             final CarFeatureProvider carFeatureProvider) {
+                             final CarModelProvider carModelProvider,
+                             final CarCharacteristicsProvider carCharacteristicsProvider) {
         this.carSaleProvider = carSaleProvider;
         this.carMakeProvider = carMakeProvider;
         this.carModelProvider = carModelProvider;
-        this.fuelTypeProvider = fuelTypeProvider;
-        this.carFeatureProvider = carFeatureProvider;
+        this.carCharacteristicsProvider = carCharacteristicsProvider;
     }
 
     /**
@@ -80,9 +77,7 @@ public class CarSaleController {
     public String getAddCarSaleForm(final Model model) {
         CarSale carSale = new CarSale();
         model.addAttribute("carSale", carSale);
-        model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
-        model.addAttribute("listFuelTypes", fuelTypeProvider.getFuelTypes());
-        model.addAttribute("listCarFeatures", carFeatureProvider.getCarFeatures());
+        model.addAttribute("carCharacteristics", carCharacteristicsProvider.getCarCharacteristicsDto());
         return "addCarSale";
     }
 
@@ -116,13 +111,12 @@ public class CarSaleController {
     public String getUpdateCarSaleForm(@PathVariable final int carSaleId,
                                        @RequestParam("requestUrl") final String requestUrl, final Model model) {
         CarSale carSale = carSaleProvider.getCarSale(carSaleId);
+        model.addAttribute("carCharacteristics",
+                carCharacteristicsProvider.getCarCharacteristicsDto());
         model.addAttribute("carSale", carSale);
         model.addAttribute("requestUrl", requestUrl);
         model.addAttribute("selectedCarFeatures",
                 createSelectedCarFeatureList(carSale.getCar().getCarFeatureList()));
-        model.addAttribute("listCarMakes", carMakeProvider.getCarMakes());
-        model.addAttribute("listFuelTypes", fuelTypeProvider.getFuelTypes());
-        model.addAttribute("listCarFeatures", carFeatureProvider.getCarFeatures());
         return "updateCarSale";
     }
 
