@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -37,6 +38,21 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(HttpClientErrorException.class)
     public ModelAndView handleClientError(final HttpClientErrorException ex) throws JsonProcessingException {
+        ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
+                ExceptionJSONResponse.class);
+        return createModelAndView(response.getStatus(), response.getMessage());
+    }
+
+    /**
+     * Handle server incorrect JSON error and return error page.
+     *
+     * @param ex the exception
+     * @return the model and view
+     * @throws JsonProcessingException if can't convert json to object
+     */
+    @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
+    public ModelAndView handleServerIncorrectJsonError(final HttpServerErrorException ex)
+            throws JsonProcessingException {
         ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         return createModelAndView(response.getStatus(), response.getMessage());
