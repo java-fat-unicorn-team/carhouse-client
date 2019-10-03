@@ -127,6 +127,10 @@
                             <a href="#" class="btn btn-danger btn-sm btn-block"
                                data-toggle="tooltip"
                                data-placement="top">Delete</a>
+                            <a class="d-none" th:id="|deleteUrl${carSale.carSaleId}|"
+                               th:href="@{/carSale/{carSaleId}/delete(carSaleId=${carSale.carSaleId},
+                           requestUrl=${#httpServletRequest.requestURI + '?'
+                           + #strings.defaultString(#httpServletRequest.queryString, '')})}"></a>
                         </span>
                     </div>
                 </div>
@@ -169,8 +173,7 @@ crossorigin="anonymous"></script>
         var target = $(event.relatedTarget)
         $(this).find('.modal-body').text('Please confirm delete advertisement: "' + target.data('carmake') + ' '
             + target.data('carmodel') + ' ' + target.data('year') + '"')
-        document.getElementById('deleteUrl').href = '/carSale/' + target.data('id') + '/delete?requestUrl='
-        + document.URL.replace("&","***");
+        document.getElementById('deleteUrl').href = $("#deleteUrl" + target.data('id')).attr('href');
     })
 </script>
 </body>

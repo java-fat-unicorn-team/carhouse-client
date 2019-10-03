@@ -239,21 +239,23 @@ class CarSaleControllerTest {
     @Test
     void deleteCarSale() throws Exception {
         int carSaleId = 2;
+        String requestUrl = "/carSale?carMakeId=1&carModelId=1";
         mockMvc.perform(get("/carSale/{carSaleId}/delete", carSaleId)
-                .param("requestUrl", "http://localhost:8099/carSale?carMakeId=1***carModelId=1"))
+                .param("requestUrl", requestUrl))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/carSale?carMakeId=1&carModelId=1"));
+                .andExpect(redirectedUrl(requestUrl));
         verify(carSaleProvider).deleteCarSale(carSaleId);
     }
 
     @Test
     void deleteNotExistCarSale() throws Exception {
         int carSaleId = 22;
+        String requestUrl = "/carSale?carMakeId=1&carModelId=1";
         String errorMassage = "there is not car sale with id = " + carSaleId;
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).deleteCarSale(carSaleId);
         mockMvc.perform(get("/carSale/{carSaleId}/delete", carSaleId)
-                .param("requestUrl", "http://localhost:8099/carSale?carMakeId=1***carModelId=1"))
+                .param("requestUrl", requestUrl))
                 .andExpect(status().isOk())
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
