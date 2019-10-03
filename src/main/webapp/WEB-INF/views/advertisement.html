@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:400,800">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
           integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
@@ -21,9 +22,6 @@
                         </li>
                         <li class="nav-item ml-auto bg-success">
                             <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add advertisement</a>
-                        </li>
-                        <li class="nav-item mr-0 bg-secondary">
-                            <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
                         </li>
                     </ul>
                 </div>
@@ -71,6 +69,9 @@
                         ${#calendars.year(carSale.car.year)}|">Car</h1>
             </div>
         </div>
+        <div class="d-none">
+            <input id="carSaleId" th:value="${carSale.carSaleId}">
+        </div>
         <hr>
         <div class="row">
             <div class="col-sm-12 col-lg pb-3 order-lg-last">
@@ -116,10 +117,78 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <div class="comments">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div><h5>Comments:</h5></div>
+                        <div>
+                            <a href="#" class="btn btn-sm btn-secondary text-white"
+                               onclick="getAddCommentForm()">
+                                <i class="fas fa-plus"></i> Add comment</a>
+                        </div>
+                    </div>
+                    <div id="listComments">
+                        <div th:id="|comment${comment.commentId}|" class="d-block border border-secondary rounded pl-3 mb-1"
+                             th:each="comment : ${comments}">
+                            <div class="row">
+                                <div class="col-8 col-md-10">
+                                    <strong id="username" th:text="${comment.userName}"></strong><br>
+                                    <span id="commenttext" th:text="${comment.comment}"></span>
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex align-items-start justify-content-end">
+                                        <div>
+                                            <a href="#" th:onclick="|getUpdateCommentForm('${comment.commentId}')|"
+                                               class="btn-sm  text-secondary">
+                                                <i class="fa fa-pencil"></i> <span class="d-none d-md-inline">Edit...</span></a>
+                                            <br>
+                                            <span id="deletemodal" data-toggle="modal"
+                                                  data-target="#deleteDialog"
+                                                  th:attr="data-id=${comment.commentId},data-comment=${comment.comment},
+                                                  data-username=${comment.userName}">
+                                                <a href="#" class="btn-sm  text-secondary"
+                                                   data-toggle="tooltip"
+                                                   data-placement="top">
+                                                    <i class="fa fa-remove"></i> <span class="d-none d-md-inline">Delete</span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 </section>
 
+<!-- Confirm delete Modal -->
+<div class="modal fade" id="deleteDialog" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-danger">
+                <h5 class="modal-title" id="exampleModalLabel">Delete comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Please confirm delete
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a id="deleteUrl" href="#" onclick="deleteComment()" class="btn btn-danger">Delete</a>
+                <input class="d-none" id="commentId" type="text">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="model"></div>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -127,5 +196,92 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
+<script>
+    $('#deleteDialog').on('show.bs.modal', function (event) {
+        var target = $(event.relatedTarget)
+        $(this).find('.modal-body').text('Please confirm delete comment: \n"' + target.data('comment'));
+        document.getElementById('commentId').textContent = target.data('id');
+    });
+
+    function getUpdateCommentForm(commentId) {
+        $.ajax({
+            url: "/carSale/comment/" + commentId + " /updateForm",
+            type: 'GET',
+            dataType: "html",
+            success: function (data) {
+                $('#model').html(data);
+                $('#updateDialog').modal();
+            },
+            error: function (response) {
+                alert(response)
+            }
+        });
+    }
+
+    function updateComment(commentId) {
+        $.ajax({
+            type: 'POST',
+            url: "/carSale/comment/" + commentId,
+            data: $('#updateForm').serialize(),
+            success: function(data){
+                $('#comment' + commentId).replaceWith(data);
+                $('#updateDialog').modal('toggle');
+            },
+            error:function(){
+                alert("error");
+                $('#updateDialog').modal('toggle');
+            }
+        });
+    }
+
+    function getAddCommentForm() {
+        $.ajax({
+            url: "/carSale/comment/addForm",
+            type: 'GET',
+            dataType: "html",
+            success: function (data) {
+                $('#model').html(data);
+                $('#addDialog').modal();
+            },
+            error: function (response) {
+                alert(response)
+            }
+        });
+    }
+
+    function addComment() {
+        var carSaleId = $('#carSaleId').val();
+        $.ajax({
+            type: 'POST',
+            url: "/carSale/" + carSaleId + "/comment",
+            data: $('#addForm').serialize(),
+            success: function(data){
+                $('#listComments').append(data);
+                $('#addDialog').modal('toggle');
+            },
+            error:function(){
+                alert("error");
+                $('#updateDialog').modal('toggle');
+            }
+        });
+    }
+
+    function deleteComment() {
+        var commentId = $('#commentId').text();
+        $.ajax({
+            type: 'GET',
+            url: "/carSale/comment/" + commentId + "/delete",
+            success: function(data){
+                $('#comment' + commentId).remove();
+                $('#deleteDialog').modal('toggle');
+                $('#model').html(data);
+                $('#centralModalSuccess').modal();
+            },
+            error:function(){
+                alert("error");
+            }
+        });
+    }
+</script>
 </body>
 </html>

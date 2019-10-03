@@ -1,14 +1,12 @@
 package com.carhouse.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
 /**
  * The class is used to create response on the exceptions.
  */
-@Component
 public class ExceptionJSONResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date date;
