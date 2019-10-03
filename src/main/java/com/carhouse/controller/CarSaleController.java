@@ -153,10 +153,8 @@ public class CarSaleController {
     @GetMapping("/carSale/{carSaleId}/delete")
     public String deleteCarSale(@PathVariable final Integer carSaleId,
                                 @RequestParam("requestUrl") final String requestUrl) {
-        String redirectUrl = requestUrl.replaceAll("\\*\\*\\*", "&")
-                .replaceFirst("http://[a-zA-Z0-9/.]*:[0-9]*", "redirect:");
         carSaleProvider.deleteCarSale(carSaleId);
-        return redirectUrl;
+        return "redirect:" + requestUrl;
     }
 
     /**
