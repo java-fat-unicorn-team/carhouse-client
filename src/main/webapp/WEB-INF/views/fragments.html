@@ -1,0 +1,123 @@
+<!--Comment block-->
+<div th:fragment="comment" th:id="|comment${comment.commentId}|" class="d-block border border-secondary rounded pl-3 mb-1"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="row">
+        <div class="col-8 col-md-10">
+            <strong id="username" th:text="${comment.userName}"></strong><br>
+            <span id="commenttext" th:text="${comment.comment}"></span>
+        </div>
+        <div class="col">
+            <div class="d-flex align-items-start justify-content-end">
+                <div>
+                    <a href="#" th:onclick="|getUpdateCommentForm('${comment.commentId}')|"
+                       class="btn-sm  text-secondary">
+                        <i class="fa fa-pencil"></i> <span class="d-none d-md-inline">Edit...</span></a>
+                    <br>
+                    <span id="deletemodal" data-toggle="modal"
+                          data-target="#deleteDialog"
+                          th:attr="data-id=${comment.commentId},data-comment=${comment.comment},
+                          data-username=${comment.userName}">
+                        <a href="#" class="btn-sm  text-secondary"
+                           data-toggle="tooltip"
+                           data-placement="top">
+                            <i class="fa fa-remove"></i> <span class="d-none d-md-inline">Delete</span></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update  Modal -->
+<div th:fragment="updateDialog" class="modal fade" id="updateDialog" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-success">
+                <h5 class="modal-title">Update comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="updateForm" th:method="post" action="#"
+                      th:object="${comment}">
+                    <div class="d-none">
+                        <input th:field="*{commentId}">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateUserName">Name:</label>
+                        <input type="text" class="form-control" id="updateUserName"
+                               th:field="*{userName}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateCommentText">Comment:</label>
+                        <textarea class="form-control" rows="5" id="updateCommentText"
+                                  th:field="*{comment}" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a href="#" th:onclick="|updateComment('*{commentId}')|"
+                   class="btn btn-danger">Update</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add  Modal -->
+<div th:fragment="addDialog" class="modal fade" id="addDialog" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-success">
+                <h5 class="modal-title">Add comment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm" th:method="post" action="#"
+                      th:object="${comment}">
+                    <div class="d-none">
+                        <input th:field="*{commentId}">
+                    </div>
+                    <div class="form-group">
+                        <label for="addUserName">Name:</label>
+                        <input type="text" class="form-control" id="addUserName"
+                               th:field="*{userName}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="addCommentText">Comment:</label>
+                        <textarea class="form-control" rows="5" id="addCommentText"
+                                  th:field="*{comment}" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a href="#" th:onclick="|addComment('*{commentId}')|"
+                   class="btn btn-danger">Add</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Success-->
+<div th:fragment="success" id="centralModalSuccess" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true"
+     xmlns:th="http://www.thymeleaf.org">
+    <div class="modal-dialog modal-frame modal-bottom modal-success" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row d-flex justify-content-center align-items-center">
+                    <i class="fa fa-check fa-4x mb-3 animated rotateIn" style="color: #00c759;"></i>
+                    <p>Success</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
