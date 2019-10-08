@@ -91,7 +91,7 @@
             <div class="col-sm-7 col-md-5 col-lg-4 p-0">
                 <div class="d-inline-block">
                     <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
-                        <img th:src="@{/static/bmw.jpg}" height="134" width="180"></a>
+                        <img th:src="${carSale.imageUrl}" height="134" width="180"></a>
                 </div>
                 <div class="d-inline-block pl-3 align-top">
                     <div>

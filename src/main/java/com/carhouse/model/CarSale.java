@@ -2,10 +2,12 @@ package com.carhouse.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The car sale model describes the announcement of the car sale.
  * The model includes car price, date when the announcement was added, user who added this announcement etc.
+ *
  * @author Katuranau Maksimilyan
  */
 public class CarSale {
@@ -14,6 +16,10 @@ public class CarSale {
     private Date date;
     private User user;
     private Car car;
+    private String imageUrl;
+    private byte[] image;
+    private List<Comment> commentList;
+
 
     /**
      * Instantiates a new Car sale.
@@ -82,8 +88,8 @@ public class CarSale {
     /**
      * Sets date.
      *
-     * @return car sale object
      * @param date the date
+     * @return car sale object
      */
     public CarSale setDate(final Date date) {
         this.date = date;
@@ -127,6 +133,68 @@ public class CarSale {
      */
     public CarSale setCar(final Car car) {
         this.car = car;
+        return this;
+    }
+
+    /**
+     * Gets image url.
+     * Image in Base64 String format to display on the UI
+     *
+     * @return the image url
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
+     * Gets image url.
+     * Image in Base64 String format to display on the UI
+     *
+     * @param imageUrl the image url
+     * @return car sale object
+     */
+    public CarSale setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+        return this;
+    }
+
+    /**
+     * Get image byte [ ].
+     *
+     * @return the byte [ ]
+     */
+    public byte[] getImage() {
+        return image;
+    }
+
+    /**
+     * Sets image.
+     *
+     * @return car sale object
+     * @param image the image
+     */
+    public CarSale setImage(final byte[] image) {
+        this.image = image;
+        return this;
+    }
+
+    /**
+     * Gets comment list.
+     *
+     * @return the comment list
+     */
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    /**
+     * Sets comment list.
+     *
+     * @param commentList the comment list
+     * @return car sale object
+     */
+    public CarSale setCommentList(final List<Comment> commentList) {
+        this.commentList = commentList;
         return this;
     }
 

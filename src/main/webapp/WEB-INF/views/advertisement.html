@@ -75,7 +75,7 @@
         <hr>
         <div class="row">
             <div class="col-sm-12 col-lg pb-3 order-lg-last">
-                <img th:src="@{/static/bmwM.jpg}" width="100%"></a>
+                <img th:src="${imageUrl}" width="100%"></a>
             </div>
             <div class="col-12 col-lg-4">
                 <div class="d-inline-block p-1 bg-danger">
@@ -130,7 +130,7 @@
                     </div>
                     <div id="listComments">
                         <div th:id="|comment${comment.commentId}|" class="d-block border border-secondary rounded pl-3 mb-1"
-                             th:each="comment : ${comments}">
+                             th:each="comment : ${carSale.commentList}">
                             <div class="row">
                                 <div class="col-8 col-md-10">
                                     <strong id="username" th:text="${comment.userName}"></strong><br>

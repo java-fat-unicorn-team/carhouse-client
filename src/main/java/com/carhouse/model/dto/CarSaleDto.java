@@ -16,6 +16,8 @@ public class CarSaleDto {
     private String transmission;
     private String carMake;
     private String carModel;
+    private byte[] image;
+    private String imageUrl;
 
     /**
      * Gets car sale id.
@@ -195,5 +197,43 @@ public class CarSaleDto {
     public CarSaleDto setCarModel(final String carModel) {
         this.carModel = carModel;
         return this;
+    }
+
+    /**
+     * Gets image url.
+     * Image in Base64 String format to display on the UI
+     *
+     * @return the image url
+     */
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    /**
+     * Sets image url.
+     * Image in Base64 String format to display on the UI
+     *
+     * @param imageUrl the image url
+     */
+    public void setImageUrl(final String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    /**
+     * Get image byte [ ].
+     *
+     * @return the byte [ ]
+     */
+    public byte[] getImage() {
+        return image;
+    }
+
+    /**
+     * Sets image.
+     *
+     * @param image the image
+     */
+    public void setImage(final byte[] image) {
+        this.image = image;
     }
 }

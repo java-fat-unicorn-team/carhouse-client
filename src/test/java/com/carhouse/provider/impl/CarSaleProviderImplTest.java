@@ -14,18 +14,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -43,6 +45,7 @@ class CarSaleProviderImplTest {
 
     private static int[] carFeatures;
     private static List<CarFeature> carFeatureList;
+    private static MockMultipartFile mockMultipartFile;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -56,6 +59,7 @@ class CarSaleProviderImplTest {
         for (int carFeatureId : carFeatures) {
             carFeatureList.add(new CarFeature(carFeatureId, ""));
         }
+        mockMultipartFile = new MockMultipartFile("test.txt", "There should be bytes of image".getBytes());
     }
 
     @Test
@@ -79,9 +83,12 @@ class CarSaleProviderImplTest {
     }
 
     @Test
-    void getCarSale() throws JsonProcessingException {
+    void getCarSale() throws IOException {
         int carSaleId = 1;
-        CarSale carSale = new CarSale().setCarSaleId(carSaleId).setDate(new Date()).setPrice(new BigDecimal(20000));
+        CarSale carSale = new CarSale().setCarSaleId(carSaleId)
+                .setDate(new Date())
+                .setPrice(new BigDecimal(20000))
+                .setImage(mockMultipartFile.getBytes());
         stubFor(get(urlPathEqualTo(CAR_SALE_GET + carSaleId))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -92,6 +99,7 @@ class CarSaleProviderImplTest {
         assertEquals(carSale.getCarSaleId(), result.getCarSaleId());
         assertEquals(carSale.getDate(), result.getDate());
         assertEquals(carSale.getPrice(), result.getPrice());
+        assertArrayEquals(carSale.getImage(), result.getImage());
     }
 
     @Test
@@ -99,13 +107,11 @@ class CarSaleProviderImplTest {
         int carSaleId = 123;
         int responseStatus = 404;
         String errorMsg = "there is not car sale with id = " + carSaleId;
-        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
-        exceptionJSONResponse.setStatus(responseStatus);
-        exceptionJSONResponse.setMessage(errorMsg);
         stubFor(get(urlPathEqualTo(CAR_SALE_GET + carSaleId))
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
-                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse)))
+                        .withBody(objectMapper.writeValueAsString(
+                                createExceptionJSONResponse(responseStatus, errorMsg))))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carSaleProvider.getCarSale(carSaleId));
@@ -116,10 +122,11 @@ class CarSaleProviderImplTest {
     }
 
     @Test
-    void addCarSale() throws JsonProcessingException {
+    void addCarSale() throws IOException {
         Integer carSaleId = 7;
         CarSale carSaleWithCarFeatures = new CarSale().setCar(new Car());
         carSaleWithCarFeatures.getCar().setCarFeatureList(carFeatureList);
+        carSaleWithCarFeatures.setImage(mockMultipartFile.getBytes());
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSaleWithCarFeatures)))
@@ -127,13 +134,15 @@ class CarSaleProviderImplTest {
                         .withStatus(200)
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .withBody(String.valueOf(carSaleId))));
-        assertEquals(carSaleId, carSaleProvider.addCarSale(new CarSale().setCar(new Car()), carFeatures));
+        assertEquals(carSaleId, carSaleProvider.addCarSale(new CarSale().setCar(new Car()), mockMultipartFile,
+                carFeatures));
     }
 
     @Test
-    void addCarSaleWithoutCarFeatures() throws JsonProcessingException {
+    void addCarSaleWithoutCarFeatures() throws IOException {
         Integer carSaleId = 7;
         CarSale carSale = new CarSale().setCar(new Car());
+        carSale.setImage(mockMultipartFile.getBytes());
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
@@ -141,24 +150,25 @@ class CarSaleProviderImplTest {
                         .withStatus(200)
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .withBody(String.valueOf(carSaleId))));
-        assertEquals(carSaleId, carSaleProvider.addCarSale(carSale, null));
+        assertEquals(carSaleId, carSaleProvider.addCarSale(carSale, mockMultipartFile, null));
     }
 
     @Test
-    void addCarSaleWithWrongReferences() throws JsonProcessingException {
+    void addCarSaleWithWrongReferences() throws IOException {
         int responseStatus = 424;
         String errorMsg = "there is wrong references in your car sale";
-        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
-        exceptionJSONResponse.setStatus(responseStatus);
-        exceptionJSONResponse.setMessage(errorMsg);
+        CarSale carSale = new CarSale().setCar(new Car());
+        carSale.getCar().setCarFeatureList(carFeatureList);
+        carSale.setImage(mockMultipartFile.getBytes());
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(new CarSale().setCar(new Car()))))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
-                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse))));
+                        .withBody(objectMapper.writeValueAsString(
+                                createExceptionJSONResponse(responseStatus, errorMsg)))));
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> carSaleProvider.addCarSale(new CarSale().setCar(new Car()), null));
+                () -> carSaleProvider.addCarSale(new CarSale().setCar(new Car()), mockMultipartFile, carFeatures));
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
@@ -166,41 +176,34 @@ class CarSaleProviderImplTest {
     }
 
     @Test
-    void updateCarSale() throws JsonProcessingException {
-        Integer carSaleId = 7;
-        CarSale carSale = new CarSale(carSaleId).setCar(new Car());
+    void updateCarSale() throws IOException {
+        CarSale carSale = new CarSale().setCar(new Car());
         carSale.getCar().setCarFeatureList(carFeatureList);
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .path(CAR_SALE_UPDATE)
-                .buildAndExpand(carSaleId);
-        stubFor(post(urlPathEqualTo(uriComponents.toString()))
+        carSale.setImage(mockMultipartFile.getBytes());
+        stubFor(put(urlPathEqualTo(CAR_SALE_UPDATE))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
                 .willReturn(aResponse()
                         .withStatus(200)));
+        carSaleProvider.updateCarSale(carSale, mockMultipartFile, carFeatures);
     }
 
     @Test
-    void updateCarSaleWithWrongReferences() throws JsonProcessingException {
-        CarSale carSale = new CarSale(2);
-        carSale.setCar(new Car());
+    void updateCarSaleWithWrongReferences() throws IOException {
         int responseStatus = 424;
         String errorMsg = "there is wrong references in your car sale";
-        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
-        exceptionJSONResponse.setStatus(responseStatus);
-        exceptionJSONResponse.setMessage(errorMsg);
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .path(CAR_SALE_UPDATE)
-                .buildAndExpand(2);
-        stubFor(put(urlPathEqualTo(uriComponents.toString()))
+        CarSale carSale = new CarSale().setCar(new Car());
+        carSale.setImage(mockMultipartFile.getBytes());
+        stubFor(put(urlPathEqualTo(CAR_SALE_UPDATE))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
-                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse))));
+                        .withBody(objectMapper.writeValueAsString(
+                                createExceptionJSONResponse(responseStatus, errorMsg)))));
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> carSaleProvider.updateCarSale(carSale, null));
-        ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
+                () -> carSaleProvider.updateCarSale(carSale, mockMultipartFile, null));
+        ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
         assertEquals(errorMsg, response.getMessage());
@@ -224,16 +227,14 @@ class CarSaleProviderImplTest {
         int carSaleId = 30;
         int responseStatus = 424;
         String errorMsg = "there is not car sale with id = " + carSaleId;
-        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
-        exceptionJSONResponse.setStatus(responseStatus);
-        exceptionJSONResponse.setMessage(errorMsg);
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
                 .path(CAR_SALE_DELETE)
                 .buildAndExpand(carSaleId);
         stubFor(delete(urlPathEqualTo(uriComponents.toString()))
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
-                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse)))
+                        .withBody(objectMapper.writeValueAsString(
+                                createExceptionJSONResponse(responseStatus, errorMsg))))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
                 () -> carSaleProvider.deleteCarSale(carSaleId));
@@ -241,5 +242,12 @@ class CarSaleProviderImplTest {
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
         assertEquals(errorMsg, response.getMessage());
+    }
+
+    private ExceptionJSONResponse createExceptionJSONResponse(int responseStatus, String errorMsg) {
+        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
+        exceptionJSONResponse.setStatus(responseStatus);
+        exceptionJSONResponse.setMessage(errorMsg);
+        return exceptionJSONResponse;
     }
 }
