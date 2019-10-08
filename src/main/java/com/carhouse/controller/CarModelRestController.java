@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * Ajax Rest Controller is used to perform queries to server with ajax without updating page.
+ * CarModelRestController is used to get car model list with ajax.
  *
  * @author Katuranau Maksimilyan
  */
 @RestController
-public class AjaxRestController {
+public class CarModelRestController {
 
     @Autowired
     private CarModelProvider carModelProvider;

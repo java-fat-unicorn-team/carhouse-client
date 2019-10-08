@@ -83,6 +83,7 @@ class AdvertisementControllerTest {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(httpStatus.value());
         exceptionJSONResponse.setMessage(errorMassage);
+        exceptionJSONResponse.setPath("/advertisement/" + carSaleId);
         HttpClientErrorException exception = HttpClientErrorException.create(httpStatus,
                 String.valueOf(httpStatus.value()), null, objectMapper.writeValueAsBytes(exceptionJSONResponse),
                 null);
@@ -90,7 +91,7 @@ class AdvertisementControllerTest {
         mockMvc.perform(get("/advertisement/{advertisementId}", carSaleId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new Comment())))
-                .andExpect(status().isOk())
+                .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));

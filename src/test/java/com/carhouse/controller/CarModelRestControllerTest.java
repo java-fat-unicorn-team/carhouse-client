@@ -22,19 +22,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-class AjaxRestControllerTest {
+class CarModelRestControllerTest {
 
     @Mock
     private CarModelProvider carModelProvider;
 
     @InjectMocks
-    private AjaxRestController ajaxRestController;
+    private CarModelRestController carModelRestController;
 
     private MockMvc mockMvc;
 
     @BeforeEach
     void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(ajaxRestController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(carModelRestController).build();
     }
 
     @Test

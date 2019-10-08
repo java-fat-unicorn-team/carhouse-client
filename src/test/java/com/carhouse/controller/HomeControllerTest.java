@@ -54,11 +54,12 @@ class HomeControllerTest {
 
     @Test
     void firstPageServerIsNotAvailable() throws Exception {
+        int statusCode = 503;
         when(carMakeProvider.getCarMakes()).thenThrow(ResourceAccessException.class);
         mockMvc.perform(get("/homePage"))
-                .andExpect(status().isOk())
+                .andExpect(status().is(statusCode))
                 .andExpect(view().name("errorPage"))
-                .andExpect(model().attribute("errorCode", 503))
+                .andExpect(model().attribute("errorCode", statusCode))
                 .andExpect(model().attribute("errorMsg", "Sorry, the server is not available"));
     }
 }

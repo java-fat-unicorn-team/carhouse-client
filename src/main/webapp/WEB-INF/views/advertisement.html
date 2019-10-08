@@ -212,8 +212,9 @@
                 $('#model').html(data);
                 $('#updateDialog').modal();
             },
-            error: function (response) {
-                alert(response)
+            error: function (error) {
+                $('#model').html(error.responseText);
+                $('#centralModalError').modal();
             }
         });
     }
@@ -227,9 +228,9 @@
                 $('#comment' + commentId).replaceWith(data);
                 $('#updateDialog').modal('toggle');
             },
-            error:function(){
-                alert("error");
-                $('#updateDialog').modal('toggle');
+            error:function(error){
+                $('#model').html(error.responseText);
+                $('#centralModalError').modal();
             }
         });
     }
@@ -243,8 +244,9 @@
                 $('#model').html(data);
                 $('#addDialog').modal();
             },
-            error: function (response) {
-                alert(response)
+            error: function (error) {
+                $('#model').html(error.responseText);
+                $('#centralModalError').modal();
             }
         });
     }
@@ -259,9 +261,9 @@
                 $('#listComments').append(data);
                 $('#addDialog').modal('toggle');
             },
-            error:function(){
-                alert("error");
-                $('#updateDialog').modal('toggle');
+            error:function(error){
+                $('#model').html(error.responseText);
+                $('#centralModalError').modal();
             }
         });
     }
@@ -277,8 +279,9 @@
                 $('#model').html(data);
                 $('#centralModalSuccess').modal();
             },
-            error:function(){
-                alert("error");
+            error:function(error){
+                $('#model').html(error.responseText);
+                $('#centralModalError').modal();
             }
         });
     }
