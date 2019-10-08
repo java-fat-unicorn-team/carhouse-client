@@ -143,7 +143,7 @@ class CarSaleControllerTest {
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(carModelProvider.getCarModels(carMakeId)).thenThrow(createException(httpStatus, errorMassage));
         mockMvc.perform(get("/carSale/?carMakeId={carMakeId}", carMakeId))
-                .andExpect(status().isOk())
+                .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
@@ -180,7 +180,7 @@ class CarSaleControllerTest {
                 .param("carFeatureList", "1", "2")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new CarSale())))
-                .andExpect(status().isOk())
+                .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
@@ -229,7 +229,7 @@ class CarSaleControllerTest {
                 .param("carFeatureList", "1", "2", "3")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new CarSale())))
-                .andExpect(status().isOk())
+                .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
@@ -256,7 +256,7 @@ class CarSaleControllerTest {
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).deleteCarSale(carSaleId);
         mockMvc.perform(get("/carSale/{carSaleId}/delete", carSaleId)
                 .param("requestUrl", requestUrl))
-                .andExpect(status().isOk())
+                .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
@@ -268,6 +268,7 @@ class CarSaleControllerTest {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(httpStatus.value());
         exceptionJSONResponse.setMessage(errorMassage);
+        exceptionJSONResponse.setPath("");
         HttpClientErrorException exception = HttpClientErrorException.create(httpStatus,
                 String.valueOf(httpStatus.value()), null, objectMapper.writeValueAsBytes(exceptionJSONResponse),
                 null);

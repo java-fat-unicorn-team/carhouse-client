@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,15 +87,17 @@ public class CommentControllerTest {
     @Test
     void addCommentToNotExistCarSale() throws Exception {
         int carSaleId = 3;
+        String requestUrl = UriComponentsBuilder.newInstance()
+                .path("/carSale/{carSaleId}/comment").buildAndExpand(carSaleId).toString();
         String errorMassage = "there is not car sale with id = " + carSaleId;
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(commentProvider.addComment(any(Comment.class), eq(carSaleId)))
-                .thenThrow(createException(httpStatus, errorMassage));
-        mockMvc.perform(post("/carSale/{carSaleId}/comment", carSaleId)
+                .thenThrow(createException(httpStatus, errorMassage, requestUrl));
+        mockMvc.perform(post(requestUrl)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new Comment())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("errorPage"))
+                .andExpect(status().is(httpStatus.value()))
+                .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
         verify(commentProvider).addComment(any(Comment.class), eq(carSaleId));
@@ -114,12 +117,14 @@ public class CommentControllerTest {
     @Test
     void getUpdateFormForNotExistComment() throws Exception {
         int commentId = 3;
+        String requestUrl = UriComponentsBuilder.newInstance()
+                .path("/carSale/comment/{commentId}/updateForm").buildAndExpand(commentId).toString();
         String errorMassage = "there is not comment with id = " + commentId;
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        when(commentProvider.getCommentById(commentId)).thenThrow(createException(httpStatus, errorMassage));
-        mockMvc.perform(get("/carSale/comment/{commentId}/updateForm", commentId))
-                .andExpect(status().isOk())
-                .andExpect(view().name("errorPage"))
+        when(commentProvider.getCommentById(commentId)).thenThrow(createException(httpStatus, errorMassage, requestUrl));
+        mockMvc.perform(get(requestUrl))
+                .andExpect(status().is(httpStatus.value()))
+                .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
         verify(commentProvider).getCommentById(commentId);
@@ -140,14 +145,16 @@ public class CommentControllerTest {
     @Test
     void updateNotExistComment() throws Exception {
         int commentId = 30;
+        String requestUrl = "/carSale/comment/" + commentId;
         String errorMassage = "there is not comment with id = " + commentId;
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        doThrow(createException(httpStatus, errorMassage)).when(commentProvider).updateComment(any(Comment.class));
-        mockMvc.perform(post("/carSale/comment/{commentId}", commentId)
+        doThrow(createException(httpStatus, errorMassage, requestUrl))
+                .when(commentProvider).updateComment(any(Comment.class));
+        mockMvc.perform(post(requestUrl)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new Comment())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("errorPage"))
+                .andExpect(status().is(httpStatus.value()))
+                .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
         verify(commentProvider).updateComment(any(Comment.class));
@@ -166,24 +173,27 @@ public class CommentControllerTest {
     @Test
     void deleteNotExistComment() throws Exception {
         int commentId = 20;
+        String requestUrl = UriComponentsBuilder.newInstance()
+                .path("/carSale/comment/{commentId}/delete").buildAndExpand(commentId).toString();
         String errorMassage = "there is not comment with id = " + commentId;
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
-        doThrow(createException(httpStatus, errorMassage)).when(commentProvider).deleteComment(commentId);
-        mockMvc.perform(get("/carSale/comment/{commentId}/delete", commentId)
+        doThrow(createException(httpStatus, errorMassage, requestUrl)).when(commentProvider).deleteComment(commentId);
+        mockMvc.perform(get(requestUrl)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new Comment())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("errorPage"))
+                .andExpect(status().is(httpStatus.value()))
+                .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
         verify(commentProvider).deleteComment(commentId);
     }
 
-    private HttpClientErrorException createException(HttpStatus httpStatus, String errorMassage)
+    private HttpClientErrorException createException(HttpStatus httpStatus, String errorMassage, String requestUrl)
             throws JsonProcessingException {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(httpStatus.value());
         exceptionJSONResponse.setMessage(errorMassage);
+        exceptionJSONResponse.setPath(requestUrl);
         HttpClientErrorException exception = HttpClientErrorException.create(httpStatus,
                 String.valueOf(httpStatus.value()), null, objectMapper.writeValueAsBytes(exceptionJSONResponse),
                 null);
