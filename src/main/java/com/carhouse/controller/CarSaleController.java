@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,7 +73,7 @@ public class CarSaleController {
      * Return page to add new car sale advertisement.
      *
      * @param model model
-     * @return view
+     * @return view add car sale form
      */
     @GetMapping("/carSale/addForm")
     public String getAddCarSaleForm(final Model model) {
@@ -85,15 +87,21 @@ public class CarSaleController {
      * Submit add car sale advertisement.
      * Take list of selected car feature's id as request param
      * Return page with list car sales
+     * Gets selected file to upload as request param
+     * If not file selected return empty object
      *
      * @param carSale     object is used to get entered data.
      * @param featureList the feature list
+     * @param file        the file
      * @return view string
+     * @throws IOException the io exception
      */
     @PostMapping("/carSale/add")
     public String addCarSaleSubmit(@ModelAttribute final CarSale carSale,
-                                   @RequestParam(required = false, value = "carFeatureList") final int[] featureList) {
-        carSaleProvider.addCarSale(carSale, featureList);
+                                   @RequestParam(required = false, value = "carFeatureList") final int[] featureList,
+                                   @RequestParam(required = false, value = "multipartFile") final MultipartFile file)
+            throws IOException {
+        carSaleProvider.addCarSale(carSale, file, featureList);
         return "redirect:/carSale";
     }
 
@@ -124,21 +132,26 @@ public class CarSaleController {
      * Submit update car sale advertisement.
      * Take list of selected car feature's id as request param
      * Return page with list car sales
+     * Gets selected file to upload as request param
+     * If not file selected return empty object
      *
      * @param carSale     the car sale
      * @param carSaleId   the car sale id
      * @param requestUrl  the request url
      * @param featureList the feature list
+     * @param file        the file
      * @return the string
+     * @throws IOException the io exception
      */
     @PostMapping("/carSale/{carSaleId}")
     public String updateCarSaleSubmit(
             @ModelAttribute final CarSale carSale,
             @PathVariable final int carSaleId,
             @RequestParam("requestUrl") final String requestUrl,
-            @RequestParam(required = false, value = "carFeatureList") final int[] featureList) {
+            @RequestParam(required = false, value = "carFeatureList") final int[] featureList,
+            @RequestParam(required = false, value = "multipartFile") final MultipartFile file) throws IOException {
         carSale.setCarSaleId(carSaleId);
-        carSaleProvider.updateCarSale(carSale, featureList);
+        carSaleProvider.updateCarSale(carSale, file, featureList);
         return "redirect:" + requestUrl;
     }
 

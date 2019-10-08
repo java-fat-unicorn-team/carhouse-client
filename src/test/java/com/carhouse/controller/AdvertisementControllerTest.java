@@ -8,7 +8,6 @@ import com.carhouse.model.User;
 import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.CarSaleProvider;
 import com.carhouse.provider.CommentProvider;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,8 +35,6 @@ class AdvertisementControllerTest {
 
     @Mock
     private CarSaleProvider carSaleProvider;
-    @Mock
-    private CommentProvider commentProvider;
 
     @InjectMocks
     private AdvertisementController advertisementController;
@@ -55,24 +52,26 @@ class AdvertisementControllerTest {
     @Test
     void getAdvertisement() throws Exception {
         int carSaleId = 1;
-        CarSale carSale = new CarSale()
-                .setCarSaleId(carSaleId)
-                .setPrice(new BigDecimal(23300))
-                .setCar(new Car(2))
-                .setUser(new User(1));
+        String imageUrl = "image url in base64 string format";
         List<Comment> commentList = new ArrayList<>() {{
             add(new Comment().setCommentId(1).setUserName("Vadim").setComment("Great"));
             add(new Comment().setCommentId(2).setUserName("Petya").setComment("Cool"));
         }};
+        CarSale carSale = new CarSale()
+                .setCarSaleId(carSaleId)
+                .setPrice(new BigDecimal(23300))
+                .setCar(new Car(2))
+                .setUser(new User(1))
+                .setImageUrl(imageUrl)
+                .setCommentList(commentList);
+
         when(carSaleProvider.getCarSale(carSaleId)).thenReturn(carSale);
-        when(commentProvider.getComments(carSaleId)).thenReturn(commentList);
         mockMvc.perform(get("/advertisement/{advertisementId}", carSaleId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("advertisement"))
                 .andExpect(model().attribute("carSale", carSale))
-                .andExpect(model().attribute("comments", commentList));
+                .andExpect(model().attribute("imageUrl", imageUrl));
         verify(carSaleProvider).getCarSale(carSaleId);
-        verify(commentProvider).getComments(carSaleId);
     }
 
     @Test

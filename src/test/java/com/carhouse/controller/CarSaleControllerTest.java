@@ -166,7 +166,7 @@ class CarSaleControllerTest {
                 .content(objectMapper.writeValueAsString(new CarSale())))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/carSale"));
-        verify(carSaleProvider).addCarSale(any(CarSale.class), eq(new int[]{1, 2, 3}));
+        verify(carSaleProvider).addCarSale(any(CarSale.class), any(), eq(new int[]{1, 2, 3}));
     }
 
     @Test
@@ -175,7 +175,7 @@ class CarSaleControllerTest {
         String errorMassage = "there is wrong references in your car sale";
         HttpStatus httpStatus = HttpStatus.FAILED_DEPENDENCY;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).addCarSale(any(CarSale.class),
-                eq(carFeatures));
+                any(), eq(carFeatures));
         mockMvc.perform(post("/carSale/add")
                 .param("carFeatureList", "1", "2")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -184,7 +184,7 @@ class CarSaleControllerTest {
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
-        verify(carSaleProvider).addCarSale(any(CarSale.class), eq(carFeatures));
+        verify(carSaleProvider).addCarSale(any(CarSale.class), any(), eq(carFeatures));
     }
 
     @Test
@@ -214,7 +214,7 @@ class CarSaleControllerTest {
                 .content(objectMapper.writeValueAsString(new CarSale())))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl(requestUrl));
-        verify(carSaleProvider).updateCarSale(any(CarSale.class), eq(new int[]{1, 2, 3}));
+        verify(carSaleProvider).updateCarSale(any(CarSale.class), any(), eq(new int[]{1, 2, 3}));
     }
 
     @Test
@@ -223,7 +223,7 @@ class CarSaleControllerTest {
         String errorMassage = "there is wrong references in your car sale";
         HttpStatus httpStatus = HttpStatus.FAILED_DEPENDENCY;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).updateCarSale(any(CarSale.class),
-                eq(carFeatures));
+                any(), eq(carFeatures));
         mockMvc.perform(post("/carSale/" + 2)
                 .param("requestUrl", "/carSale")
                 .param("carFeatureList", "1", "2", "3")
@@ -233,7 +233,7 @@ class CarSaleControllerTest {
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
                 .andExpect(model().attribute("errorMsg", errorMassage));
-        verify(carSaleProvider).updateCarSale(any(CarSale.class), eq(carFeatures));
+        verify(carSaleProvider).updateCarSale(any(CarSale.class), any(), eq(carFeatures));
     }
 
     @Test

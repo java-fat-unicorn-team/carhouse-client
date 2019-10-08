@@ -18,9 +18,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -163,11 +161,14 @@ class CommentProviderImplTest {
 
     @Test
     void updateComment() throws JsonProcessingException {
+        int commentId = 3;
+        Comment comment = commentList.get(2).setCommentId(commentId);
         stubFor(put(urlPathEqualTo(CAR_SALE_COMMENT_UPDATE))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(commentList.get(1))))
+                .withRequestBody(equalToJson(objectMapper.writeValueAsString(comment)))
                 .willReturn(aResponse()
                         .withStatus(200)));
+        commentProvider.updateComment(comment);
     }
 
     @Test

@@ -38,6 +38,7 @@ dependencies {
     def jsonAssertVersion = '1.5.0'
     def commonsLang3Version = '3.9'
     def commonsValidatorVersion = '1.6'
+    def commonsFileUpload = '1.4'
     def wireMockVersion = '2.24.1'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatEmbedLogging}",
@@ -62,6 +63,7 @@ dependencies {
     implementation "org.skyscreamer:jsonassert:${jsonAssertVersion}"
     implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
     implementation "commons-validator:commons-validator:${commonsValidatorVersion}"
+    implementation "commons-fileupload:commons-fileupload:${commonsFileUpload}"
     runtime "javax.servlet:jstl:${servletJstlVersion}"
 
 }
