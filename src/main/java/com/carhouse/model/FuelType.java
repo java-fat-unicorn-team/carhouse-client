@@ -1,12 +1,16 @@
 package com.carhouse.model;
 
+import javax.validation.constraints.PositiveOrZero;
+
 /**
  * The fuel type model.
  * The model includes only fuel type's name and fuel type id to get this model faster.
  * The model can be used by different cars.
+ *
  * @author Katuranau Maksimilyan
  */
 public class FuelType {
+    @PositiveOrZero(message = "fuel type id can't be negative")
     private int fuelTypeId;
     private String fuelType;
 

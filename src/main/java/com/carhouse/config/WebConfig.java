@@ -3,6 +3,8 @@ package com.carhouse.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -73,6 +75,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * Create message source to resolve messages from resources.
+     *
      * @return messageSource
      */
     @Bean
@@ -84,6 +87,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * Create MultipartResolver to upload files in html form.
+     *
      * @return multipartResolver
      */
     @Bean(name = "multipartResolver")
@@ -95,10 +99,22 @@ public class WebConfig implements WebMvcConfigurer {
 
     /**
      * Add handler for static resource.
+     *
      * @param registry is object to register resource handlers
      */
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/static/**").addResourceLocations("/WEB-INF/static/");
+    }
+
+    /**
+     * Local validator factory bean validator.
+     * Enable bean validation
+     *
+     * @return the validator
+     */
+    @Bean
+    public Validator getValidator() {
+        return new LocalValidatorFactoryBean();
     }
 
     /**

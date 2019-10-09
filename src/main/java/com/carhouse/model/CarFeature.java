@@ -1,5 +1,7 @@
 package com.carhouse.model;
 
+import javax.validation.constraints.PositiveOrZero;
+
 /**
  * The car feature model is used to describe feature.
  * The model includes feature description.
@@ -8,6 +10,7 @@ package com.carhouse.model;
  * @author Katuranau Maksimilyan
  */
 public class CarFeature {
+    @PositiveOrZero(message = "car feature id can't be negative")
     private int carFeatureId;
     private String carFeature;
 

@@ -5,10 +5,13 @@ import com.carhouse.provider.CommentProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 /**
  * The type Comment controller.
@@ -44,14 +47,18 @@ public class CommentController {
     /**
      * Add comment to car sale advertisement by id.
      *
-     * @param comment   the comment object from form
-     * @param carSaleId the car sale id
-     * @param model     the model
+     * @param comment       the comment object from form
+     * @param carSaleId     the car sale id
+     * @param model         the model
+     * @param bindingResult the binding result
      * @return the comment block html
      */
     @PostMapping("/carSale/{carSaleId}/comment")
-    public String addComment(@ModelAttribute final Comment comment, @PathVariable final int carSaleId,
-                             final Model model) {
+    public String addComment(@ModelAttribute @Valid final Comment comment, final BindingResult bindingResult,
+                             @PathVariable final int carSaleId, final Model model) {
+        if (bindingResult.hasErrors()) {
+            return "fragments::addDialog";
+        }
         int commentId = commentProvider.addComment(comment, carSaleId);
         comment.setCommentId(commentId);
         model.addAttribute("comment", comment);
@@ -74,14 +81,18 @@ public class CommentController {
     /**
      * Update comment.
      *
-     * @param comment   the comment object from form
-     * @param commentId the comment id
-     * @param model     the model
+     * @param comment       the comment object from form
+     * @param bindingResult the binding result to get form errors
+     * @param commentId     the comment id
+     * @param model         the model
      * @return the comment block html
      */
     @PostMapping("/carSale/comment/{commentId}")
-    public String updateComment(@ModelAttribute final Comment comment, @PathVariable final int commentId,
-                                final Model model) {
+    public String updateComment(@ModelAttribute @Valid final Comment comment, final BindingResult bindingResult,
+                                @PathVariable final int commentId, final Model model) {
+        if (bindingResult.hasErrors()) {
+            return "fragments::updateDialog";
+        }
         comment.setCommentId(commentId);
         commentProvider.updateComment(comment);
         model.addAttribute("comment", comment);

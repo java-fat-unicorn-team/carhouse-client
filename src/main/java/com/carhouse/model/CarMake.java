@@ -1,10 +1,14 @@
 package com.carhouse.model;
 
+import javax.validation.constraints.PositiveOrZero;
+
 /**
  * The car make model includes only car make and id to get the model.
+ *
  * @author Katuranau Maksimilyan
  */
 public class CarMake {
+    @PositiveOrZero(message = "car make id can't be negative")
     private int carMakeId;
     private String carMake;
 

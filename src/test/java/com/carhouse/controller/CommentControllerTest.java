@@ -21,6 +21,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -72,12 +73,10 @@ public class CommentControllerTest {
     @Test
     void addComment() throws Exception {
         int carSaleId = 3;
-        int commentId = 12;
-        Comment comment = new Comment().setCommentId(commentId);
-        when(commentProvider.addComment(any(Comment.class), eq(carSaleId))).thenReturn(commentId);
+        when(commentProvider.addComment(any(Comment.class), eq(carSaleId))).thenReturn(12);
         mockMvc.perform(post("/carSale/{carSaleId}/comment", carSaleId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(objectMapper.writeValueAsString(comment)))
+                .flashAttr("comment", commentList.get(1)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("fragments::comment"))
                 .andExpect(forwardedUrl("fragments::comment"));
@@ -89,18 +88,29 @@ public class CommentControllerTest {
         int carSaleId = 3;
         String requestUrl = UriComponentsBuilder.newInstance()
                 .path("/carSale/{carSaleId}/comment").buildAndExpand(carSaleId).toString();
-        String errorMassage = "there is not car sale with id = " + carSaleId;
+        List<String> errorMassage = Collections.singletonList("there is not car sale with id = " + carSaleId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(commentProvider.addComment(any(Comment.class), eq(carSaleId)))
                 .thenThrow(createException(httpStatus, errorMassage, requestUrl));
         mockMvc.perform(post(requestUrl)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(objectMapper.writeValueAsString(new Comment())))
+                .flashAttr("comment", commentList.get(0)))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
-                .andExpect(model().attribute("errorMsg", errorMassage));
+                .andExpect(model().attribute("errorMsgList", errorMassage));
         verify(commentProvider).addComment(any(Comment.class), eq(carSaleId));
+    }
+
+    @Test
+    void addCommentValidationError() throws Exception {
+        Comment comment = new Comment().setUserName("").setComment("");
+        mockMvc.perform(post("/carSale/{carSaleId}/comment", 12)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .flashAttr("comment", comment))
+                .andExpect(status().isOk())
+                .andExpect(view().name("fragments::addDialog"))
+                .andExpect(forwardedUrl("fragments::addDialog"));
     }
 
     @Test
@@ -119,24 +129,24 @@ public class CommentControllerTest {
         int commentId = 3;
         String requestUrl = UriComponentsBuilder.newInstance()
                 .path("/carSale/comment/{commentId}/updateForm").buildAndExpand(commentId).toString();
-        String errorMassage = "there is not comment with id = " + commentId;
+        List<String> errorMassage = Collections.singletonList("there is not comment with id = " + commentId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(commentProvider.getCommentById(commentId)).thenThrow(createException(httpStatus, errorMassage, requestUrl));
         mockMvc.perform(get(requestUrl))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
-                .andExpect(model().attribute("errorMsg", errorMassage));
+                .andExpect(model().attribute("errorMsgList", errorMassage));
         verify(commentProvider).getCommentById(commentId);
     }
 
     @Test
     void updateComment() throws Exception {
         int commentId = 12;
-        Comment comment = new Comment().setCommentId(commentId);
+        Comment comment = commentList.get(0).setCommentId(commentId);
         mockMvc.perform(post("/carSale/comment/{commentId}", commentId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(objectMapper.writeValueAsString(comment)))
+                .flashAttr("comment", comment))
                 .andExpect(status().isOk())
                 .andExpect(view().name("fragments::comment"))
                 .andExpect(forwardedUrl("fragments::comment"));
@@ -146,18 +156,29 @@ public class CommentControllerTest {
     void updateNotExistComment() throws Exception {
         int commentId = 30;
         String requestUrl = "/carSale/comment/" + commentId;
-        String errorMassage = "there is not comment with id = " + commentId;
+        List<String> errorMassage = Collections.singletonList("there is not comment with id = " + commentId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         doThrow(createException(httpStatus, errorMassage, requestUrl))
                 .when(commentProvider).updateComment(any(Comment.class));
         mockMvc.perform(post(requestUrl)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(objectMapper.writeValueAsString(new Comment())))
+                .flashAttr("comment", commentList.get(0)))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
-                .andExpect(model().attribute("errorMsg", errorMassage));
+                .andExpect(model().attribute("errorMsgList", errorMassage));
         verify(commentProvider).updateComment(any(Comment.class));
+    }
+
+    @Test
+    void updateCommentValidationError() throws Exception {
+        Comment comment = new Comment().setUserName("").setComment("");
+        mockMvc.perform(post("/carSale/comment/12")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .flashAttr("comment", comment))
+                .andExpect(status().isOk())
+                .andExpect(view().name("fragments::updateDialog"))
+                .andExpect(forwardedUrl("fragments::updateDialog"));
     }
 
     @Test
@@ -175,24 +196,22 @@ public class CommentControllerTest {
         int commentId = 20;
         String requestUrl = UriComponentsBuilder.newInstance()
                 .path("/carSale/comment/{commentId}/delete").buildAndExpand(commentId).toString();
-        String errorMassage = "there is not comment with id = " + commentId;
+        List<String> errorMassage = Collections.singletonList("there is not comment with id = " + commentId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         doThrow(createException(httpStatus, errorMassage, requestUrl)).when(commentProvider).deleteComment(commentId);
-        mockMvc.perform(get(requestUrl)
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                .content(objectMapper.writeValueAsString(new Comment())))
+        mockMvc.perform(get(requestUrl))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("fragments::error"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
-                .andExpect(model().attribute("errorMsg", errorMassage));
+                .andExpect(model().attribute("errorMsgList", errorMassage));
         verify(commentProvider).deleteComment(commentId);
     }
 
-    private HttpClientErrorException createException(HttpStatus httpStatus, String errorMassage, String requestUrl)
+    private HttpClientErrorException createException(HttpStatus httpStatus, List<String> errorMassage, String requestUrl)
             throws JsonProcessingException {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(httpStatus.value());
-        exceptionJSONResponse.setMessage(errorMassage);
+        exceptionJSONResponse.setMessages(errorMassage);
         exceptionJSONResponse.setPath(requestUrl);
         HttpClientErrorException exception = HttpClientErrorException.create(httpStatus,
                 String.valueOf(httpStatus.value()), null, objectMapper.writeValueAsBytes(exceptionJSONResponse),

@@ -13,13 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -72,7 +71,7 @@ class CarCharacteristicsProviderImplTest {
         String errorMsg = "Sorry, Incorrect JSON obtained from the database, we are working on it";
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(statusCode);
-        exceptionJSONResponse.setMessage(errorMsg);
+        exceptionJSONResponse.setMessages(Collections.singletonList(errorMsg));
         givenThat(get(urlPathEqualTo(CAR_CHARACTERISTICS_DTO))
                 .willReturn(aResponse()
                         .withStatus(statusCode)
@@ -83,6 +82,6 @@ class CarCharacteristicsProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         Assertions.assertEquals(statusCode, response.getStatus());
-        Assertions.assertEquals(errorMsg, response.getMessage());
+        Assertions.assertEquals(errorMsg, response.getMessages().get(0));
     }
 }

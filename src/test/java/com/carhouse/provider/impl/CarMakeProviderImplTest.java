@@ -17,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -75,7 +76,7 @@ class CarMakeProviderImplTest {
         String errorMsg = "there is not car make with id = " + carMakeId;
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(404);
-        exceptionJSONResponse.setMessage(errorMsg);
+        exceptionJSONResponse.setMessages(Collections.singletonList(errorMsg));
         givenThat(get(urlPathEqualTo(CAR_MAKE_GET + carMakeId))
                 .willReturn(aResponse()
                         .withStatus(404)
@@ -86,6 +87,6 @@ class CarMakeProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         Assertions.assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-        Assertions.assertEquals(errorMsg, response.getMessage());
+        Assertions.assertEquals(errorMsg, response.getMessages().get(0));
     }
 }

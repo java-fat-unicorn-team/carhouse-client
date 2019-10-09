@@ -18,10 +18,12 @@
                 <div class="col">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car house</strong></a>
+                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car
+                                house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add advertisement</a>
+                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
+                                advertisement</a>
                         </li>
                     </ul>
                 </div>
@@ -88,20 +90,28 @@
                     <table class="table table-borderless">
                         <tbody>
                         <tr>
-                            <td>Year of manufacture</th>
-                            <th scope="row" th:text="${#dates.year(carSale.car.year)}">Year</td>
+                            <td>Year of manufacture
+                            </th>
+                            <th scope="row" th:text="${#dates.year(carSale.car.year)}">Year
+                            </td>
                         </tr>
                         <tr>
-                            <td>Mileage</th>
-                            <th scope="row" th:text="${carSale.car.mileage}">Mileage</td>
+                            <td>Mileage
+                            </th>
+                            <th scope="row" th:text="${carSale.car.mileage}">Mileage
+                            </td>
                         </tr>
                         <tr>
-                            <td>Fuel type</th>
-                            <th scope="row" th:text="${carSale.car.fuelType.fuelType}">Fuel type</td>
+                            <td>Fuel type
+                            </th>
+                            <th scope="row" th:text="${carSale.car.fuelType.fuelType}">Fuel type
+                            </td>
                         </tr>
                         <tr>
-                            <td>Transmission</th>
-                            <th scope="row" th:text="${carSale.car.transmission.transmission}">Transmission</td>
+                            <td>Transmission
+                            </th>
+                            <th scope="row" th:text="${carSale.car.transmission.transmission}">Transmission
+                            </td>
                         </tr>
                         </tbody>
                     </table>
@@ -129,7 +139,8 @@
                         </div>
                     </div>
                     <div id="listComments">
-                        <div th:id="|comment${comment.commentId}|" class="d-block border border-secondary rounded pl-3 mb-1"
+                        <div th:id="|comment${comment.commentId}|"
+                             class="d-block border border-secondary rounded pl-3 mb-1"
                              th:each="comment : ${carSale.commentList}">
                             <div class="row">
                                 <div class="col-8 col-md-10">
@@ -141,7 +152,8 @@
                                         <div>
                                             <a href="#" th:onclick="|getUpdateCommentForm('${comment.commentId}')|"
                                                class="btn-sm  text-secondary">
-                                                <i class="fa fa-pencil"></i> <span class="d-none d-md-inline">Edit...</span></a>
+                                                <i class="fa fa-pencil"></i> <span
+                                                    class="d-none d-md-inline">Edit...</span></a>
                                             <br>
                                             <span id="deletemodal" data-toggle="modal"
                                                   data-target="#deleteDialog"
@@ -150,7 +162,8 @@
                                                 <a href="#" class="btn-sm  text-secondary"
                                                    data-toggle="tooltip"
                                                    data-placement="top">
-                                                    <i class="fa fa-remove"></i> <span class="d-none d-md-inline">Delete</span></a>
+                                                    <i class="fa fa-remove"></i> <span
+                                                        class="d-none d-md-inline">Delete</span></a>
                                             </span>
                                         </div>
                                     </div>
@@ -224,13 +237,24 @@
             type: 'POST',
             url: "/carSale/comment/" + commentId,
             data: $('#updateForm').serialize(),
-            success: function(data){
-                $('#comment' + commentId).replaceWith(data);
-                $('#updateDialog').modal('toggle');
+            success: function (response) {
+                $('#updateDialog').modal('hide');
+                setTimeout(function () {
+                    $('#model').html(response);
+                    if ($('#updateDialog').length) {
+                        $('#updateDialog').modal();
+                    } else {
+                        $('#model').empty();
+                        $('#comment' + commentId).replaceWith(response);
+                    }
+                }, 300);
             },
-            error:function(error){
-                $('#model').html(error.responseText);
-                $('#centralModalError').modal();
+            error: function (error) {
+                $('#updateDialog').modal('hide');
+                setTimeout(function () {
+                    $('#model').html(error.responseText);
+                    $('#centralModalError').modal();
+                }, 300)
             }
         });
     }
@@ -257,13 +281,25 @@
             type: 'POST',
             url: "/carSale/" + carSaleId + "/comment",
             data: $('#addForm').serialize(),
-            success: function(data){
-                $('#listComments').append(data);
-                $('#addDialog').modal('toggle');
+            success: function (response, status) {
+                $('#addDialog').modal('hide');
+                setTimeout(function () {
+                    $('#model').html(response);
+                    if ($('#addDialog').length) {
+                        $('#addDialog').modal();
+                    } else {
+                        $('#model').empty();
+                        $('#listComments').append(response);
+                    }
+                }, 300);
             },
-            error:function(error){
-                $('#model').html(error.responseText);
-                $('#centralModalError').modal();
+            error: function (error) {
+                alert("error");
+                $('#addDialog').modal('hide');
+                setTimeout(function () {
+                    $('#model').html(error.responseText);
+                    $('#centralModalError').modal();
+                }, 300)
             }
         });
     }
@@ -273,17 +309,25 @@
         $.ajax({
             type: 'GET',
             url: "/carSale/comment/" + commentId + "/delete",
-            success: function(data){
+            success: function (data) {
                 $('#comment' + commentId).remove();
                 $('#deleteDialog').modal('toggle');
                 $('#model').html(data);
                 $('#centralModalSuccess').modal();
             },
-            error:function(error){
-                $('#model').html(error.responseText);
-                $('#centralModalError').modal();
+            error: function (error) {
+                $('#deleteDialog').modal('hide');
+                setTimeout(function () {
+                    $('#model').html(error.responseText);
+                    $('#centralModalError').modal();
+                }, 300)
             }
         });
+    }
+
+    function showError(data) {
+        $('#model').html(data.responseText);
+        $('#centralModalError').modal();
     }
 </script>
 </body>

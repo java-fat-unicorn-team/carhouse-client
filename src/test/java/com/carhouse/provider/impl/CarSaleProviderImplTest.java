@@ -118,7 +118,7 @@ class CarSaleProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -172,7 +172,7 @@ class CarSaleProviderImplTest {
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -206,7 +206,7 @@ class CarSaleProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -241,13 +241,13 @@ class CarSaleProviderImplTest {
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     private ExceptionJSONResponse createExceptionJSONResponse(int responseStatus, String errorMsg) {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(responseStatus);
-        exceptionJSONResponse.setMessage(errorMsg);
+        exceptionJSONResponse.setMessages(Collections.singletonList(errorMsg));
         return exceptionJSONResponse;
     }
 }

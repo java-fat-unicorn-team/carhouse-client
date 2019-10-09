@@ -1,5 +1,7 @@
 package com.carhouse.model;
 
+import javax.validation.constraints.PositiveOrZero;
+
 /**
  * The Transmission model.
  * The model includes only transmission's name and transmission id to get this model faster.
@@ -8,13 +10,8 @@ package com.carhouse.model;
  * @author Katuranau Maksimilyan
  */
 public class Transmission {
-    /**
-     * transmission id.
-     */
+    @PositiveOrZero(message = "transmission id can't be negative")
     private int transmissionId;
-    /**
-     * transmission's name.
-     */
     private String transmission;
 
     /**

@@ -1,13 +1,21 @@
 package com.carhouse.model;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+
 /**
  * The car model model.
  * The model includes car make model and model of this car make.
  * This model can be used by different cars.
+ *
  * @author Katuranau Maksimilyan
  */
 public class CarModel {
+    @PositiveOrZero(message = "car model id can't be negative")
     private int carModelId;
+    @NotNull(message = "car make object can't be null")
+    @Valid
     private CarMake carMake;
     private String carModel;
 

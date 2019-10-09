@@ -23,7 +23,7 @@
                                 house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/add"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
                         </li>
                     </ul>
@@ -47,34 +47,51 @@
                     <div class="col-sm-12 col-md-10 col-lg-8">
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="carMake">Car make *</label>
-                            <select class="form-control col" id="carMake" onchange="addCarModels(this)"
-                                    th:field="*{car.carModel.carMake.carMakeId}" required/>
-                            <option th:each="carMake : ${carCharacteristics.carMakeList}"
-                                    th:value="${carMake.carMakeId}"
-                                    th:text="${carMake.carMake}">BMW
-                            </option>
-                            <option th:remove="tag">Mercedes</option>
-                            <option th:remove="tag">Audi</option>
-                            </select>
+                            <div class="col p-0">
+                                <select class="form-control" id="carMake" onchange="addCarModels(this)"
+                                        th:field="*{car.carModel.carMake.carMakeId}" required/>
+                                <option th:each="carMake : ${carCharacteristics.carMakeList}"
+                                        th:value="${carMake.carMakeId}"
+                                        th:text="${carMake.carMake}">BMW
+                                </option>
+                                <option th:remove="tag">Mercedes</option>
+                                <option th:remove="tag">Audi</option>
+                                </select>
+                                <small class="text-danger"
+                                       th:if="${#fields.hasErrors('car.carModel.carMake.carMakeId')}"
+                                       th:errors="*{car.carModel.carMake.carMakeId}">Price error</small>
+                            </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="listCarModels">Car model *</label>
-                            <select class="form-control col" id="listCarModels"
-                                    th:field="*{car.carModel.carModelId}" required/>
+                            <div class="col p-0">
+                                <select class="form-control" id="listCarModels"
+                                        th:field="*{car.carModel.carModelId}" required/>
                                 <option th:remove="tag">M2</option>
                                 <option th:remove="tag">M4</option>
                                 <option th:remove="tag">M5</option>
                                 <option th:remove="tag">X5M</option>
-                            </select>
+                                </select>
+                                <small class="text-danger" th:if="${#fields.hasErrors('car.carModel.carModelId')}"
+                                       th:errors="*{car.carModel.carModelId}">Price error</small>
+                            </div>
+                        </div>
+                        <div class="d-none">
+                            <input type="number" th:field="*{car.carId}">
+                            <input id="yearWithMonth" th:value="*{car.year}">
                         </div>
                         <div class="form-group row" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <label class="col-sm-4 col-form-label" for="year">Year *</label>
-                            <select class="form-control col" id="year" type="date" th:field="*{car.year}">
-                                <option th:value="|${startDate}-01-01|" th:text="${startDate}" selected>Choose</option>
-                                <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
-                                        th:value="|${date}-01-01|"
-                                        th:text="${date}">2010</option>
-                            </select>
+                            <div class="col p-0">
+                                <select class="form-control" id="year" type="date" th:field="*{car.year}">
+                                    <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
+                                            th:value="|${date}-01-01|"
+                                            th:text="${date}">2010
+                                    </option>
+                                </select>
+                                <small class="text-danger" th:if="${#fields.hasErrors('car.year')}"
+                                       th:errors="*{car.year}">Price error</small>
+                            </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="fuelType">Fuel type *</label>
@@ -96,7 +113,11 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="mileage">Mileage *</label>
-                            <input class="form-control col" type="number" id="mileage" th:field="*{car.mileage}">
+                            <div class="col p-0">
+                                <input class="form-control" type="number" id="mileage" th:field="*{car.mileage}">
+                                <small class="text-danger" th:if="${#fields.hasErrors('car.mileage')}"
+                                       th:errors="*{car.mileage}">Price error</small>
+                            </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="transmission">Transmission *</label>
@@ -117,7 +138,11 @@
                         </div>
                         <div class="form-group row">
                             <label class="col-sm-4 col-form-label" for="price">Price *</label>
-                            <input class="form-control col" type="number" id="price" th:field="*{price}" required>
+                            <div class="col p-0">
+                                <input class="form-control" type="number" id="price" th:field="*{price}" required>
+                                <small class="text-danger" th:if="${#fields.hasErrors('price')}"
+                                       th:errors="*{price}">Price error</small>
+                            </div>
                         </div>
                         <div class="add-image">
                             <h2>Add image</h2>
@@ -126,7 +151,7 @@
                             <span class="input-group-btn">
                                 <button class="btn btn-info btn-choose" type="button">Choose</button>
                             </span>
-                                    <input type="text" class="form-control" placeholder='Choose a file...' />
+                                    <input type="text" class="form-control" placeholder='Choose a file...'/>
                                     <span class="input-group-btn">
                                  <button class="btn btn-warning btn-reset" type="button">Reset</button>
                             </span>
@@ -148,8 +173,8 @@
                             <li class="list-item col-sm-6 col-md-4"
                                 th:each="carFeature : ${carCharacteristics.carFeatureList}">
                                 <label>
-                                    <input type="checkbox" th:value="${carFeature.carFeatureId}"
-                                           name="carFeatureList">
+                                    <input type="checkbox" th:value="${carFeature.carFeatureId}" name="carFeatureList"
+                                           th:checked="${#lists.contains(selectedCarFeatures, carFeature.carFeatureId)}">
                                     <span th:text="${carFeature.carFeature}"></span>
                                 </label>
                             </li>
@@ -173,28 +198,28 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script type="text/javascript" src="js/bootstrap-filestyle.min.js"> </script>
+<script type="text/javascript" src="js/bootstrap-filestyle.min.js"></script>
 <script>
     function addCarModels(carMake) {
         var carMakeId = carMake.value;
         if (carMakeId === "") {
-            var listCarModels=$('#listCarModels');
+            var listCarModels = $('#listCarModels');
             listCarModels.empty();
             listCarModels.append("<option value>Choose</option>");
         } else {
             $.ajax({
                 type: 'GET',
                 url: "/carModels/" + carMakeId,
-                success: function(data){
-                    var listCarModels=$('#listCarModels'), option="";
+                success: function (data) {
+                    var listCarModels = $('#listCarModels'), option = "";
                     listCarModels.empty();
 
-                    for(var i=0; i<data.length; i++){
-                        option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        option = option + "<option value='" + data[i].carModelId + "'>" + data[i].carModel + "</option>";
                     }
                     listCarModels.append(option);
                 },
-                error:function(){
+                error: function () {
                     alert("error");
                 }
             });
@@ -207,32 +232,59 @@
         });
     }
 
-    $( document ).ready(function() {
-            $("#Bensin").prop("checked", true);
-            $("#Automatic").prop("checked", true)
+    $(document).ready(function () {
+            var fuelTypeId = [[${carSale.car.fuelType.fuelTypeId}]];
+            if (fuelTypeId === 0) {
+                $("#Bensin").prop("checked", true);
+                $("#Automatic").prop("checked", true)
+            }
             $("#userId").val("1");
+            var carMakeId = [[${carSale.car.carModel.carMake.carMakeId}]];
+            if (carMakeId === 0) {
+                carMakeId = $("#carMake").val();
+            }
+            $('#carMake option[value=' + carMakeId + ']').attr('selected', 'selected')
+            $.ajax({
+                type: 'GET',
+                url: "/carModels/" + carMakeId,
+                success: function (data) {
+                    var listCarModels = $('#listCarModels'), option = "";
+                    listCarModels.empty();
 
+                    for (var i = 0; i < data.length; i++) {
+                        option = option + "<option value='" + data[i].carModelId + "'>" + data[i].carModel + "</option>";
+                    }
+                    listCarModels.append(option);
+                    var carModelId = [[${carSale.car.carModel.carModelId}]];
+                    if (carModelId != null) {
+                        $('#listCarModels option[value=' + carModelId + ']').attr('selected', 'selected');
+                    }
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
         }
     )
 
     function bs_input_file() {
         $(".input-file").before(
-            function() {
-                if ( ! $(this).prev().hasClass('input-ghost') ) {
+            function () {
+                if (!$(this).prev().hasClass('input-ghost')) {
                     var element = $("<input type='file' accept='.jpg,.png,.jpeg,.webp' class='input-ghost' style='visibility:hidden; height:0'>");
-                    element.attr("name",$(this).attr("name"));
-                    element.change(function(){
+                    element.attr("name", $(this).attr("name"));
+                    element.change(function () {
                         element.next(element).find('input').val((element.val()).split('\\').pop());
                     });
-                    $(this).find("button.btn-choose").click(function(){
+                    $(this).find("button.btn-choose").click(function () {
                         element.click();
                     });
-                    $(this).find("button.btn-reset").click(function(){
+                    $(this).find("button.btn-reset").click(function () {
                         element.val(null);
                         $(this).parents(".input-file").find('input').val('');
                     });
-                    $(this).find('input').css("cursor","pointer");
-                    $(this).find('input').mousedown(function() {
+                    $(this).find('input').css("cursor", "pointer");
+                    $(this).find('input').mousedown(function () {
                         $(this).parents('.input-file').prev().click();
                         return false;
                     });
@@ -241,7 +293,8 @@
             }
         );
     }
-    $(function() {
+
+    $(function () {
         bs_input_file();
     });
 </script>

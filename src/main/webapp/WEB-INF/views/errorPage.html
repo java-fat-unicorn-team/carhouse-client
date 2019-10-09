@@ -14,11 +14,11 @@
     <div class="row justify-content-center align-items-center h-100 pb-5">
         <div class="text-center">
             <a href="/homePage" class="text-primary"><h1 class="display-3">CarHouse</h1></a>
-                <h1 class="display-4 mt-4">
-                    <small>Error </small><small th:text="${errorCode}">404</small>
-                </h1>
+            <h1 class="display-4 mt-4">
+                <small>Error </small><small th:text="${errorCode}">404</small>
+            </h1>
 
-            <h3 th:text="${errorMsg}">The page you were looking for was moved
+            <h3 th:text="${errorMsg}" th:each="errorMsg: ${errorMsgList}">The page you were looking for was moved
                 <br> or it never existed.</h3>
 
             <small class="pb-5"> You can return to <a href="/homePage">the home page</a> or

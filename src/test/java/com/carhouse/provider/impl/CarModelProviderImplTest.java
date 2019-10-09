@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -54,7 +55,7 @@ class CarModelProviderImplTest {
         String errorMsg = "there is not car model with id = " + carModelId;
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(404);
-        exceptionJSONResponse.setMessage(errorMsg);
+        exceptionJSONResponse.setMessages(Collections.singletonList(errorMsg));
         givenThat(get(urlPathEqualTo(CAR_MODEL_GET + carModelId))
                 .willReturn(aResponse()
                         .withStatus(404)
@@ -65,7 +66,7 @@ class CarModelProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
