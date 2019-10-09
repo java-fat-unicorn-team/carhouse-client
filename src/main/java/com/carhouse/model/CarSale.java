@@ -1,5 +1,9 @@
 package com.carhouse.model;
 
+import javax.validation.Valid;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -11,10 +15,14 @@ import java.util.List;
  * @author Katuranau Maksimilyan
  */
 public class CarSale {
+    @PositiveOrZero(message = "car sale id can't be negative")
     private int carSaleId;
+    @DecimalMin(value = "0", message = "the price can't be negative")
     private BigDecimal price;
     private Date date;
     private User user;
+    @NotNull(message = "car object can't be null")
+    @Valid
     private Car car;
     private String imageUrl;
     private byte[] image;
@@ -170,8 +178,8 @@ public class CarSale {
     /**
      * Sets image.
      *
-     * @return car sale object
      * @param image the image
+     * @return car sale object
      */
     public CarSale setImage(final byte[] image) {
         this.image = image;

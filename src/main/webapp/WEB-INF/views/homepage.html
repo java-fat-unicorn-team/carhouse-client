@@ -20,7 +20,8 @@
                             <a class="nav-link text-white text-uppercase btn" href="#"><strong>Car house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add advertisement</a>
+                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
+                                advertisement</a>
                         </li>
                         <li class="nav-item mr-0 bg-secondary">
                             <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
@@ -46,7 +47,7 @@
             <div class="col">
                 <div class="search-filter">
                     <form action="#"
-                        th:action="@{/carSale}"
+                          th:action="@{/carSale}"
                           th:method="@{get}">
                         <div class="form-row pt-3" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <div class="form-group col-6 col-lg">
@@ -54,7 +55,8 @@
                                     <option value selected>Car make</option>
                                     <option th:each="carMake : ${listCarMakes}"
                                             th:value="${carMake.carMakeId}"
-                                            th:text="${carMake.carMake}">BMW</option>
+                                            th:text="${carMake.carMake}">BMW
+                                    </option>
                                     <option th:remove="tag">Mercedes</option>
                                     <option th:remove="tag">Audi</option>
                                 </select>
@@ -69,15 +71,17 @@
                                     <option th:value="|${startDate-20}-01-01|" selected>Year from</option>
                                     <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate}__,1)}"
                                             th:value="|${date}-01-01|"
-                                            th:text="${date}">2010</option>
+                                            th:text="${date}">2010
+                                    </option>
                                 </select>
                             </div>
                             <div class="form-group col-6 col-lg">
                                 <select class="form-control" type="date" name="yearTo">
-                                    <option th:value="|${startDate}-01-01|"selected>Year to</option>
+                                    <option th:value="|${startDate}-01-01|" selected>Year to</option>
                                     <option th:each="date : ${#numbers.sequence(__${startDate-20}__,__${startDate-1}__,1)}"
                                             th:value="|${date}-12-31|"
-                                            th:text="${date}">2010</option>
+                                            th:text="${date}">2010
+                                    </option>
                                     <option th:value="${#dates.createNow()}" th:text="${startDate}">Year to</option>
                                 </select>
                             </div>
@@ -127,23 +131,23 @@
     function addCarModels(carMake) {
         var carMakeId = carMake.value;
         if (carMakeId === "") {
-            var listCarModels=$('#listCarModels');
+            var listCarModels = $('#listCarModels');
             listCarModels.empty();
             listCarModels.append("<option value>Car model</option>");
         } else {
             $.ajax({
                 type: 'GET',
                 url: "/carModels/" + carMakeId,
-                success: function(data){
-                    var listCarModels=$('#listCarModels'), option="<option value>Car model</option>";
+                success: function (data) {
+                    var listCarModels = $('#listCarModels'), option = "<option value>Car model</option>";
                     listCarModels.empty();
 
-                    for(var i=0; i<data.length; i++){
-                        option = option + "<option value='"+data[i].carModelId + "'>"+data[i].carModel + "</option>";
+                    for (var i = 0; i < data.length; i++) {
+                        option = option + "<option value='" + data[i].carModelId + "'>" + data[i].carModel + "</option>";
                     }
                     listCarModels.append(option);
                 },
-                error:function(){
+                error: function () {
                     alert("error");
                 }
             });

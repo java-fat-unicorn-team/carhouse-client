@@ -39,6 +39,9 @@ dependencies {
     def commonsLang3Version = '3.9'
     def commonsValidatorVersion = '1.6'
     def commonsFileUpload = '1.4'
+    def hibernateValidatorVersion = '6.0.16.Final'
+    def javaxElVersion = '2.2.6'
+    def javaxElAPIVersion = '3.0.0'
     def wireMockVersion = '2.24.1'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatEmbedLogging}",
@@ -64,6 +67,9 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
     implementation "commons-validator:commons-validator:${commonsValidatorVersion}"
     implementation "commons-fileupload:commons-fileupload:${commonsFileUpload}"
+    implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
+    implementation "org.glassfish.web:javax.el:${javaxElVersion}"
+    implementation "javax.el:javax.el-api:${javaxElAPIVersion}"
     runtime "javax.servlet:jstl:${servletJstlVersion}"
 
 }
@@ -93,7 +99,7 @@ checkstyle {
 
 tomcat {
     httpProtocol = 'org.apache.coyote.http11.Http11Nio2Protocol'
-    ajpProtocol  = 'org.apache.coyote.ajp.AjpNio2Protocol'
+    ajpProtocol = 'org.apache.coyote.ajp.AjpNio2Protocol'
     httpPort = 8099
     contextPath = '/'
 }

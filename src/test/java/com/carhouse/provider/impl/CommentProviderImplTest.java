@@ -19,6 +19,7 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -88,7 +89,7 @@ class CommentProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -123,7 +124,7 @@ class CommentProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -156,7 +157,7 @@ class CommentProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -190,7 +191,7 @@ class CommentProviderImplTest {
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     @Test
@@ -219,7 +220,7 @@ class CommentProviderImplTest {
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
-        assertEquals(errorMsg, response.getMessage());
+        assertEquals(errorMsg, response.getMessages().get(0));
     }
 
     private String buildUrl(String url, int parameter) {
@@ -232,7 +233,7 @@ class CommentProviderImplTest {
     private ExceptionJSONResponse createExceptionJSONResponse(int responseStatus, String errorMsg) {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(responseStatus);
-        exceptionJSONResponse.setMessage(errorMsg);
+        exceptionJSONResponse.setMessages(Collections.singletonList(errorMsg));
         return exceptionJSONResponse;
     }
 }

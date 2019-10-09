@@ -3,6 +3,7 @@ package com.carhouse.model.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * The class is used to create response on the exceptions.
@@ -11,7 +12,7 @@ public class ExceptionJSONResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private Date date;
     private int status;
-    private String message;
+    private List<String> messages;
     private String path;
 
     /**
@@ -21,21 +22,21 @@ public class ExceptionJSONResponse {
     }
 
     /**
-     * Gets message.
+     * Gets message list.
      *
      * @return the message describing the exception
      */
-    public String getMessage() {
-        return message;
+    public List<String> getMessages() {
+        return messages;
     }
 
     /**
-     * Sets message.
+     * Sets message list.
      *
-     * @param message the message describing the exception
+     * @param messages the message describing the exception
      */
-    public void setMessage(final String message) {
-        this.message = message;
+    public void setMessages(final List<String> messages) {
+        this.messages = messages;
     }
 
     /**

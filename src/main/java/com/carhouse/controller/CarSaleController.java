@@ -2,13 +2,18 @@ package com.carhouse.controller;
 
 import com.carhouse.model.CarFeature;
 import com.carhouse.model.CarSale;
-import com.carhouse.provider.*;
+import com.carhouse.provider.CarCharacteristicsProvider;
+import com.carhouse.provider.CarMakeProvider;
+import com.carhouse.provider.CarModelProvider;
+import com.carhouse.provider.CarSaleProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -79,6 +84,7 @@ public class CarSaleController {
     public String getAddCarSaleForm(final Model model) {
         CarSale carSale = new CarSale();
         model.addAttribute("carSale", carSale);
+        model.addAttribute("selectedCarFeatures", new ArrayList<>());
         model.addAttribute("carCharacteristics", carCharacteristicsProvider.getCarCharacteristicsDto());
         return "addCarSale";
     }
@@ -90,17 +96,27 @@ public class CarSaleController {
      * Gets selected file to upload as request param
      * If not file selected return empty object
      *
-     * @param carSale     object is used to get entered data.
-     * @param featureList the feature list
-     * @param file        the file
+     * @param carSale       object is used to get entered data.
+     * @param bindingResult the binding result to get form errors
+     * @param featureList   the feature list
+     * @param file          the file
+     * @param model         the model
      * @return view string
      * @throws IOException the io exception
      */
     @PostMapping("/carSale/add")
-    public String addCarSaleSubmit(@ModelAttribute final CarSale carSale,
+    public String addCarSaleSubmit(@ModelAttribute @Valid final CarSale carSale, final BindingResult bindingResult,
                                    @RequestParam(required = false, value = "carFeatureList") final int[] featureList,
-                                   @RequestParam(required = false, value = "multipartFile") final MultipartFile file)
+                                   @RequestParam(required = false, value = "multipartFile") final MultipartFile file,
+                                   final Model model)
             throws IOException {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("carCharacteristics",
+                    carCharacteristicsProvider.getCarCharacteristicsDto());
+            model.addAttribute("selectedCarFeatures",
+                    (Objects.isNull(featureList)) ? new ArrayList<>() : featureList);
+            return "addCarSale";
+        }
         carSaleProvider.addCarSale(carSale, file, featureList);
         return "redirect:/carSale";
     }
@@ -135,21 +151,32 @@ public class CarSaleController {
      * Gets selected file to upload as request param
      * If not file selected return empty object
      *
-     * @param carSale     the car sale
-     * @param carSaleId   the car sale id
-     * @param requestUrl  the request url
-     * @param featureList the feature list
-     * @param file        the file
+     * @param carSale       the car sale
+     * @param bindingResult the binding result to get form errors
+     * @param carSaleId     the car sale id
+     * @param requestUrl    the request url
+     * @param featureList   the feature list
+     * @param file          the file
+     * @param model         the model
      * @return the string
      * @throws IOException the io exception
      */
     @PostMapping("/carSale/{carSaleId}")
     public String updateCarSaleSubmit(
-            @ModelAttribute final CarSale carSale,
-            @PathVariable final int carSaleId,
+            @ModelAttribute @Valid final CarSale carSale, final BindingResult bindingResult,
+            @PathVariable(name = "carSaleId") final int carSaleId,
             @RequestParam("requestUrl") final String requestUrl,
             @RequestParam(required = false, value = "carFeatureList") final int[] featureList,
-            @RequestParam(required = false, value = "multipartFile") final MultipartFile file) throws IOException {
+            @RequestParam(required = false, value = "multipartFile") final MultipartFile file,
+            final Model model) throws IOException {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("carCharacteristics",
+                    carCharacteristicsProvider.getCarCharacteristicsDto());
+            model.addAttribute("requestUrl", requestUrl);
+            model.addAttribute("selectedCarFeatures",
+                    (Objects.isNull(featureList)) ? new ArrayList<>() : featureList);
+            return "updateCarSale";
+        }
         carSale.setCarSaleId(carSaleId);
         carSaleProvider.updateCarSale(carSale, file, featureList);
         return "redirect:" + requestUrl;

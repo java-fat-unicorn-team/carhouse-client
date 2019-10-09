@@ -1,13 +1,24 @@
 package com.carhouse.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Size;
+
 /**
  * The comment model is used to create comments for car sale announcement.
  * The model includes user's name who added the comment, comment and car sale announcement to which this comment applies
+ *
  * @author Katuranau Maksimilyan
  */
 public class Comment {
+    @PositiveOrZero(message = "comment id can't be negative")
     private int commentId;
+    @NotBlank(message = "user name can't be empty")
+    @Size(max = 45, message = "max size for the user name is 45 characters")
     private String userName;
+    @NotEmpty(message = "comment can't be empty")
+    @Size(max = 225, message = "max size for the comment is 225 characters")
     private String comment;
 
     /**

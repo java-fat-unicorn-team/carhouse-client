@@ -12,6 +12,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The RestTemplate response error handler.
  */
@@ -41,7 +44,7 @@ public class RestTemplateResponseErrorHandler {
     public ModelAndView handleClientError(final HttpClientErrorException ex) throws JsonProcessingException {
         ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
-        return createModelAndView(response.getStatus(), response.getMessage(), response.getPath());
+        return createModelAndView(response.getStatus(), response.getMessages(), response.getPath());
     }
 
     /**
@@ -56,7 +59,7 @@ public class RestTemplateResponseErrorHandler {
             throws JsonProcessingException {
         ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
-        return createModelAndView(response.getStatus(), response.getMessage(), response.getPath());
+        return createModelAndView(response.getStatus(), response.getMessages(), response.getPath());
     }
 
     /**
@@ -66,7 +69,8 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(ResourceAccessException.class)
     public ModelAndView handleServerNotAvailableError() {
-        return createModelAndView(503, "Sorry, the server is not available", "");
+        return createModelAndView(503, Collections.singletonList("Sorry, the server is not available"),
+                "");
     }
 
     /**
@@ -74,16 +78,17 @@ public class RestTemplateResponseErrorHandler {
      * Set error code and message as model attribute
      * Set the view name to 'fragments::error' if the request came from CommentController otherwise 'errorPage'
      *
-     * @param errorCode    the error code
-     * @param errorMessage the error message
-     * @param requestUrl   the request url
+     * @param errorCode     the error code
+     * @param errorMessages the error message list
+     * @param requestUrl    the request url
      * @return the model and view
      */
-    private ModelAndView createModelAndView(final int errorCode, final String errorMessage, final String requestUrl) {
+    private ModelAndView createModelAndView(final int errorCode, final List<String> errorMessages,
+                                            final String requestUrl) {
         ModelAndView model = new ModelAndView();
         model.setStatus(HttpStatus.valueOf(errorCode));
         model.addObject("errorCode", errorCode);
-        model.addObject("errorMsg", errorMessage);
+        model.addObject("errorMsgList", errorMessages);
         if (requestUrl.contains("/comment")) {
             model.setViewName("fragments::error");
         } else {

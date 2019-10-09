@@ -7,7 +7,6 @@ import com.carhouse.model.Comment;
 import com.carhouse.model.User;
 import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.carhouse.provider.CarSaleProvider;
-import com.carhouse.provider.CommentProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +22,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.verify;
@@ -77,11 +77,11 @@ class AdvertisementControllerTest {
     @Test
     void getNotExistAdvertisement() throws Exception {
         int carSaleId = 21;
-        String errorMassage = "there is not car sale with id = " + carSaleId;
+        List<String> errorMassage = Collections.singletonList("there is not car sale with id = " + carSaleId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(httpStatus.value());
-        exceptionJSONResponse.setMessage(errorMassage);
+        exceptionJSONResponse.setMessages(errorMassage);
         exceptionJSONResponse.setPath("/advertisement/" + carSaleId);
         HttpClientErrorException exception = HttpClientErrorException.create(httpStatus,
                 String.valueOf(httpStatus.value()), null, objectMapper.writeValueAsBytes(exceptionJSONResponse),
@@ -93,7 +93,7 @@ class AdvertisementControllerTest {
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
-                .andExpect(model().attribute("errorMsg", errorMassage));
+                .andExpect(model().attribute("errorMsgList", errorMassage));
         verify(carSaleProvider).getCarSale(carSaleId);
     }
 }

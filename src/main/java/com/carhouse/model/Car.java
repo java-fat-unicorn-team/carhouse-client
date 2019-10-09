@@ -1,5 +1,8 @@
 package com.carhouse.model;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +15,20 @@ import java.util.List;
  * @author Katuranau Maksimilyan
  */
 public class Car {
+    @PositiveOrZero(message = "car id can't be negative")
     private int carId;
+    @NotNull(message = "year of car manufacture can't be null")
     private Date year;
+    @PositiveOrZero(message = "car mileage can't be negative")
     private int mileage;
+    @NotNull(message = "fuel type object can't be null")
+    @Valid
     private FuelType fuelType;
+    @NotNull(message = "transmission object can't be null")
+    @Valid
     private Transmission transmission;
+    @NotNull(message = "car model object can't be null")
+    @Valid
     private CarModel carModel;
     private List<CarFeature> carFeatureList;
 

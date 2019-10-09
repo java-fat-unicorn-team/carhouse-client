@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.ResourceAccessException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
@@ -60,6 +61,7 @@ class HomeControllerTest {
                 .andExpect(status().is(statusCode))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", statusCode))
-                .andExpect(model().attribute("errorMsg", "Sorry, the server is not available"));
+                .andExpect(model().attribute("errorMsgList",
+                        Collections.singletonList("Sorry, the server is not available")));
     }
 }
