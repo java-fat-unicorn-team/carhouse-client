@@ -23,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -173,6 +174,19 @@ class CarSaleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("addCarSale"))
                 .andExpect(model().attribute("carCharacteristics", carCharacteristicsDto));
+    }
+
+    @Test
+    void getAddCarSaleFormWrongJsonError() throws Exception {
+        List<String> errorMassage =
+                Collections.singletonList("Sorry, Incorrect JSON obtained from the database, we are working on it");
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenThrow(RestClientException.class);
+        mockMvc.perform(get("/carSale/addForm"))
+                .andExpect(status().is(httpStatus.value()))
+                .andExpect(view().name("errorPage"))
+                .andExpect(model().attribute("errorCode", httpStatus.value()))
+                .andExpect(model().attribute("errorMsgList", errorMassage));
     }
 
     @Test
