@@ -89,6 +89,13 @@ jacocoTestReport {
         html.enabled true
         csv.enabled false
     }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it,
+                    exclude: ['com/carhouse/config/*',
+                              'com/carhouse/model/*'])
+        }))
+    }
 }
 
 checkstyle {

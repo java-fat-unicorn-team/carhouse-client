@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Collections;
@@ -54,12 +54,11 @@ public class RestTemplateResponseErrorHandler {
      * @return the model and view
      * @throws JsonProcessingException if can't convert json to object
      */
-    @ExceptionHandler(HttpServerErrorException.InternalServerError.class)
-    public ModelAndView handleServerIncorrectJsonError(final HttpServerErrorException ex)
-            throws JsonProcessingException {
-        ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
-                ExceptionJSONResponse.class);
-        return createModelAndView(response.getStatus(), response.getMessages(), response.getPath());
+    @ExceptionHandler(RestClientException.class)
+    public ModelAndView handleServerIncorrectJsonError(final RestClientException ex) {
+        return createModelAndView(HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                Collections.singletonList("Sorry, Incorrect JSON obtained from the database, we are working on it"),
+                "");
     }
 
     /**
@@ -69,8 +68,8 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(ResourceAccessException.class)
     public ModelAndView handleServerNotAvailableError() {
-        return createModelAndView(503, Collections.singletonList("Sorry, the server is not available"),
-                "");
+        return createModelAndView(HttpStatus.SERVICE_UNAVAILABLE.value(),
+                Collections.singletonList("Sorry, the server is not available"), "");
     }
 
     /**

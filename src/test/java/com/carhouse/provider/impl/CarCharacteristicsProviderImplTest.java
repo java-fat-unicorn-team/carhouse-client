@@ -13,9 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestClientException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,21 +70,12 @@ class CarCharacteristicsProviderImplTest {
 
     @Test
     void getCarCharacteristicsDtoError() throws JsonProcessingException {
-        int statusCode = 500;
-        String errorMsg = "Sorry, Incorrect JSON obtained from the database, we are working on it";
-        ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
-        exceptionJSONResponse.setStatus(statusCode);
-        exceptionJSONResponse.setMessages(Collections.singletonList(errorMsg));
         givenThat(get(urlPathEqualTo(CAR_CHARACTERISTICS_DTO))
                 .willReturn(aResponse()
-                        .withStatus(statusCode)
-                        .withBody(objectMapper.writeValueAsString(exceptionJSONResponse)))
+                        .withStatus(HttpStatus.OK.value())
+                        .withBody(objectMapper.writeValueAsString("wrong json")))
         );
-        HttpServerErrorException exception = assertThrows(HttpServerErrorException.class,
+        assertThrows(RestClientException.class,
                 () -> carCharacteristicsProvider.getCarCharacteristicsDto());
-        ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
-                ExceptionJSONResponse.class);
-        Assertions.assertEquals(statusCode, response.getStatus());
-        Assertions.assertEquals(errorMsg, response.getMessages().get(0));
     }
 }
