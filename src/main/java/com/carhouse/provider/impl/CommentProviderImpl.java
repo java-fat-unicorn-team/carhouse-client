@@ -2,6 +2,8 @@ package com.carhouse.provider.impl;
 
 import com.carhouse.model.Comment;
 import com.carhouse.provider.CommentProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -17,6 +19,8 @@ import java.util.List;
  */
 @Component
 public class CommentProviderImpl implements CommentProvider {
+
+    private final Logger LOGGER = LogManager.getLogger(CommentProviderImpl.class);
 
     @Value("${carSale.url.host}:${carSale.url.port}")
     private String URL;
@@ -42,9 +46,10 @@ public class CommentProviderImpl implements CommentProvider {
      */
     @Override
     public List<Comment> getComments(final int carSaleId) {
+        LOGGER.debug("method getComments with parameter carSaleId = {}", carSaleId);
         ResponseEntity<List<Comment>> response = restTemplate.exchange(URL + CAR_SALE_COMMENT_ALL, HttpMethod.GET,
                 null, new ParameterizedTypeReference<List<Comment>>() {
-        }, carSaleId);
+                }, carSaleId);
         return response.getBody();
     }
 
@@ -56,6 +61,7 @@ public class CommentProviderImpl implements CommentProvider {
      */
     @Override
     public Comment getCommentById(final int commentId) {
+        LOGGER.debug("method getCommentById with parameter commentId = {}", commentId);
         return restTemplate.getForObject(URL + CAR_SALE_COMMENT_BY_ID, Comment.class, commentId);
     }
 
@@ -68,6 +74,7 @@ public class CommentProviderImpl implements CommentProvider {
      */
     @Override
     public Integer addComment(final Comment comment, final int carSaleId) {
+        LOGGER.debug("method addComment with parameters comment = [{}], carSaleId = {}", comment, carSaleId);
         return restTemplate.postForObject(URL + CAR_SALE_COMMENT_ADD, comment, Integer.class, carSaleId);
     }
 
@@ -78,6 +85,7 @@ public class CommentProviderImpl implements CommentProvider {
      */
     @Override
     public void updateComment(final Comment comment) {
+        LOGGER.debug("method updateComment with parameter comment = [{}]", comment);
         restTemplate.put(URL + CAR_SALE_COMMENT_UPDATE, comment);
     }
 
@@ -88,6 +96,7 @@ public class CommentProviderImpl implements CommentProvider {
      */
     @Override
     public void deleteComment(final int commentId) {
+        LOGGER.debug("method deleteComment with parameter commentId = [{}]", commentId);
         restTemplate.delete(URL + CAR_SALE_COMMENT_DELETE, commentId);
     }
 }

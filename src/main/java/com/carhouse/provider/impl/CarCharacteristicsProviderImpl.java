@@ -2,6 +2,8 @@ package com.carhouse.provider.impl;
 
 import com.carhouse.model.dto.CarCharacteristicsDto;
 import com.carhouse.provider.CarCharacteristicsProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
  */
 @Component
 public class CarCharacteristicsProviderImpl implements CarCharacteristicsProvider {
+
+    private final Logger LOGGER = LogManager.getLogger(CarCharacteristicsProviderImpl.class);
 
     @Value("${carSale.url.host}:${carSale.url.port}")
     private String URL;
@@ -30,6 +34,7 @@ public class CarCharacteristicsProviderImpl implements CarCharacteristicsProvide
      */
     @Override
     public CarCharacteristicsDto getCarCharacteristicsDto() {
+        LOGGER.debug("method getCarCharacteristicsDto was invoked");
         return restTemplate.getForObject(URL + CAR_CHARACTERISTICS_DTO, CarCharacteristicsDto.class);
     }
 }

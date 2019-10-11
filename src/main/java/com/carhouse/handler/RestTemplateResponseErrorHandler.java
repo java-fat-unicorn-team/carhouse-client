@@ -3,6 +3,8 @@ package com.carhouse.handler;
 import com.carhouse.model.dto.ExceptionJSONResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 @ControllerAdvice
 public class RestTemplateResponseErrorHandler {
+
+    private final Logger LOGGER = LogManager.getLogger(RestTemplateResponseErrorHandler.class);
 
     private ObjectMapper objectMapper;
 
@@ -44,6 +48,7 @@ public class RestTemplateResponseErrorHandler {
     public ModelAndView handleClientError(final HttpClientErrorException ex) throws JsonProcessingException {
         ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
+        LOGGER.error("Server thrown a client error: {}", response.getMessages());
         return createModelAndView(response.getStatus(), response.getMessages(), response.getPath());
     }
 
@@ -56,6 +61,7 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(RestClientException.class)
     public ModelAndView handleServerIncorrectJsonError(final RestClientException ex) {
+        LOGGER.error("Server returned incorrect json (carCharacteristics object)");
         return createModelAndView(HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 Collections.singletonList("Sorry, Incorrect JSON obtained from the database, we are working on it"),
                 "");
@@ -68,6 +74,7 @@ public class RestTemplateResponseErrorHandler {
      */
     @ExceptionHandler(ResourceAccessException.class)
     public ModelAndView handleServerNotAvailableError() {
+        LOGGER.error("Server is not available");
         return createModelAndView(HttpStatus.SERVICE_UNAVAILABLE.value(),
                 Collections.singletonList("Sorry, the server is not available"), "");
     }

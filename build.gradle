@@ -42,6 +42,8 @@ dependencies {
     def hibernateValidatorVersion = '6.0.16.Final'
     def javaxElVersion = '2.2.6'
     def javaxElAPIVersion = '3.0.0'
+    def log4jVersion = '2.8.2'
+    def slf4jVersion = '1.7.26'
     def wireMockVersion = '2.24.1'
     tomcat "org.apache.tomcat.embed:tomcat-embed-core:${tomcatVersion}",
             "org.apache.tomcat.embed:tomcat-embed-logging-juli:${tomcatEmbedLogging}",
@@ -70,6 +72,10 @@ dependencies {
     implementation "org.hibernate.validator:hibernate-validator:${hibernateValidatorVersion}"
     implementation "org.glassfish.web:javax.el:${javaxElVersion}"
     implementation "javax.el:javax.el-api:${javaxElAPIVersion}"
+    implementation "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+    implementation "org.apache.logging.log4j:log4j-web:${log4jVersion}"
+    implementation "org.slf4j:slf4j-nop:${slf4jVersion}"
     runtime "javax.servlet:jstl:${servletJstlVersion}"
 
 }

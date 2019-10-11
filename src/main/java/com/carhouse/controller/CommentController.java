@@ -2,6 +2,8 @@ package com.carhouse.controller;
 
 import com.carhouse.model.Comment;
 import com.carhouse.provider.CommentProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,6 +21,8 @@ import javax.validation.Valid;
  */
 @Controller
 public class CommentController {
+
+    private final Logger LOGGER = LogManager.getLogger(CommentController.class);
 
     private CommentProvider commentProvider;
 
@@ -40,6 +44,7 @@ public class CommentController {
      */
     @GetMapping("/carSale/comment/addForm")
     public String getAddForm(final Model model) {
+        LOGGER.debug("method getAddForm was invoked");
         model.addAttribute("comment", new Comment());
         return "fragments::addDialog";
     }
@@ -57,8 +62,10 @@ public class CommentController {
     public String addComment(@ModelAttribute @Valid final Comment comment, final BindingResult bindingResult,
                              @PathVariable final int carSaleId, final Model model) {
         if (bindingResult.hasErrors()) {
+            LOGGER.warn("add comment form has errors");
             return "fragments::addDialog";
         }
+        LOGGER.debug("method addComment with body [{}] and carSaleId = {}", comment, carSaleId);
         int commentId = commentProvider.addComment(comment, carSaleId);
         comment.setCommentId(commentId);
         model.addAttribute("comment", comment);
@@ -74,6 +81,7 @@ public class CommentController {
      */
     @GetMapping("/carSale/comment/{commentId}/updateForm")
     public String getUpdateForm(@PathVariable final int commentId, final Model model) {
+        LOGGER.debug("method getUpdateForm comment with id = {}", commentId);
         model.addAttribute("comment", commentProvider.getCommentById(commentId));
         return "fragments::updateDialog";
     }
@@ -91,8 +99,10 @@ public class CommentController {
     public String updateComment(@ModelAttribute @Valid final Comment comment, final BindingResult bindingResult,
                                 @PathVariable final int commentId, final Model model) {
         if (bindingResult.hasErrors()) {
+            LOGGER.warn("update comment form has errors");
             return "fragments::updateDialog";
         }
+        LOGGER.debug("method updateComment with body [{}]", comment);
         comment.setCommentId(commentId);
         commentProvider.updateComment(comment);
         model.addAttribute("comment", comment);
@@ -107,6 +117,7 @@ public class CommentController {
      */
     @GetMapping("/carSale/comment/{commentId}/delete")
     public String deleteComment(@PathVariable final int commentId) {
+        LOGGER.debug("method deleteComment for comment with id = {}", commentId);
         commentProvider.deleteComment(commentId);
         return "fragments::success";
     }
