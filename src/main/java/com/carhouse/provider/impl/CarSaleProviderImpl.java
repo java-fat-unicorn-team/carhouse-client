@@ -6,6 +6,8 @@ import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.provider.CarSaleProvider;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.GenericValidator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,6 +26,8 @@ import java.util.*;
  */
 @Component
 public class CarSaleProviderImpl implements CarSaleProvider {
+
+    private final Logger LOGGER = LogManager.getLogger(CarSaleProviderImpl.class);
 
     @Value("${carSale.url.host}:${carSale.url.port}")
     private String URL;
@@ -57,6 +61,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @return the list car sale
      */
     public List<CarSaleDto> getListCarSale(final Map<String, String> requestParams) {
+        LOGGER.debug("method getListCarSale with parameters {}", requestParams);
         ResponseEntity<List<CarSaleDto>> response = restTemplate.exchange(buildUrl(URL + CAR_SALE_ALL,
                 requestParams), HttpMethod.GET, null, new ParameterizedTypeReference<List<CarSaleDto>>() {
         });
@@ -75,6 +80,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      */
     @Override
     public CarSale getCarSale(final Integer carSaleId) {
+        LOGGER.debug("method getCarSale with parameter carSaleId = {}", carSaleId);
         CarSale carSale = restTemplate.getForObject(URL + CAR_SALE_BY_ID, CarSale.class, carSaleId);
         carSale.setImageUrl(getImageUrl(carSale.getImage()));
         return carSale;
@@ -85,14 +91,15 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * Take car features id and set them to the car sale object
      * If multipartFile object contains image then gets bytes from multipartFile object and sets to image field
      *
-     * @param carSale     object from form
+     * @param carSale       object from form
      * @param multipartFile the multipart file
-     * @param carFeatures list of selected car feature's id
+     * @param carFeatures   list of selected car feature's id
      * @throws IOException the io exception if can't read bytes from multipartFile object
      */
     @Override
     public Integer addCarSale(final CarSale carSale, final MultipartFile multipartFile, final int[] carFeatures)
             throws IOException {
+        LOGGER.debug("method addCarSale with parameter carSale = [{}]", carSale);
         carSale.getCar().setCarFeatureList(createCarFeatureList(carFeatures));
         if (!multipartFile.isEmpty()) {
             carSale.setImage(multipartFile.getBytes());
@@ -105,14 +112,15 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * Take car features id and set them to the car sale object
      * If multipartFile object contains image then gets bytes from multipartFile object and sets to image field
      *
-     * @param carSale     the car sale
+     * @param carSale       the car sale
      * @param multipartFile the multipart file
-     * @param carFeatures the car features
+     * @param carFeatures   the car features
      * @throws IOException the io exception if can't read bytes from multipartFile object
      */
     @Override
     public void updateCarSale(final CarSale carSale, final MultipartFile multipartFile, final int[] carFeatures)
             throws IOException {
+        LOGGER.debug("method updateCarSale with parameter carSale = [{}]", carSale);
         carSale.getCar().setCarFeatureList(createCarFeatureList(carFeatures));
         if (!multipartFile.isEmpty()) {
             carSale.setImage(multipartFile.getBytes());
@@ -127,6 +135,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      */
     @Override
     public void deleteCarSale(final int carSaleId) {
+        LOGGER.debug("method deleteCarSale with parameter carSaleId = {}", carSaleId);
         restTemplate.delete(URL + CAR_SALE_DELETE, carSaleId);
     }
 
@@ -158,6 +167,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @return url with query parameters
      */
     private String buildUrl(final String baseUrl, final Map<String, String> requestParams) {
+        LOGGER.debug("method buildUrl with parameters [{}]", requestParams);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl);
         for (Map.Entry<String, String> entry : new HashMap<>(requestParams).entrySet()) {
             if (StringUtils.isNumeric(entry.getValue())
@@ -175,6 +185,7 @@ public class CarSaleProviderImpl implements CarSaleProvider {
      * @return the list
      */
     private List<CarFeature> createCarFeatureList(final int[] carFeatures) {
+        LOGGER.debug("method createCarFeatureList with car features id [{}]", carFeatures);
         List<CarFeature> carFeatureList = new ArrayList<>();
         if (Objects.nonNull(carFeatures)) {
             for (int carFeatureId : carFeatures) {

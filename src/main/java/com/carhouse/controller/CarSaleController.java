@@ -6,6 +6,8 @@ import com.carhouse.provider.CarCharacteristicsProvider;
 import com.carhouse.provider.CarMakeProvider;
 import com.carhouse.provider.CarModelProvider;
 import com.carhouse.provider.CarSaleProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
  */
 @Controller
 public class CarSaleController {
+
+    private final Logger LOGGER = LogManager.getLogger(CarSaleController.class);
 
     private CarSaleProvider carSaleProvider;
     private CarMakeProvider carMakeProvider;
@@ -61,6 +65,8 @@ public class CarSaleController {
     @GetMapping("/carSale")
     public String carSale(@RequestParam(required = false) final Map<String, String> requestParams,
                           final Model model) {
+
+        LOGGER.debug("method carSale with parameters [{}]", requestParams);
         String carMakeId = requestParams.get("carMakeId");
         String carModelId = requestParams.get("carModelId");
         if (carMakeId == null || carMakeId.isEmpty()) {
@@ -82,6 +88,7 @@ public class CarSaleController {
      */
     @GetMapping("/carSale/addForm")
     public String getAddCarSaleForm(final Model model) {
+        LOGGER.debug("method getAddCarSaleForm was invoked");
         CarSale carSale = new CarSale();
         model.addAttribute("carSale", carSale);
         model.addAttribute("selectedCarFeatures", new ArrayList<>());
@@ -110,7 +117,9 @@ public class CarSaleController {
                                    @RequestParam(required = false, value = "multipartFile") final MultipartFile file,
                                    final Model model)
             throws IOException {
+        LOGGER.debug("method addCarSaleSubmit with body [{}]", carSale);
         if (bindingResult.hasErrors()) {
+            LOGGER.warn("add car sale form has errors");
             model.addAttribute("carCharacteristics",
                     carCharacteristicsProvider.getCarCharacteristicsDto());
             model.addAttribute("selectedCarFeatures",
@@ -134,6 +143,7 @@ public class CarSaleController {
     @GetMapping("/carSale/{carSaleId}/updateForm")
     public String getUpdateCarSaleForm(@PathVariable final int carSaleId,
                                        @RequestParam("requestUrl") final String requestUrl, final Model model) {
+        LOGGER.debug("method getUpdateCarSaleForm with parameter carSaleId = {}", carSaleId);
         CarSale carSale = carSaleProvider.getCarSale(carSaleId);
         model.addAttribute("carCharacteristics",
                 carCharacteristicsProvider.getCarCharacteristicsDto());
@@ -169,7 +179,9 @@ public class CarSaleController {
             @RequestParam(required = false, value = "carFeatureList") final int[] featureList,
             @RequestParam(required = false, value = "multipartFile") final MultipartFile file,
             final Model model) throws IOException {
+        LOGGER.debug("method updateCarSaleSubmit with body [{}]", carSale);
         if (bindingResult.hasErrors()) {
+            LOGGER.warn("update car sale form has errors");
             model.addAttribute("carCharacteristics",
                     carCharacteristicsProvider.getCarCharacteristicsDto());
             model.addAttribute("requestUrl", requestUrl);
@@ -193,6 +205,7 @@ public class CarSaleController {
     @GetMapping("/carSale/{carSaleId}/delete")
     public String deleteCarSale(@PathVariable final Integer carSaleId,
                                 @RequestParam("requestUrl") final String requestUrl) {
+        LOGGER.debug("method deleteCarSale with parameter carSaleId = {}", carSaleId);
         carSaleProvider.deleteCarSale(carSaleId);
         return "redirect:" + requestUrl;
     }

@@ -3,6 +3,8 @@ package com.carhouse.provider.impl;
 import com.carhouse.model.CarModel;
 import com.carhouse.provider.CarModelProvider;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,6 +21,8 @@ import java.util.List;
  */
 @Component
 public class CarModelProviderImpl implements CarModelProvider {
+
+    private final Logger LOGGER = LogManager.getLogger(CarModelProviderImpl.class);
 
     @Value("${carSale.url.host}:${carSale.url.port}")
     private String URL;
@@ -39,6 +43,7 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @return the car model
      */
     public CarModel getCarModel(final String carModelId) {
+        LOGGER.debug("method getCarModel with parameter carModelId = {}", carModelId);
         if (StringUtils.isNumeric(carModelId)) {
             return restTemplate.getForObject(URL + CAR_MODEL_BY_ID, CarModel.class, carModelId);
         } else {
@@ -53,6 +58,7 @@ public class CarModelProviderImpl implements CarModelProvider {
      * @return the list car model
      */
     public List<CarModel> getCarModels(final String carMakeId) {
+        LOGGER.debug("method getCarModels with parameter carMakeId = {}", carMakeId);
         if (StringUtils.isNumeric(carMakeId)) {
             ResponseEntity<List<CarModel>> response = restTemplate.exchange(URL + CAR_MAKE_MODEL_ALL,
                     HttpMethod.GET, null, new ParameterizedTypeReference<List<CarModel>>() {

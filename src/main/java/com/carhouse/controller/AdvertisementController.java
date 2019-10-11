@@ -2,6 +2,8 @@ package com.carhouse.controller;
 
 import com.carhouse.model.CarSale;
 import com.carhouse.provider.CarSaleProvider;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  */
 @Controller
 public class AdvertisementController {
+
+    private final Logger LOGGER = LogManager.getLogger(AdvertisementController.class);
 
     private CarSaleProvider carSaleProvider;
 
@@ -36,6 +40,7 @@ public class AdvertisementController {
      */
     @GetMapping("/advertisement/{advertisementId}")
     public String getAdvertisement(@PathVariable final Integer advertisementId, final Model model) {
+        LOGGER.debug("method getAdvertisement for advertisement with id = {}", advertisementId);
         CarSale carSale = carSaleProvider.getCarSale(advertisementId);
         model.addAttribute("carSale", carSale);
         model.addAttribute("imageUrl", carSale.getImageUrl());
