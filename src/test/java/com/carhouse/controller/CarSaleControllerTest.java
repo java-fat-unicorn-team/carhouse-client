@@ -110,7 +110,7 @@ class CarSaleControllerTest {
     void carSale() throws Exception {
         when(carSaleProvider.getListCarSale(any())).thenReturn(listCarSales);
         when(carMakeProvider.getCarMakes()).thenReturn(listCarMakes);
-        mockMvc.perform(get("/carSale"))
+        mockMvc.perform(get("/carhouse/carSale"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("carSales"))
                 .andExpect(model().attribute("listCarMakes", listCarMakes))
@@ -128,7 +128,7 @@ class CarSaleControllerTest {
         when(carSaleProvider.getListCarSale(any())).thenReturn(listCarSales);
         when(carModelProvider.getCarModels(carMakeId)).thenReturn(listCarModels);
         when(carMakeProvider.getCarMake(carMakeId)).thenReturn(carMake);
-        mockMvc.perform(get("/carSale/?carMakeId={carMakeId}", carMakeId))
+        mockMvc.perform(get("/carhouse/carSale/?carMakeId={carMakeId}", carMakeId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("carSales"))
                 .andExpect(model().attribute("carMake", carMake))
@@ -145,7 +145,7 @@ class CarSaleControllerTest {
         when(carSaleProvider.getListCarSale(any())).thenReturn(listCarSales);
         when(carMakeProvider.getCarMake(carMakeId)).thenReturn(carMake);
         when(carModelProvider.getCarModel(carModelId)).thenReturn(carModel);
-        mockMvc.perform(get("/carSale/?carMakeId={carMakeId}&carModelId={carModelId}",
+        mockMvc.perform(get("/carhouse/carSale/?carMakeId={carMakeId}&carModelId={carModelId}",
                 carMakeId, carModelId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("carSales"))
@@ -160,7 +160,7 @@ class CarSaleControllerTest {
         List<String> errorMassage = Collections.singletonList("there is not car make with id = " + carMakeId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(carModelProvider.getCarModels(carMakeId)).thenThrow(createException(httpStatus, errorMassage));
-        mockMvc.perform(get("/carSale/?carMakeId={carMakeId}", carMakeId))
+        mockMvc.perform(get("/carhouse/carSale/?carMakeId={carMakeId}", carMakeId))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
@@ -170,7 +170,7 @@ class CarSaleControllerTest {
     @Test
     void getAddCarSaleForm() throws Exception {
         when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenReturn(carCharacteristicsDto);
-        mockMvc.perform(get("/carSale/addForm"))
+        mockMvc.perform(get("/carhouse/carSale/addForm"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("addCarSale"))
                 .andExpect(model().attribute("carCharacteristics", carCharacteristicsDto));
@@ -182,7 +182,7 @@ class CarSaleControllerTest {
                 Collections.singletonList("Sorry, Incorrect JSON obtained from the database, we are working on it");
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenThrow(RestClientException.class);
-        mockMvc.perform(get("/carSale/addForm"))
+        mockMvc.perform(get("/carhouse/carSale/addForm"))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", httpStatus.value()))
@@ -191,12 +191,12 @@ class CarSaleControllerTest {
 
     @Test
     void addCarSaleSubmit() throws Exception {
-        mockMvc.perform(post("/carSale/add")
+        mockMvc.perform(post("/carhouse/carSale/add")
                 .param("carFeatureList", "1", "2", "3")
                 .flashAttr("carSale", carSale)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isFound())
-                .andExpect(redirectedUrl("/carSale"));
+                .andExpect(redirectedUrl("/carhouse/carSale"));
         verify(carSaleProvider).addCarSale(any(CarSale.class), any(), eq(new int[]{1, 2, 3}));
     }
 
@@ -207,7 +207,7 @@ class CarSaleControllerTest {
         HttpStatus httpStatus = HttpStatus.FAILED_DEPENDENCY;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).addCarSale(any(CarSale.class),
                 any(), eq(carFeatures));
-        mockMvc.perform(post("/carSale/add")
+        mockMvc.perform(post("/carhouse/carSale/add")
                 .param("carFeatureList", "1", "2")
                 .flashAttr("carSale", carSale)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -223,7 +223,7 @@ class CarSaleControllerTest {
         CarSale notValidCarSale = carSale;
         notValidCarSale.setPrice(BigDecimal.valueOf(-123)).getCar().setMileage(-3214).setFuelType(null);
         when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenReturn(carCharacteristicsDto);
-        mockMvc.perform(post("/carSale/add")
+        mockMvc.perform(post("/carhouse/carSale/add")
                 .param("carFeatureList", "1", "2", "3")
                 .flashAttr("carSale", notValidCarSale)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
@@ -237,10 +237,10 @@ class CarSaleControllerTest {
     @Test
     void getUpdateCarSaleForm() throws Exception {
         int carSaleId = 2;
-        String requestUrl = "/carSale/carMakeId=2";
+        String requestUrl = "/carhouse/carSale/carMakeId=2";
         when(carSaleProvider.getCarSale(carSaleId)).thenReturn(carSale);
         when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenReturn(carCharacteristicsDto);
-        mockMvc.perform(get("/carSale/{carSaleId}/updateForm", carSaleId)
+        mockMvc.perform(get("/carhouse/carSale/{carSaleId}/updateForm", carSaleId)
                 .param("requestUrl", requestUrl))
                 .andExpect(status().isOk())
                 .andExpect(view().name("updateCarSale"))
@@ -251,8 +251,8 @@ class CarSaleControllerTest {
 
     @Test
     void updateCarSaleSubmit() throws Exception {
-        String requestUrl = "/carSale?carMakeId=2";
-        mockMvc.perform(post("/carSale/" + 2)
+        String requestUrl = "/carhouse/carSale?carMakeId=2";
+        mockMvc.perform(post("/carhouse/carSale/" + 2)
                 .param("requestUrl", requestUrl)
                 .param("carFeatureList", "1", "2", "3")
                 .flashAttr("carSale", carSale)
@@ -269,8 +269,8 @@ class CarSaleControllerTest {
         HttpStatus httpStatus = HttpStatus.FAILED_DEPENDENCY;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).updateCarSale(any(CarSale.class),
                 any(), eq(carFeatures));
-        mockMvc.perform(post("/carSale/" + 2)
-                .param("requestUrl", "/carSale")
+        mockMvc.perform(post("/carhouse/carSale/" + 2)
+                .param("requestUrl", "/carhouse/carSale")
                 .param("carFeatureList", "1", "2", "3")
                 .flashAttr("carSale", carSale)
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -287,14 +287,14 @@ class CarSaleControllerTest {
         CarSale notValidCarSale = carSale;
         notValidCarSale.setPrice(BigDecimal.valueOf(-123)).getCar().setMileage(-3214).setFuelType(null);
         when(carCharacteristicsProvider.getCarCharacteristicsDto()).thenReturn(carCharacteristicsDto);
-        mockMvc.perform(post("/carSale/3")
+        mockMvc.perform(post("/carhouse/carSale/3")
                 .param("carFeatureList", "1", "2", "3")
-                .param("requestUrl", "carSale?carMakeId=2")
+                .param("requestUrl", "/carhouse/carSale?carMakeId=2")
                 .flashAttr("carSale", notValidCarSale)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("carSale", notValidCarSale))
-                .andExpect(model().attribute("requestUrl", "carSale?carMakeId=2"))
+                .andExpect(model().attribute("requestUrl", "/carhouse/carSale?carMakeId=2"))
                 .andExpect(model().attribute("selectedCarFeatures", new int[]{1, 2, 3}))
                 .andExpect(model().attribute("carCharacteristics", carCharacteristicsDto))
                 .andExpect(view().name("updateCarSale"));
@@ -303,8 +303,8 @@ class CarSaleControllerTest {
     @Test
     void deleteCarSale() throws Exception {
         int carSaleId = 2;
-        String requestUrl = "/carSale?carMakeId=1&carModelId=1";
-        mockMvc.perform(get("/carSale/{carSaleId}/delete", carSaleId)
+        String requestUrl = "/carhouse/carSale?carMakeId=1&carModelId=1";
+        mockMvc.perform(get("/carhouse/carSale/{carSaleId}/delete", carSaleId)
                 .param("requestUrl", requestUrl))
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl(requestUrl));
@@ -314,11 +314,11 @@ class CarSaleControllerTest {
     @Test
     void deleteNotExistCarSale() throws Exception {
         int carSaleId = 22;
-        String requestUrl = "/carSale?carMakeId=1&carModelId=1";
+        String requestUrl = "/carhouse/carSale?carMakeId=1&carModelId=1";
         List<String> errorMassage = Collections.singletonList("there is not car sale with id = " + carSaleId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         doThrow(createException(httpStatus, errorMassage)).when(carSaleProvider).deleteCarSale(carSaleId);
-        mockMvc.perform(get("/carSale/{carSaleId}/delete", carSaleId)
+        mockMvc.perform(get("/carhouse/carSale/{carSaleId}/delete", carSaleId)
                 .param("requestUrl", requestUrl))
                 .andExpect(status().is(httpStatus.value()))
                 .andExpect(view().name("errorPage"))

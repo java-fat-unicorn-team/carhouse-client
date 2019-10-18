@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
  * Works with page what contains list of car sale advertisement.
  */
 @Controller
+@RequestMapping("/carhouse")
 public class CarSaleController {
 
     private final Logger LOGGER = LogManager.getLogger(CarSaleController.class);
@@ -127,7 +128,7 @@ public class CarSaleController {
             return "addCarSale";
         }
         carSaleProvider.addCarSale(carSale, file, featureList);
-        return "redirect:/carSale";
+        return "redirect:/carhouse/carSale";
     }
 
     /**

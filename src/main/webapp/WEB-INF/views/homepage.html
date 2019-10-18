@@ -20,11 +20,8 @@
                             <a class="nav-link text-white text-uppercase btn" href="#"><strong>Car house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
-                        </li>
-                        <li class="nav-item mr-0 bg-secondary">
-                            <a class="nav-link text-white btn" href="/loginPage">Sing in/Sing up</a>
                         </li>
                     </ul>
                 </div>
@@ -47,7 +44,7 @@
             <div class="col">
                 <div class="search-filter">
                     <form action="#"
-                          th:action="@{/carSale}"
+                          th:action="@{/carhouse/carSale}"
                           th:method="@{get}">
                         <div class="form-row pt-3" th:with="startDate=${#dates.year(#dates.createNow())}">
                             <div class="form-group col-6 col-lg">
@@ -116,7 +113,7 @@
                 <div class="carMakes">
                     <ul class="listCarMakes list-unstyled row">
                         <li class="col-4 col-md-3" th:each="carMake : ${listCarMakes}">
-                            <a th:href="@{/carSale/(carMakeId=${carMake.carMakeId})}">
+                            <a th:href="@{/carhouse/carSale/(carMakeId=${carMake.carMakeId})}">
                                 <span th:text="${carMake.carMake}">Acura</span>
                             </a>
                         </li>
@@ -137,7 +134,7 @@
         } else {
             $.ajax({
                 type: 'GET',
-                url: "/carModels/" + carMakeId,
+                url: "/carhouse/carModels/" + carMakeId,
                 success: function (data) {
                     var listCarModels = $('#listCarModels'), option = "<option value>Car model</option>";
                     listCarModels.empty();

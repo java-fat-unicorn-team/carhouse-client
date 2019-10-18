@@ -18,11 +18,11 @@
                 <div class="col">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car
+                            <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
                                 house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
                         </li>
                     </ul>
@@ -38,20 +38,20 @@
             <div class="col">
                 <ul class="list-inline list-unstyled">
                     <li class="list-inline-item">
-                        <a class="text-dark" th:href="@{/carSale}">All car sales</a>
+                        <a class="text-dark" th:href="@{/carhouse/carSale}">All car sales</a>
                     </li>
                     <li class="list-inline-item">
                         <span> -- </span>
                     </li>
                     <li class="list-inline-item">
-                        <a class="text-dark" th:href="@{/carSale/(carMakeId=${carSale.car.carModel.carMake.carMakeId})}"
+                        <a class="text-dark" th:href="@{/carhouse/carSale/(carMakeId=${carSale.car.carModel.carMake.carMakeId})}"
                            th:text="${carSale.car.carModel.carMake.carMake}">carMake</a>
                     </li>
                     <li class="list-inline-item">
                         <span> -- </span>
                     </li>
                     <li class="list-inline-item">
-                        <a class="text-dark" th:href="@{/carSale/(carMakeId=${carSale.car.carModel.carMake.carMakeId},
+                        <a class="text-dark" th:href="@{/carhouse/carSale/(carMakeId=${carSale.car.carModel.carMake.carMakeId},
                         carModelId=${carSale.car.carModel.carModelId})}"
                            th:text="${carSale.car.carModel.carModel}">carModel</a>
                     </li>
@@ -77,7 +77,8 @@
         <hr>
         <div class="row">
             <div class="col-sm-12 col-lg pb-3 order-lg-last">
-                <img th:src="${imageUrl}" width="100%"></a>
+<!--                <img th:src="${imageUrl}" width="100%"></a>-->
+                <img th:src="|/${carSale.imageName}|" width="100%"></a>
             </div>
             <div class="col-12 col-lg-4">
                 <div class="d-inline-block p-1 bg-danger">
@@ -218,7 +219,7 @@
 
     function getUpdateCommentForm(commentId) {
         $.ajax({
-            url: "/carSale/comment/" + commentId + " /updateForm",
+            url: "/carhouse/carSale/comment/" + commentId + " /updateForm",
             type: 'GET',
             dataType: "html",
             success: function (data) {
@@ -235,7 +236,7 @@
     function updateComment(commentId) {
         $.ajax({
             type: 'POST',
-            url: "/carSale/comment/" + commentId,
+            url: "/carhouse/carSale/comment/" + commentId,
             data: $('#updateForm').serialize(),
             success: function (response) {
                 $('#updateDialog').modal('hide');
@@ -261,7 +262,7 @@
 
     function getAddCommentForm() {
         $.ajax({
-            url: "/carSale/comment/addForm",
+            url: "/carhouse/carSale/comment/addForm",
             type: 'GET',
             dataType: "html",
             success: function (data) {
@@ -279,7 +280,7 @@
         var carSaleId = $('#carSaleId').val();
         $.ajax({
             type: 'POST',
-            url: "/carSale/" + carSaleId + "/comment",
+            url: "/carhouse/carSale/" + carSaleId + "/comment",
             data: $('#addForm').serialize(),
             success: function (response, status) {
                 $('#addDialog').modal('hide');
@@ -308,7 +309,7 @@
         var commentId = $('#commentId').text();
         $.ajax({
             type: 'GET',
-            url: "/carSale/comment/" + commentId + "/delete",
+            url: "/carhouse/carSale/comment/" + commentId + "/delete",
             success: function (data) {
                 $('#comment' + commentId).remove();
                 $('#deleteDialog').modal('toggle');

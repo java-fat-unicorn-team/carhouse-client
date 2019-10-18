@@ -52,7 +52,6 @@ class AdvertisementControllerTest {
     @Test
     void getAdvertisement() throws Exception {
         int carSaleId = 1;
-        String imageUrl = "image url in base64 string format";
         List<Comment> commentList = new ArrayList<>() {{
             add(new Comment().setCommentId(1).setUserName("Vadim").setComment("Great"));
             add(new Comment().setCommentId(2).setUserName("Petya").setComment("Cool"));
@@ -62,15 +61,14 @@ class AdvertisementControllerTest {
                 .setPrice(new BigDecimal(23300))
                 .setCar(new Car(2))
                 .setUser(new User(1))
-                .setImageUrl(imageUrl)
+                .setImageName("4s264rbv346grfe4")
                 .setCommentList(commentList);
 
         when(carSaleProvider.getCarSale(carSaleId)).thenReturn(carSale);
-        mockMvc.perform(get("/advertisement/{advertisementId}", carSaleId))
+        mockMvc.perform(get("/carhouse/advertisement/{advertisementId}", carSaleId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("advertisement"))
-                .andExpect(model().attribute("carSale", carSale))
-                .andExpect(model().attribute("imageUrl", imageUrl));
+                .andExpect(model().attribute("carSale", carSale));
         verify(carSaleProvider).getCarSale(carSaleId);
     }
 
@@ -82,12 +80,12 @@ class AdvertisementControllerTest {
         ExceptionJSONResponse exceptionJSONResponse = new ExceptionJSONResponse();
         exceptionJSONResponse.setStatus(httpStatus.value());
         exceptionJSONResponse.setMessages(errorMassage);
-        exceptionJSONResponse.setPath("/advertisement/" + carSaleId);
+        exceptionJSONResponse.setPath("/carhouse/advertisement/" + carSaleId);
         HttpClientErrorException exception = HttpClientErrorException.create(httpStatus,
                 String.valueOf(httpStatus.value()), null, objectMapper.writeValueAsBytes(exceptionJSONResponse),
                 null);
         when(carSaleProvider.getCarSale(carSaleId)).thenThrow(exception);
-        mockMvc.perform(get("/advertisement/{advertisementId}", carSaleId)
+        mockMvc.perform(get("/carhouse/advertisement/{advertisementId}", carSaleId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(objectMapper.writeValueAsString(new Comment())))
                 .andExpect(status().is(httpStatus.value()))
