@@ -24,8 +24,7 @@ public class CarSale {
     @NotNull(message = "car object can't be null")
     @Valid
     private Car car;
-    private String imageUrl;
-    private byte[] image;
+    private String imageName;
     private List<Comment> commentList;
 
 
@@ -145,44 +144,22 @@ public class CarSale {
     }
 
     /**
-     * Gets image url.
-     * Image in Base64 String format to display on the UI
+     * Gets image name to find it on the apache server.
      *
-     * @return the image url
+     * @return the image name
      */
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImageName() {
+        return imageName;
     }
 
     /**
-     * Gets image url.
-     * Image in Base64 String format to display on the UI
+     * Gets image name to find it on the apache server.
      *
-     * @param imageUrl the image url
+     * @param imageName the image name
      * @return car sale object
      */
-    public CarSale setImageUrl(final String imageUrl) {
-        this.imageUrl = imageUrl;
-        return this;
-    }
-
-    /**
-     * Get image byte [ ].
-     *
-     * @return the byte [ ]
-     */
-    public byte[] getImage() {
-        return image;
-    }
-
-    /**
-     * Sets image.
-     *
-     * @param image the image
-     * @return car sale object
-     */
-    public CarSale setImage(final byte[] image) {
-        this.image = image;
+    public CarSale setImageName(final String imageName) {
+        this.imageName = imageName;
         return this;
     }
 

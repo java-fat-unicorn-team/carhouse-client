@@ -17,11 +17,11 @@
                 <div class="col">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car
+                            <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
                                 house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
                         </li>
                     </ul>
@@ -37,7 +37,7 @@
             <div class="col">
                 <ul class="list-inline list-unstyled" th:if="${carMake != null}">
                     <li class="list-inline-item">
-                        <a class="text-dark" th:href="@{/carSale}">All car sales</a>
+                        <a class="text-dark" th:href="@{/carhouse/carSale}">All car sales</a>
                     </li>
                     <li class="list-inline-item">
                         <span> -- </span>
@@ -46,7 +46,7 @@
                         <span th:text="${carMake.carMake}">carMake</span>
                     </li>
                     <li th:if="${carModel != null}" class="list-inline-item">
-                        <a class="text-dark" th:href="@{/carSale/(carMakeId=${carMake.carMakeId})}"
+                        <a class="text-dark" th:href="@{/carhouse/carSale/(carMakeId=${carMake.carMakeId})}"
                            th:text="${carMake.carMake}">carMake</a>
                     </li>
                     <li class="list-inline-item" th:if="${carModel != null}">
@@ -69,7 +69,7 @@
             <div class="col-lg-10">
                 <ul class="listCarModels list-unstyled row">
                     <li class="col-4 col-md-3" th:each="carModel : ${listCarModels}">
-                        <a th:href="@{/carSale/(carMakeId=${carMake.carMakeId},carModelId=${carModel.carModelId})}">
+                        <a th:href="@{/carhouse/carSale/(carMakeId=${carMake.carMakeId},carModelId=${carModel.carModelId})}">
                             <span th:text="${carModel.carModel}">Acura</span>
                         </a>
                     </li>
@@ -80,7 +80,7 @@
             <div class="col-lg-10">
                 <ul class="listCarMakes list-unstyled row">
                     <li class="col-4 col-md-3" th:each="carMake : ${listCarMakes}">
-                        <a th:href="@{/carSale/(carMakeId=${carMake.carMakeId})}">
+                        <a th:href="@{/carhouse/carSale/(carMakeId=${carMake.carMakeId})}">
                             <span th:text="${carMake.carMake}">Acura</span>
                         </a>
                     </li>
@@ -90,8 +90,8 @@
         <div class="row border bg-light p-2" th:each="carSale : ${listCarSales}">
             <div class="col-sm-7 col-md-5 col-lg-4 p-0">
                 <div class="d-inline-block">
-                    <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
-                        <img th:src="${carSale.imageUrl}" height="134" width="180"></a>
+                    <a th:href="@{/carhouse/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                        <img th:src="|/${carSale.imageName}|" height="134" width="180"></a>
                 </div>
                 <div class="d-inline-block pl-3 align-top">
                     <div>
@@ -108,7 +108,7 @@
             <div class="col">
                 <div class="row">
                     <div class="col">
-                        <a th:href="@{/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                        <a th:href="@{/carhouse/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
                             <h4 th:text="${carSale.carMake} + ', ' + ${carSale.carModel}"></h4>
                         </a>
                         <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
@@ -116,7 +116,7 @@
                     </div>
                     <div class="col-4 col-md-3 col-lg-2 p-0">
                         <a class="btn btn-warning btn-sm btn-block mt-auto"
-                           th:href="@{/carSale/{carSaleId}/updateForm(carSaleId=${carSale.carSaleId},
+                           th:href="@{/carhouse/carSale/{carSaleId}/updateForm(carSaleId=${carSale.carSaleId},
                            requestUrl=${#httpServletRequest.requestURI + '?'
                            + #strings.defaultString(#httpServletRequest.queryString, '')})}"
                            role="button">Update</a><br>
@@ -128,7 +128,7 @@
                                data-toggle="tooltip"
                                data-placement="top">Delete</a>
                             <a class="d-none" th:id="|deleteUrl${carSale.carSaleId}|"
-                               th:href="@{/carSale/{carSaleId}/delete(carSaleId=${carSale.carSaleId},
+                               th:href="@{/carhouse/carSale/{carSaleId}/delete(carSaleId=${carSale.carSaleId},
                            requestUrl=${#httpServletRequest.requestURI + '?'
                            + #strings.defaultString(#httpServletRequest.queryString, '')})}"></a>
                         </span>

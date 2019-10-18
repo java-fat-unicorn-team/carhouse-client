@@ -9,11 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Car sale advertisement controller.
  */
 @Controller
+@RequestMapping("/carhouse")
 public class AdvertisementController {
 
     private final Logger LOGGER = LogManager.getLogger(AdvertisementController.class);
@@ -43,7 +45,6 @@ public class AdvertisementController {
         LOGGER.debug("method getAdvertisement for advertisement with id = {}", advertisementId);
         CarSale carSale = carSaleProvider.getCarSale(advertisementId);
         model.addAttribute("carSale", carSale);
-        model.addAttribute("imageUrl", carSale.getImageUrl());
         return "advertisement";
     }
 }

@@ -47,7 +47,7 @@ class HomeControllerTest {
             add(new CarMake(1, "BMW"));
         }};
         when(carMakeProvider.getCarMakes()).thenReturn(listCarMake);
-        mockMvc.perform(get("/homePage"))
+        mockMvc.perform(get("/carhouse/homePage"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("homepage"))
                 .andExpect(model().attribute("listCarMakes", listCarMake));
@@ -57,7 +57,7 @@ class HomeControllerTest {
     void firstPageServerIsNotAvailable() throws Exception {
         int statusCode = 503;
         when(carMakeProvider.getCarMakes()).thenThrow(ResourceAccessException.class);
-        mockMvc.perform(get("/homePage"))
+        mockMvc.perform(get("/carhouse/homePage"))
                 .andExpect(status().is(statusCode))
                 .andExpect(view().name("errorPage"))
                 .andExpect(model().attribute("errorCode", statusCode))

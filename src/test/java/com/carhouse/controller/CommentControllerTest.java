@@ -64,7 +64,7 @@ public class CommentControllerTest {
 
     @Test
     void getAddForm() throws Exception {
-        mockMvc.perform(get("/carSale/comment/addForm"))
+        mockMvc.perform(get("/carhouse/carSale/comment/addForm"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("fragments::addDialog"))
                 .andExpect(forwardedUrl("fragments::addDialog"));
@@ -74,7 +74,7 @@ public class CommentControllerTest {
     void addComment() throws Exception {
         int carSaleId = 3;
         when(commentProvider.addComment(any(Comment.class), eq(carSaleId))).thenReturn(12);
-        mockMvc.perform(post("/carSale/{carSaleId}/comment", carSaleId)
+        mockMvc.perform(post("/carhouse/carSale/{carSaleId}/comment", carSaleId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .flashAttr("comment", commentList.get(1)))
                 .andExpect(status().isOk())
@@ -87,7 +87,7 @@ public class CommentControllerTest {
     void addCommentToNotExistCarSale() throws Exception {
         int carSaleId = 3;
         String requestUrl = UriComponentsBuilder.newInstance()
-                .path("/carSale/{carSaleId}/comment").buildAndExpand(carSaleId).toString();
+                .path("/carhouse/carSale/{carSaleId}/comment").buildAndExpand(carSaleId).toString();
         List<String> errorMassage = Collections.singletonList("there is not car sale with id = " + carSaleId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(commentProvider.addComment(any(Comment.class), eq(carSaleId)))
@@ -105,7 +105,7 @@ public class CommentControllerTest {
     @Test
     void addCommentValidationError() throws Exception {
         Comment comment = new Comment().setUserName("").setComment("");
-        mockMvc.perform(post("/carSale/{carSaleId}/comment", 12)
+        mockMvc.perform(post("/carhouse/carSale/{carSaleId}/comment", 12)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .flashAttr("comment", comment))
                 .andExpect(status().isOk())
@@ -117,7 +117,7 @@ public class CommentControllerTest {
     void getUpdateForm() throws Exception {
         int commentId = 3;
         when(commentProvider.getCommentById(commentId)).thenReturn(commentList.get(1));
-        mockMvc.perform(get("/carSale/comment/{commentId}/updateForm", commentId))
+        mockMvc.perform(get("/carhouse/carSale/comment/{commentId}/updateForm", commentId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("fragments::updateDialog"))
                 .andExpect(forwardedUrl("fragments::updateDialog"))
@@ -128,7 +128,7 @@ public class CommentControllerTest {
     void getUpdateFormForNotExistComment() throws Exception {
         int commentId = 3;
         String requestUrl = UriComponentsBuilder.newInstance()
-                .path("/carSale/comment/{commentId}/updateForm").buildAndExpand(commentId).toString();
+                .path("/carhouse/carSale/comment/{commentId}/updateForm").buildAndExpand(commentId).toString();
         List<String> errorMassage = Collections.singletonList("there is not comment with id = " + commentId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         when(commentProvider.getCommentById(commentId)).thenThrow(createException(httpStatus, errorMassage, requestUrl));
@@ -144,7 +144,7 @@ public class CommentControllerTest {
     void updateComment() throws Exception {
         int commentId = 12;
         Comment comment = commentList.get(0).setCommentId(commentId);
-        mockMvc.perform(post("/carSale/comment/{commentId}", commentId)
+        mockMvc.perform(post("/carhouse/carSale/comment/{commentId}", commentId)
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .flashAttr("comment", comment))
                 .andExpect(status().isOk())
@@ -155,7 +155,7 @@ public class CommentControllerTest {
     @Test
     void updateNotExistComment() throws Exception {
         int commentId = 30;
-        String requestUrl = "/carSale/comment/" + commentId;
+        String requestUrl = "/carhouse/carSale/comment/" + commentId;
         List<String> errorMassage = Collections.singletonList("there is not comment with id = " + commentId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         doThrow(createException(httpStatus, errorMassage, requestUrl))
@@ -173,7 +173,7 @@ public class CommentControllerTest {
     @Test
     void updateCommentValidationError() throws Exception {
         Comment comment = new Comment().setUserName("").setComment("");
-        mockMvc.perform(post("/carSale/comment/12")
+        mockMvc.perform(post("/carhouse/carSale/comment/12")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .flashAttr("comment", comment))
                 .andExpect(status().isOk())
@@ -184,7 +184,7 @@ public class CommentControllerTest {
     @Test
     void deleteComment() throws Exception {
         int commentId = 2;
-        mockMvc.perform(get("/carSale/comment/{commentId}/delete", commentId))
+        mockMvc.perform(get("/carhouse/carSale/comment/{commentId}/delete", commentId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("fragments::success"))
                 .andExpect(forwardedUrl("fragments::success"));
@@ -195,7 +195,7 @@ public class CommentControllerTest {
     void deleteNotExistComment() throws Exception {
         int commentId = 20;
         String requestUrl = UriComponentsBuilder.newInstance()
-                .path("/carSale/comment/{commentId}/delete").buildAndExpand(commentId).toString();
+                .path("/carhouse/carSale/comment/{commentId}/delete").buildAndExpand(commentId).toString();
         List<String> errorMassage = Collections.singletonList("there is not comment with id = " + commentId);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         doThrow(createException(httpStatus, errorMassage, requestUrl)).when(commentProvider).deleteComment(commentId);

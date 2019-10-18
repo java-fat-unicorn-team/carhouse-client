@@ -21,13 +21,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -59,7 +59,8 @@ class CarSaleProviderImplTest {
         for (int carFeatureId : carFeatures) {
             carFeatureList.add(new CarFeature(carFeatureId, ""));
         }
-        mockMultipartFile = new MockMultipartFile("test.txt", "There should be bytes of image".getBytes());
+        mockMultipartFile = new MockMultipartFile("file", "test.txt", "image/*",
+                "There should be bytes of image".getBytes());
     }
 
     @Test
@@ -88,7 +89,7 @@ class CarSaleProviderImplTest {
         CarSale carSale = new CarSale().setCarSaleId(carSaleId)
                 .setDate(new Date())
                 .setPrice(new BigDecimal(20000))
-                .setImage(mockMultipartFile.getBytes());
+                .setImageName("2ebe34f34fsf53b");
         stubFor(get(urlPathEqualTo(CAR_SALE_GET + carSaleId))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -99,7 +100,7 @@ class CarSaleProviderImplTest {
         assertEquals(carSale.getCarSaleId(), result.getCarSaleId());
         assertEquals(carSale.getDate(), result.getDate());
         assertEquals(carSale.getPrice(), result.getPrice());
-        assertArrayEquals(carSale.getImage(), result.getImage());
+        assertEquals(carSale.getImageName(), result.getImageName());
     }
 
     @Test
@@ -126,10 +127,19 @@ class CarSaleProviderImplTest {
         Integer carSaleId = 7;
         CarSale carSaleWithCarFeatures = new CarSale().setCar(new Car());
         carSaleWithCarFeatures.getCar().setCarFeatureList(carFeatureList);
-        carSaleWithCarFeatures.setImage(mockMultipartFile.getBytes());
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
-                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSaleWithCarFeatures)))
+                .withHeader("Content-Type", containing("multipart/form-data"))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("carSale")
+                                .withBody(equalToJson(objectMapper.writeValueAsString(carSaleWithCarFeatures)))
+                                .withHeader("Content-Type", containing("application/json"))
+                )
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("file")
+                                .withBody(binaryEqualTo(mockMultipartFile.getBytes()))
+                )
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -142,10 +152,20 @@ class CarSaleProviderImplTest {
     void addCarSaleWithoutCarFeatures() throws IOException {
         Integer carSaleId = 7;
         CarSale carSale = new CarSale().setCar(new Car());
-        carSale.setImage(mockMultipartFile.getBytes());
+        carSale.setImageName("2ebe34f34fsf53b");
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
-                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                .withHeader("Content-Type", containing("multipart/form-data"))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("carSale")
+                                .withBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                                .withHeader("Content-Type", containing("application/json"))
+                )
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("file")
+                                .withBody(binaryEqualTo(mockMultipartFile.getBytes()))
+                )
                 .willReturn(aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -159,10 +179,19 @@ class CarSaleProviderImplTest {
         String errorMsg = "there is wrong references in your car sale";
         CarSale carSale = new CarSale().setCar(new Car());
         carSale.getCar().setCarFeatureList(carFeatureList);
-        carSale.setImage(mockMultipartFile.getBytes());
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
-                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                .withHeader("Content-Type", containing("multipart/form-data"))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("carSale")
+                                .withBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                                .withHeader("Content-Type", containing("application/json"))
+                )
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("file")
+                                .withBody(binaryEqualTo(mockMultipartFile.getBytes()))
+                )
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
                         .withBody(objectMapper.writeValueAsString(
@@ -177,12 +206,25 @@ class CarSaleProviderImplTest {
 
     @Test
     void updateCarSale() throws IOException {
-        CarSale carSale = new CarSale().setCar(new Car());
+        int carSaleId = 5;
+        CarSale carSale = new CarSale(carSaleId).setCar(new Car());
         carSale.getCar().setCarFeatureList(carFeatureList);
-        carSale.setImage(mockMultipartFile.getBytes());
-        stubFor(put(urlPathEqualTo(CAR_SALE_UPDATE))
-                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+        carSale.setImageName("2ebe34f34fsf53b");
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path(CAR_SALE_UPDATE).buildAndExpand(carSaleId);
+        stubFor(post(urlPathEqualTo(uriComponents.toString()))
+                .withHeader("Content-Type", containing("multipart/form-data"))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("carSale")
+                                .withBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                                .withHeader("Content-Type", containing("application/json"))
+                )
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("file")
+                                .withBody(binaryEqualTo(mockMultipartFile.getBytes()))
+                )
                 .willReturn(aResponse()
                         .withStatus(200)));
         carSaleProvider.updateCarSale(carSale, mockMultipartFile, carFeatures);
@@ -191,12 +233,25 @@ class CarSaleProviderImplTest {
     @Test
     void updateCarSaleWithWrongReferences() throws IOException {
         int responseStatus = 424;
+        int carSaleId = 3;
         String errorMsg = "there is wrong references in your car sale";
-        CarSale carSale = new CarSale().setCar(new Car());
-        carSale.setImage(mockMultipartFile.getBytes());
-        stubFor(put(urlPathEqualTo(CAR_SALE_UPDATE))
-                .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+        CarSale carSale = new CarSale(carSaleId).setCar(new Car());
+        carSale.setImageName("2ebe34f34fsf53b");
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .path(CAR_SALE_UPDATE).buildAndExpand(carSaleId);
+        stubFor(post(urlPathEqualTo(uriComponents.toString()))
+                .withHeader("Content-Type", containing("multipart/form-data"))
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("carSale")
+                                .withBody(equalToJson(objectMapper.writeValueAsString(carSale)))
+                                .withHeader("Content-Type", containing("application/json"))
+                )
+                .withMultipartRequestBody(
+                        aMultipart()
+                                .withName("file")
+                                .withBody(binaryEqualTo(mockMultipartFile.getBytes()))
+                )
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
                         .withBody(objectMapper.writeValueAsString(

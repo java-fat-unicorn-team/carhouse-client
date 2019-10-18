@@ -19,11 +19,11 @@
                 <div class="col">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-uppercase btn" href="/homePage"><strong>Car
+                            <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
                                 house</strong></a>
                         </li>
                         <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carSale/addForm"><i class="fas fa-plus"></i> Add
+                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
                                 advertisement</a>
                         </li>
                     </ul>
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="add-carSale-form mt-3">
-            <form action="#" th:action="@{/carSale/add}" th:object="${carSale}" th:method="post"
+            <form action="#" th:action="@{/carhouse/carSale/add}" th:object="${carSale}" th:method="post"
                   enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-sm-12 col-md-10 col-lg-8">
@@ -209,7 +209,7 @@
         } else {
             $.ajax({
                 type: 'GET',
-                url: "/carModels/" + carMakeId,
+                url: "/carhouse/carModels/" + carMakeId,
                 success: function (data) {
                     var listCarModels = $('#listCarModels'), option = "";
                     listCarModels.empty();
@@ -246,7 +246,7 @@
             $('#carMake option[value=' + carMakeId + ']').attr('selected', 'selected')
             $.ajax({
                 type: 'GET',
-                url: "/carModels/" + carMakeId,
+                url: "/carhouse/carModels/" + carMakeId,
                 success: function (data) {
                     var listCarModels = $('#listCarModels'), option = "";
                     listCarModels.empty();
