@@ -9,6 +9,8 @@ Project is created with:
 * Thymeleaf 3.0.11
 * Git 2+
 * Gradle 5.5+
+* Tomcat 9+
+* Apache 2.4+
 
 ## Build
 ```
@@ -19,3 +21,4 @@ gradle clean build
 ```
 gradle tomcatRun
 ```
+##### *to make the application work you need to [CONFIGURE APACHE SERVER](apache-config/apache_config.md)
