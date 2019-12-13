@@ -1,5 +1,7 @@
 package com.carhouse.model;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * The User model.
  * The model includes user name, login etc.
@@ -9,9 +11,13 @@ package com.carhouse.model;
  */
 public class User {
     private int userId;
+    @NotBlank
     private String userName;
+    @NotBlank
     private String phoneNumber;
+    @NotBlank
     private String login;
+    @NotBlank
     private String password;
 
     /**

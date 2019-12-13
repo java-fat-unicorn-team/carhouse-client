@@ -43,6 +43,7 @@ class CarSaleProviderImplTest {
     private String CAR_SALE_DELETE;
     private String CAR_SALE_GET = "/carSale/";
 
+    private static String token;
     private static int[] carFeatures;
     private static List<CarFeature> carFeatureList;
     private static MockMultipartFile mockMultipartFile;
@@ -61,6 +62,7 @@ class CarSaleProviderImplTest {
         }
         mockMultipartFile = new MockMultipartFile("file", "test.txt", "image/*",
                 "There should be bytes of image".getBytes());
+        token = "there should be generated token";
     }
 
     @Test
@@ -129,6 +131,7 @@ class CarSaleProviderImplTest {
         carSaleWithCarFeatures.getCar().setCarFeatureList(carFeatureList);
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
                 .withHeader("Content-Type", containing("multipart/form-data"))
+                .withHeader("Authorization", containing(token))
                 .withMultipartRequestBody(
                         aMultipart()
                                 .withName("carSale")
@@ -145,7 +148,7 @@ class CarSaleProviderImplTest {
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .withBody(String.valueOf(carSaleId))));
         assertEquals(carSaleId, carSaleProvider.addCarSale(new CarSale().setCar(new Car()), mockMultipartFile,
-                carFeatures));
+                carFeatures, token));
     }
 
     @Test
@@ -155,6 +158,7 @@ class CarSaleProviderImplTest {
         carSale.setImageName("2ebe34f34fsf53b");
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
                 .withHeader("Content-Type", containing("multipart/form-data"))
+                .withHeader("Authorization", containing(token))
                 .withMultipartRequestBody(
                         aMultipart()
                                 .withName("carSale")
@@ -170,7 +174,7 @@ class CarSaleProviderImplTest {
                         .withStatus(200)
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE)
                         .withBody(String.valueOf(carSaleId))));
-        assertEquals(carSaleId, carSaleProvider.addCarSale(carSale, mockMultipartFile, null));
+        assertEquals(carSaleId, carSaleProvider.addCarSale(carSale, mockMultipartFile, null, token));
     }
 
     @Test
@@ -181,6 +185,7 @@ class CarSaleProviderImplTest {
         carSale.getCar().setCarFeatureList(carFeatureList);
         stubFor(post(urlPathEqualTo(CAR_SALE_ADD))
                 .withHeader("Content-Type", containing("multipart/form-data"))
+                .withHeader("Authorization", containing(token))
                 .withMultipartRequestBody(
                         aMultipart()
                                 .withName("carSale")
@@ -197,7 +202,8 @@ class CarSaleProviderImplTest {
                         .withBody(objectMapper.writeValueAsString(
                                 createExceptionJSONResponse(responseStatus, errorMsg)))));
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> carSaleProvider.addCarSale(new CarSale().setCar(new Car()), mockMultipartFile, carFeatures));
+                () -> carSaleProvider.addCarSale(new CarSale().setCar(new Car()),
+                        mockMultipartFile, carFeatures, token));
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
@@ -214,6 +220,7 @@ class CarSaleProviderImplTest {
                 .path(CAR_SALE_UPDATE).buildAndExpand(carSaleId);
         stubFor(post(urlPathEqualTo(uriComponents.toString()))
                 .withHeader("Content-Type", containing("multipart/form-data"))
+                .withHeader("Authorization", containing(token))
                 .withMultipartRequestBody(
                         aMultipart()
                                 .withName("carSale")
@@ -227,7 +234,7 @@ class CarSaleProviderImplTest {
                 )
                 .willReturn(aResponse()
                         .withStatus(200)));
-        carSaleProvider.updateCarSale(carSale, mockMultipartFile, carFeatures);
+        carSaleProvider.updateCarSale(carSale, mockMultipartFile, carFeatures, token);
     }
 
     @Test
@@ -241,6 +248,7 @@ class CarSaleProviderImplTest {
                 .path(CAR_SALE_UPDATE).buildAndExpand(carSaleId);
         stubFor(post(urlPathEqualTo(uriComponents.toString()))
                 .withHeader("Content-Type", containing("multipart/form-data"))
+                .withHeader("Authorization", containing(token))
                 .withMultipartRequestBody(
                         aMultipart()
                                 .withName("carSale")
@@ -257,7 +265,7 @@ class CarSaleProviderImplTest {
                         .withBody(objectMapper.writeValueAsString(
                                 createExceptionJSONResponse(responseStatus, errorMsg)))));
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> carSaleProvider.updateCarSale(carSale, mockMultipartFile, null));
+                () -> carSaleProvider.updateCarSale(carSale, mockMultipartFile, null, token));
         ExceptionJSONResponse response = objectMapper.readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());
@@ -271,10 +279,11 @@ class CarSaleProviderImplTest {
                 .path(CAR_SALE_DELETE)
                 .buildAndExpand(carSaleId);
         stubFor(delete(urlPathEqualTo(uriComponents.toString()))
+                .withHeader("Authorization", containing(token))
                 .willReturn(aResponse()
                         .withStatus(200))
         );
-        carSaleProvider.deleteCarSale(carSaleId);
+        carSaleProvider.deleteCarSale(carSaleId, token);
     }
 
     @Test
@@ -286,13 +295,14 @@ class CarSaleProviderImplTest {
                 .path(CAR_SALE_DELETE)
                 .buildAndExpand(carSaleId);
         stubFor(delete(urlPathEqualTo(uriComponents.toString()))
+                .withHeader("Authorization", containing(token))
                 .willReturn(aResponse()
                         .withStatus(responseStatus)
                         .withBody(objectMapper.writeValueAsString(
                                 createExceptionJSONResponse(responseStatus, errorMsg))))
         );
         HttpClientErrorException exception = assertThrows(HttpClientErrorException.class,
-                () -> carSaleProvider.deleteCarSale(carSaleId));
+                () -> carSaleProvider.deleteCarSale(carSaleId, token));
         ExceptionJSONResponse response = new ObjectMapper().readValue(exception.getResponseBodyAsString(),
                 ExceptionJSONResponse.class);
         assertEquals(responseStatus, response.getStatus());

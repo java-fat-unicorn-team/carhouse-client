@@ -22,9 +22,11 @@
                             <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
                                 house</strong></a>
                         </li>
-                        <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
-                                advertisement</a>
+                        <li class="nav-item ml-auto bg-secondary">
+                            <form id="userRoom" th:action="@{/carhouse/user/room}" method="post">
+                                <input type="hidden" id="authentication" name="authentication">
+                            </form>
+                            <a class="nav-link text-white btn" onclick="goToUserRoom()">User room</a>
                         </li>
                     </ul>
                 </div>
@@ -41,7 +43,8 @@
             </div>
         </div>
         <div class="add-carSale-form mt-3">
-            <form action="#" th:action="@{/carhouse/carSale/add}" th:object="${carSale}" th:method="post"
+            <form id="formAdd" action="#" th:action="@{/carhouse/user/room/carSale/add}" th:object="${carSale}"
+                  th:method="post"
                   enctype="multipart/form-data">
                 <div class="row">
                     <div class="col-sm-12 col-md-10 col-lg-8">
@@ -181,7 +184,10 @@
                         </ul>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <div class="authentication">
+                    <input id="addAuthentication" type="hidden" name="token">
+                </div>
+                <button class="btn btn-primary" onclick="addForm()">Create</button>
             </form>
         </div>
     </div>
@@ -297,6 +303,16 @@
     $(function () {
         bs_input_file();
     });
+
+    function goToUserRoom() {
+        $('#authentication').val(localStorage.getItem("Authorization"));
+        $('#userRoom').submit();
+    }
+
+    function addForm() {
+        $('#addAuthentication').val(localStorage.getItem("Authorization"));
+        $('#formAdd').submit();
+    }
 </script>
 </body>
 </html>

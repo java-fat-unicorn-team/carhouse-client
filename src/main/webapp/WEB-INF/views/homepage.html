@@ -17,11 +17,14 @@
                 <div class="col">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link text-white text-uppercase btn" href="#"><strong>Car house</strong></a>
+                            <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
+                                house</strong></a>
                         </li>
-                        <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
-                                advertisement</a>
+                        <li class="nav-item ml-auto bg-secondary">
+                            <form id="userRoom" th:action="@{/carhouse/user/room}" method="post">
+                                <input type="hidden" id="authentication" name="authentication">
+                            </form>
+                            <a class="nav-link text-white btn" onclick="goToUserRoom()">User room</a>
                         </li>
                     </ul>
                 </div>
@@ -35,9 +38,6 @@
         <div class="row ml-2">
             <div class="col-3">
                 <p>68640 car advertisement</p>
-            </div>
-            <div class="col">
-                <a href="#" class="btn"><i class="fas fa-search"></i> Advanced Search</a>
             </div>
         </div>
         <div class="row bg-warning ml-2 mr-2">
@@ -121,6 +121,36 @@
                 </div>
             </div>
         </div>
+        <div class="row border bg-light p-2" th:each="carSale : ${lastFiveCarSales}">
+            <div class="col-sm-7 col-md-5 col-lg-4 p-0">
+                <div class="d-inline-block">
+                    <a th:href="@{/carhouse/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                        <img th:src="|/@{${carSale.imageName ?: 'default'}}|" height="134" width="180"></a>
+                </div>
+                <div class="d-inline-block pl-3 align-top">
+                    <div>
+                        <span th:text="${#dates.year(carSale.year)}"></span>
+                        <br>
+                        <strong th:text="${carSale.price} + ' $'"></strong>
+                    </div>
+                    <div class="mt-5">
+                        <small th:text="|${#dates.day(carSale.date)}. ${#dates.month(carSale.date)}.
+                        ${#dates.year(carSale.date)}|"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <a th:href="@{/carhouse/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                            <h4 th:text="${carSale.carMake} + ', ' + ${carSale.carModel}"></h4>
+                        </a>
+                        <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
+                                                    + ', ' + ${carSale.mileage} + ' m.'"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -149,6 +179,11 @@
                 }
             });
         }
+    }
+
+    function goToUserRoom() {
+        $('#authentication').val(localStorage.getItem("Authorization"));
+        $('#userRoom').submit();
     }
 </script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>

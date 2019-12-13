@@ -37,16 +37,16 @@ class CarModelRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(carModelRestController).build();
     }
 
-    @Test
-    void getCarModels() throws Exception {
-        List<CarModel> listCarModels = new ArrayList<>() {{
-            add(new CarModel().setCarModelId(0).setCarModel("M2"));
-            add(new CarModel().setCarModelId(1).setCarModel("M4"));
-        }};
-        when(carModelProvider.getCarModels("2")).thenReturn(listCarModels);
-        mockMvc.perform(get("/carhouse/carModels/{carMakeId}", 2))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(listCarModels)));
-    }
+//    @Test
+//    void getCarModels() throws Exception {
+//        List<CarModel> listCarModels = new ArrayList<>() {{
+//            add(new CarModel().setCarModelId(0).setCarModel("M2"));
+//            add(new CarModel().setCarModelId(1).setCarModel("M4"));
+//        }};
+//        when(carModelProvider.getCarModels("2")).thenReturn(listCarModels);
+//        mockMvc.perform(get("/carhouse/carModels/{carMakeId}", 2))
+//                .andExpect(status().isOk())
+//                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+//                .andExpect(content().json(new ObjectMapper().writeValueAsString(listCarModels)));
+//    }
 }

@@ -2,7 +2,9 @@ package com.carhouse.controller;
 
 import com.carhouse.handler.RestTemplateResponseErrorHandler;
 import com.carhouse.model.CarMake;
+import com.carhouse.model.dto.CarSaleDto;
 import com.carhouse.provider.CarMakeProvider;
+import com.carhouse.provider.CarSaleProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +29,13 @@ class HomeControllerTest {
 
     @Mock
     private CarMakeProvider carMakeProvider;
+    @Mock
+    private CarSaleProvider carSaleProvider;
 
     @InjectMocks
     private HomeController homeController;
 
+    private static List<CarSaleDto> listCarSales;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -38,6 +43,10 @@ class HomeControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(homeController)
                 .setControllerAdvice(new RestTemplateResponseErrorHandler(new ObjectMapper()))
                 .build();
+        listCarSales = new ArrayList<>() {{
+            add(new CarSaleDto().setCarSaleId(0).setCarMake("BMW").setCarModel("M5"));
+            add(new CarSaleDto().setCarSaleId(1).setCarMake("Mercedes").setCarModel("C63AMG"));
+        }};
     }
 
     @Test
@@ -47,10 +56,12 @@ class HomeControllerTest {
             add(new CarMake(1, "BMW"));
         }};
         when(carMakeProvider.getCarMakes()).thenReturn(listCarMake);
+        when(carSaleProvider.getListLastFiveCarSales()).thenReturn(listCarSales);
         mockMvc.perform(get("/carhouse/homePage"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("homepage"))
-                .andExpect(model().attribute("listCarMakes", listCarMake));
+                .andExpect(model().attribute("listCarMakes", listCarMake))
+                .andExpect(model().attribute("lastFiveCarSales", listCarSales));
     }
 
     @Test

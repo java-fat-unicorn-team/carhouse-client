@@ -42,12 +42,16 @@ public class RestTemplateResponseErrorHandler {
      *
      * @param ex the exception
      * @return the model and view
-     * @throws JsonProcessingException if can't convert json to object
      */
     @ExceptionHandler(HttpClientErrorException.class)
-    public ModelAndView handleClientError(final HttpClientErrorException ex) throws JsonProcessingException {
-        ExceptionJSONResponse response = objectMapper.readValue(ex.getResponseBodyAsString(),
-                ExceptionJSONResponse.class);
+    public ModelAndView handleClientError(final HttpClientErrorException ex) {
+        ExceptionJSONResponse response = null;
+        try {
+            response = objectMapper.readValue(ex.getResponseBodyAsString(),
+                    ExceptionJSONResponse.class);
+        } catch (JsonProcessingException e) {
+            return new ModelAndView("redirect:/carhouse/login");
+        }
         LOGGER.error("Server thrown a client error: {}", response.getMessages());
         return createModelAndView(response.getStatus(), response.getMessages(), response.getPath());
     }

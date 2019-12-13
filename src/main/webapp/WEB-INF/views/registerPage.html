@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Register</title>
+</head>
+<body>
+<div class="container-fluid" style="height: 100vh">
+    <div class="row justify-content-center align-items-center h-100 pb-5">
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3 text-center p-5 border bg-light rounded shadow">
+            <form th:object="${user}" th:method="@{post}" id="registerForm">
+                <h1 class="h2 mb-3">Please sign in</h1>
+                <p class="text-danger" id="message"></p>
+                <div class="form-group">
+                    <label for="inputLogin" class="sr-only">User name</label>
+                    <input class="form-control" type="text" id="userName" th:field="*{userName}"
+                           placeholder="User name" required="" autofocus="">
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="sr-only">Phone number</label>
+                    <input class="form-control" type="text" id="phoneNumber" th:field="*{phoneNumber}"
+                           placeholder="Phone number" required="">
+                </div>
+                <div class="form-group">
+                    <label for="inputLogin" class="sr-only">Login</label>
+                    <input class="form-control" type="text" id="inputLogin" th:field="*{login}"
+                           placeholder="Login" required="" autofocus="">
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword" class="sr-only">Password</label>
+                    <input class="form-control" type="password" id="inputPassword" th:field="*{password}"
+                           placeholder="Password" required="">
+                </div>
+            </form>
+            <button class="btn btn-lg btn-primary btn-block" onclick="register()">Register</button>
+            <p class="mt-5 mb-3 text-muted">© 2019-2020</p>
+        </div>
+    </div>
+    <div>
+        <form id="authenticationForm" method="post" th:action="@{/carhouse/user/room}">
+            <input id="token" type="hidden" name="authentication">
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script>
+    function register() {
+        $.ajax({
+            type: 'POST',
+            url: "/carhouse/register/submit",
+            data: $('#registerForm').serialize(),
+            success: function (response) {
+                localStorage.clear();
+                localStorage.setItem("Authorization", response.token);
+                localStorage.setItem("UserName", response.userName);
+                $('#token').val(response.token);
+                $('#authenticationForm').submit();
+            },
+            error: function (error) {
+                if (error.status == '400') {
+                    $('#message').text("Error. Fields cannot be empty.");
+                } else if (error.status == '403') {
+                    $('#message').text("Error. User already exist.");
+                } else {
+                    $('#message').text("Error.");
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

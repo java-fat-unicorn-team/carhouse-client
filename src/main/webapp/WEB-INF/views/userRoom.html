@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>CarSale</title>
+</head>
+<body class="bg-light">
+<header>
+    <div class="navigation bg-primary">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
+                                house</strong></a>
+                        </li>
+                        <li class="nav-item ml-auto bg-success">
+                            <form id="addAdvertisement" th:action="@{/carhouse/user/room/carSale/addForm}"
+                                  method="post">
+                                <input type="hidden" id="addAuthentication" name="authentication">
+                            </form>
+                            <a class="nav-link text-white btn" onclick="goToAddAdvertisementPage()"><i
+                                    class="fas fa-plus"></i>
+                                Add advertisement</a>
+                        </li>
+                        <li class="nav-item bg-secondary">
+                            <a id="redirectUrl" class="nav-link text-white btn" th:href="@{/carhouse/carSale}"
+                               onclick="logOut()">Log out</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section>
+    <div class="container bg-white mt-4">
+        <div class="row border bg-light p-2" th:each="carSale : ${listCarSales}">
+            <div class="col-sm-7 col-md-5 col-lg-4 p-0">
+                <div class="d-inline-block">
+                    <a th:href="@{/carhouse/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                        <img th:src="|/@{${carSale.imageName ?: 'default'}}|" height="134" width="180"></a>
+                </div>
+                <div class="d-inline-block pl-3 align-top">
+                    <div>
+                        <span th:text="${#dates.year(carSale.year)}"></span>
+                        <br>
+                        <strong th:text="${carSale.price} + ' $'"></strong>
+                    </div>
+                    <div class="mt-5">
+                        <small th:text="|${#dates.day(carSale.date)}. ${#dates.month(carSale.date)}.
+                        ${#dates.year(carSale.date)}|"></small>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="row">
+                    <div class="col">
+                        <a th:href="@{/carhouse/advertisement/{advertisementId}(advertisementId=${carSale.carSaleId})}">
+                            <h4 th:text="${carSale.carMake} + ', ' + ${carSale.carModel}"></h4>
+                        </a>
+                        <span th:text="${carSale.transmission} + ', ' + ${carSale.fuelType}
+                                                    + ', ' + ${carSale.mileage} + ' m.'"></span>
+                    </div>
+                    <div class="col-4 col-md-3 col-lg-2 p-0">
+                        <form th:action="@{/carhouse/user/room/carSale/{carSaleId}/updateForm(carSaleId=${carSale.carSaleId})}"
+                              method="post" th:id="|formUpdate${carSale.carSaleId}|">
+                            <input name="token" type="hidden" th:id="|updateToken${carSale.carSaleId}|">
+                        </form>
+                        <a class="btn btn-warning btn-sm btn-block mt-auto mb-3"
+                           th:onclick="|updateForm('${carSale.carSaleId}')|" role="button">Update</a>
+                        <span data-toggle="modal"
+                              data-target="#deleteDialog"
+                              th:attr="data-id=${carSale.carSaleId},data-carmake=${carSale.carMake},
+                              data-carmodel=${carSale.carModel},data-year=${#dates.year(carSale.year)}">
+                            <a href="#" class="btn btn-danger btn-sm btn-block"
+                               data-toggle="tooltip"
+                               data-placement="top">Delete</a>
+                            <a class="d-none" th:id="|deleteUrl${carSale.carSaleId}|"
+                               th:href="@{/carhouse/user/room/carSale/{carSaleId}/delete(carSaleId=${carSale.carSaleId})}"></a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-secondary" th:if="${#lists.isEmpty(listCarSales)}">
+            <h1 class="display-1">
+                You don't have any advertisements yet
+            </h1>
+        </div>
+    </div>
+</section>
+
+<!-- Confirm delete Modal -->
+<div class="modal fade" id="deleteDialog" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header alert-danger">
+                <h5 class="modal-title" id="exampleModalLabel">Delete car sale advertisement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Please confirm delete
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a id="deleteUrl" href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<script>
+    function updateForm(carSaleId) {
+        $('#updateToken' + carSaleId).val(localStorage.getItem("Authorization"));
+        $('#formUpdate' + carSaleId).submit();
+    }
+
+    $('#deleteDialog').on('show.bs.modal', function (event) {
+        var target = $(event.relatedTarget);
+        $(this).find('.modal-body').text('Please confirm delete advertisement: "' + target.data('carmake') + ' '
+            + target.data('carmodel') + ' ' + target.data('year') + '"');
+        document.getElementById('deleteUrl').href = $("#deleteUrl" + target.data('id')).attr('href')
+            + "?authentication=" + localStorage.getItem("Authorization");
+    })
+
+    function goToAddAdvertisementPage() {
+        $('#addAuthentication').val(localStorage.getItem("Authorization"));
+        $('#addAdvertisement').submit();
+    }
+
+    function logOut() {
+        localStorage.clear();
+        window.location.replace($('#redirectUrl').href);
+    }
+</script>
+</body>
+</html>

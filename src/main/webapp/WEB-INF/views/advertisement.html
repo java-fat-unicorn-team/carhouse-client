@@ -21,9 +21,11 @@
                             <a class="nav-link text-white text-uppercase btn" href="/carhouse/homePage"><strong>Car
                                 house</strong></a>
                         </li>
-                        <li class="nav-item ml-auto bg-success">
-                            <a class="nav-link text-white btn" href="/carhouse/carSale/addForm"><i class="fas fa-plus"></i> Add
-                                advertisement</a>
+                        <li class="nav-item ml-auto bg-secondary">
+                            <form id="userRoom" th:action="@{/carhouse/user/room}" method="post">
+                                <input type="hidden" id="authentication" name="authentication">
+                            </form>
+                            <a class="nav-link text-white btn" onclick="goToUserRoom()">User room</a>
                         </li>
                     </ul>
                 </div>
@@ -44,7 +46,8 @@
                         <span> -- </span>
                     </li>
                     <li class="list-inline-item">
-                        <a class="text-dark" th:href="@{/carhouse/carSale/(carMakeId=${carSale.car.carModel.carMake.carMakeId})}"
+                        <a class="text-dark"
+                           th:href="@{/carhouse/carSale/(carMakeId=${carSale.car.carModel.carMake.carMakeId})}"
                            th:text="${carSale.car.carModel.carMake.carMake}">carMake</a>
                     </li>
                     <li class="list-inline-item">
@@ -77,7 +80,7 @@
         <hr>
         <div class="row">
             <div class="col-sm-12 col-lg pb-3 order-lg-last">
-<!--                <img th:src="${imageUrl}" width="100%"></a>-->
+                <!--                <img th:src="${imageUrl}" width="100%"></a>-->
                 <img th:src="|/${carSale.imageName}|" width="100%"></a>
             </div>
             <div class="col-12 col-lg-4">
@@ -123,6 +126,17 @@
                     <ul style="list-style-type: disc">
                         <li th:each="carFeature : ${carSale.car.carFeatureList}" th:text="${carFeature.carFeature}">
                             Winter tires
+                        </li>
+                    </ul>
+                </div>
+                <div class="seller">
+                    <h5>Seller:</h5>
+                    <ul style="list-style-type: none">
+                        <li>
+                            <strong>Name: </strong><p class="d-inline-block" th:text="${carSale.user.userName}"></p>
+                        </li>
+                        <li>
+                            <strong>Phone number: </strong><p class="d-inline-block" th:text="${carSale.user.phoneNumber}"></p>
                         </li>
                     </ul>
                 </div>
@@ -329,6 +343,11 @@
     function showError(data) {
         $('#model').html(data.responseText);
         $('#centralModalError').modal();
+    }
+
+    function goToUserRoom() {
+        $('#authentication').val(localStorage.getItem("Authorization"));
+        $('#userRoom').submit();
     }
 </script>
 </body>
